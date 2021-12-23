@@ -1,4 +1,4 @@
-package crypto.anguita.nextgenfactionscommons.events.player.action;
+package crypto.anguita.nextgenfactionscommons.events.player.unpermissioned;
 
 import crypto.anguita.nextgenfactionscommons.events.player.PlayerEvent;
 import crypto.anguita.nextgenfactionscommons.model.player.FPlayer;

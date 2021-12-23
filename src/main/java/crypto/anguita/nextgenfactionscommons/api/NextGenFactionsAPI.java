@@ -1,11 +1,11 @@
 package crypto.anguita.nextgenfactionscommons.api;
 
-import crypto.anguita.nextgenfactionscommons.events.faction.action.CreateFactionByNameEvent;
+import crypto.anguita.nextgenfactionscommons.events.faction.unpermissioned.CreateFactionByNameEvent;
 import crypto.anguita.nextgenfactionscommons.events.faction.callback.CheckIfFactionExistsByNameEvent;
 import crypto.anguita.nextgenfactionscommons.events.faction.callback.GetFactionAtChunkEvent;
 import crypto.anguita.nextgenfactionscommons.events.faction.callback.GetFactionByNameEvent;
 import crypto.anguita.nextgenfactionscommons.events.faction.callback.GetFactionEvent;
-import crypto.anguita.nextgenfactionscommons.events.player.action.SavePlayerEvent;
+import crypto.anguita.nextgenfactionscommons.events.player.unpermissioned.SavePlayerEvent;
 import crypto.anguita.nextgenfactionscommons.events.player.callback.CheckIfPlayerHasFactionEvent;
 import crypto.anguita.nextgenfactionscommons.events.player.callback.GetPlayerByNameEvent;
 import crypto.anguita.nextgenfactionscommons.events.player.callback.GetPlayerEvent;
@@ -20,18 +20,28 @@ import crypto.anguita.nextgenfactionscommons.model.player.FPlayer;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.Objects;
 import java.util.Set;
 import java.util.UUID;
 
 public class NextGenFactionsAPI {
 
-
-    public static @NotNull Faction getFactionAtLocation(FLocation location){
-        return getFactionAtChunk(location.getChunk());
+    /**
+     * Gets the Faction that owns this location.
+     * @param location
+     * @return
+     */
+    public static @Nullable Faction getFactionAtLocation(FLocation location) {
+        FChunk chunk = location.getChunk();
+        if (Objects.nonNull(chunk)) {
+            return getFactionAtChunk(chunk);
+        }
+        return null;
     }
 
     /**
      * Gets the Faction that owns the given chunk.
+     *
      * @param chunk
      * @return
      */

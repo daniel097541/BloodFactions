@@ -1,4 +1,4 @@
-package crypto.anguita.nextgenfactionscommons.events.faction.action;
+package crypto.anguita.nextgenfactionscommons.events.faction.unpermissioned;
 
 import crypto.anguita.nextgenfactionscommons.events.shared.FactionPlayerEvent;
 import lombok.Getter;
