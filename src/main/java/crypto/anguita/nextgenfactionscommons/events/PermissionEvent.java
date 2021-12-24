@@ -15,4 +15,5 @@ public abstract class PermissionEvent extends NextGenFactionsEvent {
     private final FPlayer player;
     private final PermissionType permissionType;
     private boolean permissionRestricted;
+    private boolean success;
 }

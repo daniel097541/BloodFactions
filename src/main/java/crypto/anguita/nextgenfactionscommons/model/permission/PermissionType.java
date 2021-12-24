@@ -6,5 +6,5 @@ public enum PermissionType {
     KICK,
     BAN,
     CLAIM,
-    UN_CLAIM;
+    UN_CLAIM, MULTI_CLAIM, MULTI_UN_CLAIM;
 }

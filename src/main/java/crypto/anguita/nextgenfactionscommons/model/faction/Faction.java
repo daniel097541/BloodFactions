@@ -1,15 +1,33 @@
 package crypto.anguita.nextgenfactionscommons.model.faction;
 
-import crypto.anguita.nextgenfactionscommons.api.PermissionNextGenFactionsAPI;
 import crypto.anguita.nextgenfactionscommons.api.NextGenFactionsAPI;
+import crypto.anguita.nextgenfactionscommons.api.PermissionNextGenFactionsAPI;
 import crypto.anguita.nextgenfactionscommons.model.NextGenFactionEntity;
+import crypto.anguita.nextgenfactionscommons.model.land.FChunk;
 import crypto.anguita.nextgenfactionscommons.model.player.FPlayer;
 
+import java.util.Map;
 import java.util.Set;
 
 public interface Faction extends NextGenFactionEntity {
 
-    default Set<FPlayer> getMembers(){
+    default Map<FChunk, Boolean> multiUnClaim(Set<FChunk> chunks, FPlayer player){
+        return PermissionNextGenFactionsAPI.multiUnClaim(this, chunks, player);
+    }
+
+    default boolean unClaim(FChunk chunk, FPlayer player){
+        return PermissionNextGenFactionsAPI.unClaim(this, chunk, player);
+    }
+
+    default Map<FChunk, Boolean> multiClaim(Set<FChunk> chunks, FPlayer player) {
+        return PermissionNextGenFactionsAPI.multiClaim(this, chunks, player);
+    }
+
+    default boolean claim(FChunk chunk, FPlayer player) {
+        return PermissionNextGenFactionsAPI.claim(this, chunk, player);
+    }
+
+    default Set<FPlayer> getMembers() {
         return NextGenFactionsAPI.getPlayersInFaction(this);
     }
 
