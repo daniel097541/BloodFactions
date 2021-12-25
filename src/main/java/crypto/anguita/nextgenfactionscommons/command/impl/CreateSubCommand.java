@@ -1,5 +1,6 @@
 package crypto.anguita.nextgenfactionscommons.command.impl;
 
+import crypto.anguita.nextgenfactionscommons.annotation.config.LangConfiguration;
 import crypto.anguita.nextgenfactionscommons.api.NextGenFactionsAPI;
 import crypto.anguita.nextgenfactionscommons.command.SubCommandType;
 import crypto.anguita.nextgenfactionscommons.config.LangConfigItems;
@@ -13,7 +14,7 @@ import java.util.Objects;
 
 public class CreateSubCommand extends FSubCommandImpl {
 
-    public CreateSubCommand(NGFConfig langConfig) {
+    public CreateSubCommand(@LangConfiguration NGFConfig langConfig) {
         super(SubCommandType.CREATE, langConfig);
     }
 
