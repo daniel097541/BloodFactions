@@ -13,6 +13,8 @@ import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.Objects;
+
 public interface FPlayer extends NextGenFactionEntity {
 
     default void sms(@NotNull MessageContext context) {
@@ -115,6 +117,16 @@ public interface FPlayer extends NextGenFactionEntity {
      */
     default boolean hasPermission(@NotNull Action action) {
         return NextGenFactionsAPI.checkIfPlayerHasPermission(this, action);
+    }
+
+    /**
+     * Checks if the player has the Bukkit permission.
+     * @param bukkitPermission
+     * @return
+     */
+    default boolean hasBukkitPermission(String bukkitPermission) {
+        Player player = this.getBukkitPlayer();
+        return Objects.nonNull(player) && player.hasPermission(bukkitPermission);
     }
 
 }

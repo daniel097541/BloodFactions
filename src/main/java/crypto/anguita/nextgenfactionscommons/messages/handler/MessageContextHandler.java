@@ -34,7 +34,9 @@ public interface MessageContextHandler {
             placeHolders.put(MessagePlaceholder.TARGET_PLAYER_NAME.getPlaceholder(), targetPlayer.getName());
         }
 
-        @Nullable Player bukkitPlayer = player.getBukkitPlayer();
+        Player bukkitPlayer = player.getBukkitPlayer();
+
+        // Send the message.
         if (Objects.nonNull(bukkitPlayer)) {
             MessageUtils.sendMessage(message, bukkitPlayer, placeHolders);
         }

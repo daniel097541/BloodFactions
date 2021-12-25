@@ -22,7 +22,7 @@ dependencies {
     // Compile only
     compileOnly 'org.projectlombok:lombok:1.18.22'
     annotationProcessor 'org.projectlombok:lombok:1.18.22'
-    compileOnly 'org.spigotmc:spigot-api:1.17.1-R0.1-SNAPSHOT'
+    compileOnly 'org.spigotmc:spigot-api:1.18.1-R0.1-SNAPSHOT'
 
     // Bundled dependencies
     implementation 'org.jetbrains:annotations:22.0.0'

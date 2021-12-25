@@ -5,6 +5,7 @@ import org.bukkit.configuration.file.YamlConfiguration;
 
 import java.io.File;
 import java.util.Map;
+import java.util.Objects;
 
 public interface NGFConfig {
 
@@ -19,6 +20,10 @@ public interface NGFConfig {
     void setFile(File file);
 
     void setYaml(YamlConfiguration yaml);
+
+    default Object get(ConfigItem configItem){
+        return this.read(configItem.getPath());
+    }
 
     @SneakyThrows
     default void init() {
