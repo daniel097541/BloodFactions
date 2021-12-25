@@ -16,4 +16,5 @@ public abstract class PermissionEvent extends NextGenFactionsEvent {
     private final PermissionType permissionType;
     private boolean permissionRestricted;
     private boolean success;
+    private String noPermissionMessage;
 }

@@ -1,6 +1,9 @@
 package crypto.anguita.nextgenfactionscommons.model.player;
 
 import crypto.anguita.nextgenfactionscommons.api.NextGenFactionsAPI;
+import crypto.anguita.nextgenfactionscommons.messages.handler.MessageContextHandler;
+import crypto.anguita.nextgenfactionscommons.messages.model.MessageContext;
+import crypto.anguita.nextgenfactionscommons.messages.model.MessageContextImpl;
 import crypto.anguita.nextgenfactionscommons.model.NextGenFactionEntity;
 import crypto.anguita.nextgenfactionscommons.model.faction.Faction;
 import crypto.anguita.nextgenfactionscommons.model.permission.Action;
@@ -11,6 +14,38 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 public interface FPlayer extends NextGenFactionEntity {
+
+    default void sms(MessageContext context){
+        new MessageContextHandler(){}.handle(context);
+    }
+
+    default void sms(String message){
+        MessageContext messageContext = new MessageContextImpl(this, message);
+        messageContext.setFaction(this.getFaction());
+        this.sms(messageContext);
+    }
+
+    default void sms(String message, @NotNull Faction targetFaction){
+        MessageContext messageContext = new MessageContextImpl(this, message);
+        messageContext.setFaction(this.getFaction());
+        messageContext.setTargetFaction(targetFaction);
+        this.sms(messageContext);
+    }
+
+    default void sms(String message, @NotNull FPlayer targetPlayer){
+        MessageContext messageContext = new MessageContextImpl(this, message);
+        messageContext.setFaction(this.getFaction());
+        messageContext.setTargetPlayer(targetPlayer);
+        this.sms(messageContext);
+    }
+
+    default void sms(String message, @NotNull Faction targetFaction, @NotNull FPlayer targetPlayer){
+        MessageContext messageContext = new MessageContextImpl(this, message);
+        messageContext.setFaction(this.getFaction());
+        messageContext.setTargetPlayer(targetPlayer);
+        messageContext.setTargetFaction(targetFaction);
+        this.sms(messageContext);
+    }
 
     /**
      * Gets the Bukkit offline player.
