@@ -12,33 +12,64 @@ import org.jetbrains.annotations.Nullable;
 
 public interface FPlayer extends NextGenFactionEntity {
 
+    /**
+     * Gets the Bukkit offline player.
+     * @return
+     */
     default @NotNull OfflinePlayer getBukkitOfflinePlayer() {
         return Bukkit.getOfflinePlayer(this.getId());
     }
 
+    /**
+     * Gets the Bukkit player if online.
+     * @return
+     */
     default @Nullable Player getBukkitPlayer() {
         OfflinePlayer offlinePlayer = this.getBukkitOfflinePlayer();
         return offlinePlayer.getPlayer();
     }
 
+    /**
+     * Gets the Faction of the player.
+     * @return
+     */
     default @NotNull Faction getFaction() {
         return NextGenFactionsAPI.getFactionOfPlayer(this);
     }
 
+    /**
+     * Checks if the player has faction.
+     * @return
+     */
     default boolean hasFaction() {
         return NextGenFactionsAPI.checkIfPlayerHasFaction(this);
     }
 
+    /**
+     * Invites a player to the faction.
+     * @param player
+     * @return
+     */
     default boolean invitePlayerToFaction(@NotNull FPlayer player) {
         Faction faction = this.getFaction();
         return faction.invitePlayer(player, this);
     }
 
+    /**
+     * Kicks a player from the faction.
+     * @param player
+     * @return
+     */
     default boolean kickPlayerFromFaction(@NotNull FPlayer player) {
         Faction faction = this.getFaction();
         return faction.kickPlayer(player, this);
     }
 
+    /**
+     * Checks if the player has permission.
+     * @param action
+     * @return
+     */
     default boolean hasPermission(@NotNull Action action) {
         return NextGenFactionsAPI.checkIfPlayerHasPermission(this, action);
     }
