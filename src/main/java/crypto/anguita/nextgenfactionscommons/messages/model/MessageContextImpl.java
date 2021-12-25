@@ -31,4 +31,7 @@ public class MessageContextImpl implements MessageContext {
     @Nullable
     private FPlayer targetPlayer;
 
+    @Nullable
+    private FPlayer otherPlayer;
+
 }

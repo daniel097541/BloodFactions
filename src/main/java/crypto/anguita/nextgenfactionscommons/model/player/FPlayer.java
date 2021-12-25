@@ -15,31 +15,32 @@ import org.jetbrains.annotations.Nullable;
 
 public interface FPlayer extends NextGenFactionEntity {
 
-    default void sms(MessageContext context){
-        new MessageContextHandler(){}.handle(context);
+    default void sms(@NotNull MessageContext context) {
+        new MessageContextHandler() {
+        }.handle(context);
     }
 
-    default void sms(String message){
+    default void sms(@NotNull String message) {
         MessageContext messageContext = new MessageContextImpl(this, message);
         messageContext.setFaction(this.getFaction());
         this.sms(messageContext);
     }
 
-    default void sms(String message, @NotNull Faction targetFaction){
+    default void sms(String message, @NotNull Faction targetFaction) {
         MessageContext messageContext = new MessageContextImpl(this, message);
         messageContext.setFaction(this.getFaction());
         messageContext.setTargetFaction(targetFaction);
         this.sms(messageContext);
     }
 
-    default void sms(String message, @NotNull FPlayer targetPlayer){
+    default void sms(String message, @NotNull FPlayer targetPlayer) {
         MessageContext messageContext = new MessageContextImpl(this, message);
         messageContext.setFaction(this.getFaction());
         messageContext.setTargetPlayer(targetPlayer);
         this.sms(messageContext);
     }
 
-    default void sms(String message, @NotNull Faction targetFaction, @NotNull FPlayer targetPlayer){
+    default void sms(String message, @NotNull Faction targetFaction, @NotNull FPlayer targetPlayer) {
         MessageContext messageContext = new MessageContextImpl(this, message);
         messageContext.setFaction(this.getFaction());
         messageContext.setTargetPlayer(targetPlayer);
@@ -49,6 +50,7 @@ public interface FPlayer extends NextGenFactionEntity {
 
     /**
      * Gets the Bukkit offline player.
+     *
      * @return
      */
     default @NotNull OfflinePlayer getBukkitOfflinePlayer() {
@@ -57,6 +59,7 @@ public interface FPlayer extends NextGenFactionEntity {
 
     /**
      * Gets the Bukkit player if online.
+     *
      * @return
      */
     default @Nullable Player getBukkitPlayer() {
@@ -66,6 +69,7 @@ public interface FPlayer extends NextGenFactionEntity {
 
     /**
      * Gets the Faction of the player.
+     *
      * @return
      */
     default @NotNull Faction getFaction() {
@@ -74,6 +78,7 @@ public interface FPlayer extends NextGenFactionEntity {
 
     /**
      * Checks if the player has faction.
+     *
      * @return
      */
     default boolean hasFaction() {
@@ -82,6 +87,7 @@ public interface FPlayer extends NextGenFactionEntity {
 
     /**
      * Invites a player to the faction.
+     *
      * @param player
      * @return
      */
@@ -92,6 +98,7 @@ public interface FPlayer extends NextGenFactionEntity {
 
     /**
      * Kicks a player from the faction.
+     *
      * @param player
      * @return
      */
@@ -102,6 +109,7 @@ public interface FPlayer extends NextGenFactionEntity {
 
     /**
      * Checks if the player has permission.
+     *
      * @param action
      * @return
      */

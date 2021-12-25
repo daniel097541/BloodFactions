@@ -15,6 +15,8 @@ public interface MessageContext {
 
     @Nullable FPlayer getTargetPlayer();
 
+    @Nullable FPlayer getOtherPlayer();
+
     @Nullable Faction getTargetFaction();
 
     void setFaction(@NotNull Faction faction);
@@ -22,5 +24,7 @@ public interface MessageContext {
     void setTargetFaction(@NotNull Faction targetFaction);
 
     void setTargetPlayer(@NotNull FPlayer targetPlayer);
+
+    void setOtherPlayer(@NotNull FPlayer otherPlayer);
 
 }
