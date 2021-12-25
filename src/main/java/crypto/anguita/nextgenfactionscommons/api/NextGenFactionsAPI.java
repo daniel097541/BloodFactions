@@ -5,6 +5,7 @@ import crypto.anguita.nextgenfactionscommons.events.faction.callback.CheckIfFact
 import crypto.anguita.nextgenfactionscommons.events.faction.callback.GetFactionAtChunkEvent;
 import crypto.anguita.nextgenfactionscommons.events.faction.callback.GetFactionByNameEvent;
 import crypto.anguita.nextgenfactionscommons.events.faction.callback.GetFactionEvent;
+import crypto.anguita.nextgenfactionscommons.events.land.callback.GetClaimsOfFactionEvent;
 import crypto.anguita.nextgenfactionscommons.events.player.unpermissioned.SavePlayerEvent;
 import crypto.anguita.nextgenfactionscommons.events.player.callback.CheckIfPlayerHasFactionEvent;
 import crypto.anguita.nextgenfactionscommons.events.player.callback.GetPlayerByNameEvent;
@@ -168,6 +169,11 @@ public class NextGenFactionsAPI {
     public static @NotNull Faction getFactionOfPlayer(@NotNull FPlayer player) {
         GetFactionOfPlayerEvent event = new GetFactionOfPlayerEvent(player);
         return event.getFaction();
+    }
+
+    public static @NotNull Set<FChunk> getAllClaims(@NotNull Faction faction){
+        GetClaimsOfFactionEvent event = new GetClaimsOfFactionEvent(faction);
+        return event.getChunks();
     }
 
 }

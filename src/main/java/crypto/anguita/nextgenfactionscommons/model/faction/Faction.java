@@ -11,11 +11,19 @@ import java.util.Set;
 
 public interface Faction extends NextGenFactionEntity {
 
-    default Map<FChunk, Boolean> multiUnClaim(Set<FChunk> chunks, FPlayer player){
+    default boolean isClaim(FChunk chunk){
+        return chunk.getFactionAt().equals(this);
+    }
+
+    default Set<FChunk> getAllAClaims() {
+        return NextGenFactionsAPI.getAllClaims(this);
+    }
+
+    default Map<FChunk, Boolean> multiUnClaim(Set<FChunk> chunks, FPlayer player) {
         return PermissionNextGenFactionsAPI.multiUnClaim(this, chunks, player);
     }
 
-    default boolean unClaim(FChunk chunk, FPlayer player){
+    default boolean unClaim(FChunk chunk, FPlayer player) {
         return PermissionNextGenFactionsAPI.unClaim(this, chunk, player);
     }
 
