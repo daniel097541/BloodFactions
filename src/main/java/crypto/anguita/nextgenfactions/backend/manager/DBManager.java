@@ -5,6 +5,7 @@ import lombok.SneakyThrows;
 import javax.inject.Singleton;
 import java.sql.Connection;
 import java.sql.DriverManager;
+import java.sql.PreparedStatement;
 import java.sql.Statement;
 
 @Singleton
@@ -21,8 +22,13 @@ public class DBManager {
     }
 
     @SneakyThrows
-    public Statement getStatement() {
+    public Statement getStatement(){
         return this.connection.createStatement();
+    }
+
+    @SneakyThrows
+    public PreparedStatement getPreparedStatement(String sql) {
+        return this.connection.prepareStatement(sql);
     }
 
     public void executeUpdate(String sql) {

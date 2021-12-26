@@ -8,6 +8,7 @@ import org.jetbrains.annotations.Nullable;
 
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.sql.Statement;
 import java.util.Objects;
 import java.util.UUID;
 import java.util.concurrent.TimeUnit;
@@ -18,7 +19,9 @@ public interface DAO<T extends NextGenFactionEntity> {
 
     @NotNull String getTableName();
 
-    @NotNull PreparedStatement getStatement();
+    @NotNull Statement getStatement();
+
+    @NotNull PreparedStatement getPreparedStatement(String sql);
 
     @Nullable T fromResultSet(ResultSet rs);
 
@@ -55,7 +58,7 @@ public interface DAO<T extends NextGenFactionEntity> {
         String sql = "SELECT * FROM ? WHERE id = ?;";
 
         // Find in database.
-        try (PreparedStatement statement = this.getStatement()) {
+        try (PreparedStatement statement = this.getPreparedStatement(sql)) {
 
             // Set table name and id.
             statement.setString(1, this.getTableName());
@@ -80,7 +83,7 @@ public interface DAO<T extends NextGenFactionEntity> {
         String sql = "SELECT * FROM ? WHERE name = ?;";
 
         // Find in database.
-        try (PreparedStatement statement = this.getStatement()) {
+        try (PreparedStatement statement = this.getPreparedStatement(sql)) {
 
             // Set table name and id.
             statement.setString(1, this.getTableName());
@@ -105,7 +108,7 @@ public interface DAO<T extends NextGenFactionEntity> {
         String sql = "SELECT count(*) AS count FROM ? WHERE id = ?;";
 
         // Find in database.
-        try (PreparedStatement statement = this.getStatement()) {
+        try (PreparedStatement statement = this.getPreparedStatement(sql)) {
 
             // Set table name and id.
             statement.setString(1, this.getTableName());
@@ -130,7 +133,7 @@ public interface DAO<T extends NextGenFactionEntity> {
         String sql = "SELECT count(*) AS count FROM ? WHERE name = ?;";
 
         // Find in database.
-        try (PreparedStatement statement = this.getStatement()) {
+        try (PreparedStatement statement = this.getPreparedStatement(sql)) {
 
             // Set table name and id.
             statement.setString(1, this.getTableName());
@@ -155,7 +158,7 @@ public interface DAO<T extends NextGenFactionEntity> {
         String sql = "DELETE FROM ? WHERE id = ?;";
 
         // Find in database.
-        try (PreparedStatement statement = this.getStatement()) {
+        try (PreparedStatement statement = this.getPreparedStatement(sql)) {
 
             // Set table name and id.
             statement.setString(1, this.getTableName());
@@ -178,7 +181,7 @@ public interface DAO<T extends NextGenFactionEntity> {
         String sql = "DELETE FROM ? WHERE name = ?;";
 
         // Find in database.
-        try (PreparedStatement statement = this.getStatement()) {
+        try (PreparedStatement statement = this.getPreparedStatement(sql)) {
 
             // Set table name and id.
             statement.setString(1, this.getTableName());
