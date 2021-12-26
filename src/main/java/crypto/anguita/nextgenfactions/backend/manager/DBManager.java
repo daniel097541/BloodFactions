@@ -2,18 +2,20 @@ package crypto.anguita.nextgenfactions.backend.manager;
 
 import lombok.SneakyThrows;
 
+import javax.inject.Singleton;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.Statement;
 
+@Singleton
 public class DBManager {
 
-    private final String url = "jdbc:sqlite:C:/sqlite/db/next_gen_factions.db";
+    private final String URL = "jdbc:sqlite:C:/sqlite/db/next_gen_factions.db";
     private final Connection connection;
 
     @SneakyThrows
     public DBManager() {
-        this.connection = DriverManager.getConnection(url);
+        this.connection = DriverManager.getConnection(URL);
         this.load();
     }
 
