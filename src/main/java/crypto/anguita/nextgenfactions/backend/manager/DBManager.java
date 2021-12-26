@@ -10,11 +10,12 @@ import java.sql.Statement;
 @Singleton
 public class DBManager {
 
-    private final String URL = "jdbc:sqlite:C:/sqlite/db/next_gen_factions.db";
+    private final String URL = "jdbc:sqlite:next_gen_factions.db";
     private final Connection connection;
 
     @SneakyThrows
     public DBManager() {
+        Class.forName("org.sqlite.JDBC").newInstance();
         this.connection = DriverManager.getConnection(URL);
         this.load();
     }
@@ -37,7 +38,7 @@ public class DBManager {
         String sql = "CREATE TABLE IF NOT EXISTS factions ( " +
                 " id VARCHAR[36] PRIMARY KEY, " +
                 " name VARCHAR[50] NOT NULL, " +
-                " creation_date DATE NOT NULL DEFAULT (datetime('now','localtime')), " +
+                " creation_date REAL DEFAULT (datetime('now', 'localtime')) " +
                 ");";
 
         this.executeUpdate(sql);
@@ -48,7 +49,6 @@ public class DBManager {
         String sql = "CREATE TABLE IF NOT EXISTS players ( " +
                 " id VARCHAR[36] PRIMARY KEY, " +
                 " name VARCHAR[50] NOT NULL, " +
-                " creation_date DATE NOT NULL DEFAULT (datetime('now','localtime')), " +
                 " power SMALLINT NOT NULL DEFAULT 0 " +
                 ");";
 
@@ -58,11 +58,14 @@ public class DBManager {
     private void loadFactionPlayersTable() {
 
         String sql = "CREATE TABLE IF NOT EXISTS as_faction_players ( " +
-                " faction_id VARCHAR[36] FOREIGN KEY REFERENCES factions(id), " +
-                " player_id VARCHAR[36] FOREIGN KEY REFERENCES players(id), " +
-                " PRIMARY KEY (faction_id, player_id), " +
-                " invited_by VARCHAR[36] FOREIGN KEY REFERENCES players(id), " +
-                " joined_date DATE NOT NULL DEFAULT (datetime('now','localtime'))" +
+                " faction_id VARCHAR[36], " +
+                " player_id VARCHAR[36], " +
+                " invited_by VARCHAR[36], " +
+                " joined_date REAL DEFAULT (datetime('now', 'localtime')), " +
+//                " PRIMARY KEY (faction_id, player_id), " +
+                " FOREIGN KEY (player_id) REFERENCES players(id), " +
+                " FOREIGN KEY (faction_id) REFERENCES factions(id), " +
+                " FOREIGN KEY (invited_by) REFERENCES players(id) " +
                 ");";
 
         this.executeUpdate(sql);
@@ -82,11 +85,14 @@ public class DBManager {
     private void loadFactionClaimsTable() {
 
         String sql = "CREATE TABLE IF NOT EXISTS as_faction_claims(" +
-                " faction_id VARCHAR[36] FOREIGN KEY REFERENCES factions(id), " +
-                " claim_id VARCHAR[255] FOREIGN KEY REFERENCES claims(id), " +
-                " PRIMARY KEY (faction_id, claim_id), " +
-                " claimed_date DATE NOT NULL DEFAULT (datetime('now', 'localtime'))," +
-                " claimed_by VARCHAR[36] FOREIGN KEY REFERENCES players(id)" +
+                " faction_id VARCHAR[36], " +
+                " claim_id VARCHAR[255], " +
+                " claimed_date REAL DEFAULT (datetime('now', 'localtime'))," +
+                " claimed_by VARCHAR[36], " +
+//                " PRIMARY KEY (faction_id, claim_id), " +
+                " FOREIGN KEY (faction_id) REFERENCES factions(id)," +
+                " FOREIGN KEY (claim_id) REFERENCES claims(id)," +
+                " FOREIGN KEY (claimed_by) REFERENCES players(id)" +
                 ");";
 
         this.executeUpdate(sql);

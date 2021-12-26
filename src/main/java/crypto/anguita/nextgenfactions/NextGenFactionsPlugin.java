@@ -28,9 +28,6 @@ public class NextGenFactionsPlugin extends JavaPlugin {
     }
 
     private void inject() {
-        // Bind
-        this.binder.configure();
-
         // Inject
         Injector injector = this.binder.createInjector();
         injector.injectMembers(this);
