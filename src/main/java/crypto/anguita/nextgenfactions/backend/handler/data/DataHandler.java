@@ -1,6 +1,6 @@
 package crypto.anguita.nextgenfactions.backend.handler.data;
 
-import crypto.anguita.nextgenfactions.backend.handler.dao.DAO;
+import crypto.anguita.nextgenfactions.backend.dao.DAO;
 import crypto.anguita.nextgenfactions.commons.model.NextGenFactionEntity;
 import org.bukkit.event.Listener;
 import org.jetbrains.annotations.NotNull;

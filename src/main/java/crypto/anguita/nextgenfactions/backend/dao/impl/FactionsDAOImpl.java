@@ -1,7 +1,7 @@
-package crypto.anguita.nextgenfactions.backend.handler.dao.impl;
+package crypto.anguita.nextgenfactions.backend.dao.impl;
 
 import com.google.common.cache.LoadingCache;
-import crypto.anguita.nextgenfactions.backend.handler.dao.FactionsDAO;
+import crypto.anguita.nextgenfactions.backend.dao.FactionsDAO;
 import crypto.anguita.nextgenfactions.backend.manager.DBManager;
 import crypto.anguita.nextgenfactions.commons.model.faction.Faction;
 import crypto.anguita.nextgenfactions.commons.model.faction.FactionImpl;

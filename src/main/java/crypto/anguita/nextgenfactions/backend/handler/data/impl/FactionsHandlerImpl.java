@@ -1,6 +1,6 @@
 package crypto.anguita.nextgenfactions.backend.handler.data.impl;
 
-import crypto.anguita.nextgenfactions.backend.handler.dao.FactionsDAO;
+import crypto.anguita.nextgenfactions.backend.dao.FactionsDAO;
 import crypto.anguita.nextgenfactions.backend.handler.data.FactionsHandler;
 import lombok.Getter;
 

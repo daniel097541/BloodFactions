@@ -5,7 +5,9 @@ import lombok.Getter;
 import org.bukkit.Bukkit;
 
 import javax.inject.Inject;
+import javax.inject.Singleton;
 
+@Singleton
 public class CommandHandlerImpl implements CommandHandler {
 
     @Getter

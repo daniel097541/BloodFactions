@@ -1,4 +1,4 @@
-package crypto.anguita.nextgenfactions.backend.handler.dao;
+package crypto.anguita.nextgenfactions.backend.dao;
 
 import com.google.common.cache.*;
 import crypto.anguita.nextgenfactions.commons.model.NextGenFactionEntity;
