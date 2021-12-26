@@ -1,3 +1,10 @@
 name: NextGenFactions
-version: '${project.version}'
+version: '${version}'
 main: crypto.anguita.nextgenfactions.NextGenFactionsPlugin
+commands:
+  f:
+    aliases:
+      - "faction"
+      - "factions"
+      - "ngf"
+      - "nextgenfactions"

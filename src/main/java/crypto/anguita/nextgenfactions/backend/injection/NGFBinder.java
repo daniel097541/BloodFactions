@@ -1,8 +1,10 @@
-package crypto.anguita.nextgenfactions.commons.injection;
+package crypto.anguita.nextgenfactions.backend.injection;
 
 import com.google.inject.AbstractModule;
 import com.google.inject.Guice;
 import com.google.inject.Injector;
+import crypto.anguita.nextgenfactions.backend.handler.CommandHandler;
+import crypto.anguita.nextgenfactions.backend.handler.CommandHandlerImpl;
 import crypto.anguita.nextgenfactions.commons.annotation.command.CreateCommand;
 import crypto.anguita.nextgenfactions.commons.annotation.config.LangConfiguration;
 import crypto.anguita.nextgenfactions.commons.command.FCommand;
@@ -10,7 +12,7 @@ import crypto.anguita.nextgenfactions.commons.command.FSubCommand;
 import crypto.anguita.nextgenfactions.commons.command.impl.CreateSubCommand;
 import crypto.anguita.nextgenfactions.commons.command.impl.FCommandImpl;
 import crypto.anguita.nextgenfactions.commons.config.NGFConfig;
-import crypto.anguita.nextgenfactions.commons.config.impl.LangConfig;
+import crypto.anguita.nextgenfactions.backend.config.lang.LangConfig;
 import org.bukkit.plugin.java.JavaPlugin;
 
 public class NGFBinder extends AbstractModule {
@@ -36,5 +38,8 @@ public class NGFBinder extends AbstractModule {
         // Bind commands.
         this.bind(FCommand.class).to(FCommandImpl.class);
         this.bind(FSubCommand.class).annotatedWith(CreateCommand.class).to(CreateSubCommand.class);
+
+        // Bind handlers
+        this.bind(CommandHandler.class).to(CommandHandlerImpl.class);
     }
 }

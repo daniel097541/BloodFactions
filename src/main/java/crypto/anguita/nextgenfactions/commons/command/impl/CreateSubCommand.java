@@ -3,7 +3,7 @@ package crypto.anguita.nextgenfactions.commons.command.impl;
 import crypto.anguita.nextgenfactions.commons.annotation.config.LangConfiguration;
 import crypto.anguita.nextgenfactions.commons.api.NextGenFactionsAPI;
 import crypto.anguita.nextgenfactions.commons.command.SubCommandType;
-import crypto.anguita.nextgenfactions.commons.config.LangConfigItems;
+import crypto.anguita.nextgenfactions.backend.config.lang.LangConfigItems;
 import crypto.anguita.nextgenfactions.commons.config.NGFConfig;
 import crypto.anguita.nextgenfactions.commons.messages.model.MessageContext;
 import crypto.anguita.nextgenfactions.commons.messages.model.MessageContextImpl;

@@ -1,7 +1,7 @@
-package crypto.anguita.nextgenfactions.commons.config.impl;
+package crypto.anguita.nextgenfactions.backend.config.lang;
 
 import crypto.anguita.nextgenfactions.commons.config.ConfigType;
-import crypto.anguita.nextgenfactions.commons.config.LangConfigItems;
+import crypto.anguita.nextgenfactions.commons.config.impl.NGFConfigImpl;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import javax.inject.Inject;

@@ -1,5 +1,6 @@
-package crypto.anguita.nextgenfactions.commons.config;
+package crypto.anguita.nextgenfactions.backend.config.lang;
 
+import crypto.anguita.nextgenfactions.commons.config.ConfigItem;
 import crypto.anguita.nextgenfactions.commons.config.impl.ConfigItemImpl;
 
 import java.util.Arrays;
