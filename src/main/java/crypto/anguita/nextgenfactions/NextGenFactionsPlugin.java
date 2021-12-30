@@ -3,6 +3,7 @@ package crypto.anguita.nextgenfactions;
 import com.google.inject.Inject;
 import com.google.inject.Injector;
 import crypto.anguita.nextgenfactions.backend.handler.CommandHandler;
+import crypto.anguita.nextgenfactions.backend.handler.data.FactionsHandler;
 import crypto.anguita.nextgenfactions.backend.injection.NGFBinder;
 import org.bukkit.plugin.java.JavaPlugin;
 
@@ -14,6 +15,9 @@ public class NextGenFactionsPlugin extends JavaPlugin {
 
     @Inject
     private CommandHandler commandHandler;
+
+    @Inject
+    private FactionsHandler factionsHandler;
 
     @Override
     public void onDisable() {

@@ -6,6 +6,7 @@ import crypto.anguita.nextgenfactions.backend.manager.DBManager;
 import crypto.anguita.nextgenfactions.commons.model.faction.Faction;
 import crypto.anguita.nextgenfactions.commons.model.faction.FactionImpl;
 import crypto.anguita.nextgenfactions.commons.model.faction.SystemFactionImpl;
+import crypto.anguita.nextgenfactions.commons.model.land.FChunk;
 import lombok.Getter;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -57,6 +58,23 @@ public class FactionsDAOImpl implements FactionsDAO {
                 else {
                     return new SystemFactionImpl(id, name);
                 }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    @Override
+    public Faction getFactionAtChunk(FChunk chunk) {
+        String sql = "SELECT (f.id AS id, f.name AS name, f.system_faction AS system_faction) FROM as_faction_claims AS rel" +
+                " JOIN factions AS f ON f.id = rel.faction_id " +
+                " WHERE rel.claim_id = ?";
+
+        try (PreparedStatement preparedStatement = this.getPreparedStatement(sql)) {
+            preparedStatement.setString(1, chunk.getId());
+            try (ResultSet rs = preparedStatement.executeQuery()) {
+                return fromResultSet(rs);
             }
         } catch (Exception e) {
             e.printStackTrace();
