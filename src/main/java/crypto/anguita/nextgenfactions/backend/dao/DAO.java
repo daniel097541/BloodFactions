@@ -2,14 +2,15 @@ package crypto.anguita.nextgenfactions.backend.dao;
 
 import com.google.common.cache.*;
 import crypto.anguita.nextgenfactions.commons.model.NextGenFactionEntity;
-import crypto.anguita.nextgenfactions.commons.model.faction.Faction;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.Statement;
+import java.util.Map;
 import java.util.Objects;
+import java.util.Set;
 import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 
@@ -24,6 +25,54 @@ public interface DAO<T extends NextGenFactionEntity> {
     @NotNull PreparedStatement getPreparedStatement(String sql);
 
     @Nullable T fromResultSet(ResultSet rs);
+
+    @NotNull Set<T> getSetFromResultSet(ResultSet rs);
+
+    default @Nullable T insert(@NotNull T entity) {
+        StringBuilder sql = new StringBuilder("INSERT INTO ");
+
+        sql.append(this.getTableName());
+        sql.append(" (");
+
+        Map<String, Object> map = entity.getAsMap();
+
+        for (String key : map.keySet()) {
+            sql.append(key).append(",");
+        }
+        sql = new StringBuilder(sql.substring(0, sql.length() - 1) + ") VALUES (");
+        for (int i = 0; i < map.size(); i++) {
+            sql.append("?,");
+        }
+        sql = new StringBuilder(sql.substring(0, sql.length() - 1));
+        sql.append(");");
+
+        try (PreparedStatement statement = this.getPreparedStatement(sql.toString())) {
+
+            int i = 0;
+
+            for (Object value : map.values()) {
+                if (value instanceof String) {
+                    statement.setString(i, (String) value);
+                }
+                if (value instanceof Integer) {
+                    statement.setInt(i, (int) value);
+                }
+                if (value instanceof Boolean) {
+                    statement.setBoolean(i, (boolean) value);
+                }
+                if (value instanceof Float) {
+                    statement.setFloat(i, (float) value);
+                }
+                i++;
+            }
+            statement.executeUpdate();
+            return entity;
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return null;
+    }
 
     /**
      * Creates the cache.
@@ -41,7 +90,7 @@ public interface DAO<T extends NextGenFactionEntity> {
                     UUID id = notification.getKey();
                     RemovalCause cause = notification.getCause();
                     // Explicit delete, means remove from database.
-                    if (Objects.nonNull(id) && cause.equals(RemovalCause.EXPLICIT)){
+                    if (Objects.nonNull(id) && cause.equals(RemovalCause.EXPLICIT)) {
                         deleteById(id);
                     }
                 })

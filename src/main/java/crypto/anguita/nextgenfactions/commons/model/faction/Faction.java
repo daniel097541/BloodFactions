@@ -11,6 +11,8 @@ import java.util.Set;
 
 public interface Faction extends NextGenFactionEntity {
 
+    boolean isSystemFaction();
+
     /**
      * Checks if is claim of Faction.
      *
@@ -113,5 +115,12 @@ public interface Faction extends NextGenFactionEntity {
      */
     default boolean disband(FPlayer playerDisbanding) {
         return PermissionNextGenFactionsAPI.disbandFaction(this, playerDisbanding);
+    }
+
+    @Override
+    default Map<String, Object> getAsMap() {
+        Map<String, Object> map = NextGenFactionEntity.super.getAsMap();
+        map.put("system_faction", this.isSystemFaction());
+        return map;
     }
 }

@@ -13,6 +13,8 @@ import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Objects;
 
 public interface FPlayer extends NextGenFactionEntity {
@@ -123,12 +125,21 @@ public interface FPlayer extends NextGenFactionEntity {
 
     /**
      * Checks if the player has the Bukkit permission.
+     *
      * @param bukkitPermission
      * @return
      */
     default boolean hasBukkitPermission(String bukkitPermission) {
         Player player = this.getBukkitPlayer();
         return Objects.nonNull(player) && player.hasPermission(bukkitPermission);
+    }
+
+    default Map<String, Object> getAsMap() {
+        Map<String, Object> attMap = new HashMap<>();
+        attMap.put("id", this.getId().toString());
+        attMap.put("name", this.getName());
+        attMap.put("power", this.getPower());
+        return attMap;
     }
 
 }

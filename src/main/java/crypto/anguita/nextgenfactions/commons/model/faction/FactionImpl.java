@@ -12,4 +12,9 @@ import java.util.UUID;
 public class FactionImpl implements Faction {
     private final UUID id;
     private final String name;
+
+    @Override
+    public boolean isSystemFaction() {
+        return false;
+    }
 }
