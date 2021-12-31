@@ -67,9 +67,9 @@ public class FactionsDAOImpl implements FactionsDAO {
 
     @Override
     public Faction getFactionAtChunk(FChunk chunk) {
-        String sql = "SELECT (f.id AS id, f.name AS name, f.system_faction AS system_faction) FROM as_faction_claims AS rel" +
+        String sql = "SELECT * FROM as_faction_claims AS rel" +
                 " JOIN factions AS f ON f.id = rel.faction_id " +
-                " WHERE rel.claim_id = ?";
+                " WHERE rel.claim_id = ?;";
 
         try (PreparedStatement preparedStatement = this.getPreparedStatement(sql)) {
             preparedStatement.setString(1, chunk.getId());

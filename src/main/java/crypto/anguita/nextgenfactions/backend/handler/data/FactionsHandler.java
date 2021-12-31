@@ -7,7 +7,6 @@ import crypto.anguita.nextgenfactions.commons.events.faction.callback.GetFaction
 import crypto.anguita.nextgenfactions.commons.events.faction.callback.GetFactionEvent;
 import crypto.anguita.nextgenfactions.commons.model.faction.Faction;
 import crypto.anguita.nextgenfactions.commons.model.land.FChunk;
-import org.bukkit.Bukkit;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 
@@ -45,19 +44,14 @@ public interface FactionsHandler extends DataHandler<Faction> {
         return this.getById(UUID.fromString(id));
     }
 
-    default Faction claimForFactionLess(FChunk chunk) {
-        Faction faction = this.getFactionLess();
-        this.getDao().claimForFaction(faction, chunk, Bukkit.getOfflinePlayer("BrutalFiestas").getUniqueId());
-        return faction;
-    }
-
     @EventHandler(priority = EventPriority.LOWEST, ignoreCancelled = true)
     default void handleGetFactionAtChunk(GetFactionAtChunkEvent event) {
         FChunk chunk = event.getChunk();
         Faction faction = this.getDao().getFactionAtChunk(chunk);
 
+        // If the faction is null, then return faction less.
         if (Objects.isNull(faction)) {
-            faction = this.claimForFactionLess(chunk);
+            faction = this.getFactionLess();
         }
 
         event.setFaction(faction);
