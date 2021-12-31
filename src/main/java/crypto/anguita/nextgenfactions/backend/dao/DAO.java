@@ -48,7 +48,7 @@ public interface DAO<T extends NextGenFactionEntity> {
 
         try (PreparedStatement statement = this.getPreparedStatement(sql.toString())) {
 
-            int i = 0;
+            int i = 1;
 
             for (Object value : map.values()) {
                 if (value instanceof String) {

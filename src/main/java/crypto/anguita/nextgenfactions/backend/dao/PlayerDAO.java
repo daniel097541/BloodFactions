@@ -1,5 +1,6 @@
 package crypto.anguita.nextgenfactions.backend.dao;
 
+import crypto.anguita.nextgenfactions.commons.model.faction.Faction;
 import crypto.anguita.nextgenfactions.commons.model.player.FPlayer;
 import crypto.anguita.nextgenfactions.commons.model.player.FPlayerImpl;
 import org.jetbrains.annotations.NotNull;
@@ -43,6 +44,25 @@ public interface PlayerDAO extends DAO<FPlayer> {
             e.printStackTrace();
         }
         return players;
+    }
+
+    default boolean addPlayerToFaction(FPlayer player, Faction faction) {
+
+        String sql = "INSERT INTO as_faction_players (faction_id, player_id, invited_by) VALUES (?,?,?);";
+
+        try (PreparedStatement preparedStatement = this.getPreparedStatement(sql)) {
+
+            preparedStatement.setString(1, faction.getId().toString());
+            preparedStatement.setString(2, player.getId().toString());
+            preparedStatement.setString(3, player.getId().toString());
+
+            preparedStatement.executeUpdate();
+            return true;
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return false;
     }
 
     default @NotNull Set<FPlayer> findPlayersInFaction(@NotNull UUID factionId) {

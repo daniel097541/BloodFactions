@@ -1,7 +1,9 @@
 package crypto.anguita.nextgenfactions.backend.handler.data;
 
 import crypto.anguita.nextgenfactions.backend.dao.PlayerDAO;
+import crypto.anguita.nextgenfactions.commons.api.NextGenFactionsAPI;
 import crypto.anguita.nextgenfactions.commons.events.player.callback.GetPlayerEvent;
+import crypto.anguita.nextgenfactions.commons.model.faction.Faction;
 import crypto.anguita.nextgenfactions.commons.model.player.FPlayer;
 import crypto.anguita.nextgenfactions.commons.model.player.FPlayerImpl;
 import org.bukkit.Bukkit;
@@ -19,14 +21,20 @@ public interface PlayerHandler extends DataHandler<FPlayer> {
 
 
     @EventHandler(priority = EventPriority.HIGHEST)
-    default void getPlayer(GetPlayerEvent event){
+    default void getPlayer(GetPlayerEvent event) {
         UUID uuid = event.getId();
         FPlayer player = this.getById(uuid);
 
-        if(Objects.isNull(player)){
+        if (Objects.isNull(player)) {
+
+            // Create the player in DB.
             OfflinePlayer offlinePlayer = Bukkit.getOfflinePlayer(uuid);
             player = new FPlayerImpl(offlinePlayer.getUniqueId(), offlinePlayer.getName(), 0);
             player = this.getDao().insert(player);
+
+            // Add the player to the faction-less faction.
+            Faction factionLessFaction = NextGenFactionsAPI.getFactionByName("Wilderness");
+            this.getDao().addPlayerToFaction(player, factionLessFaction);
         }
 
         event.setPlayer(player);
