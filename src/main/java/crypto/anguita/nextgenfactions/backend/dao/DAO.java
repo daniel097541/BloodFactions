@@ -15,7 +15,7 @@ import java.util.concurrent.TimeUnit;
 
 public interface DAO<T extends NextGenFactionEntity> {
 
-    @NotNull LoadingCache<UUID, Faction> getCache();
+    @NotNull LoadingCache<UUID, T> getCache();
 
     @NotNull String getTableName();
 
@@ -55,17 +55,18 @@ public interface DAO<T extends NextGenFactionEntity> {
     }
 
     default @Nullable T findById(@NotNull UUID id) {
-        String sql = "SELECT * FROM ? WHERE id = ?;";
+        String sql = "SELECT * FROM table_name WHERE id = ?;";
+
+        sql = sql.replace("table_name", this.getTableName());
 
         // Find in database.
         try (PreparedStatement statement = this.getPreparedStatement(sql)) {
 
             // Set table name and id.
-            statement.setString(1, this.getTableName());
-            statement.setString(2, id.toString());
+            statement.setString(1, id.toString());
 
             // Get from result set.
-            try (ResultSet resultSet = statement.executeQuery(sql)) {
+            try (ResultSet resultSet = statement.executeQuery()) {
                 @Nullable T entity = this.fromResultSet(resultSet);
                 return entity;
             }
@@ -80,17 +81,18 @@ public interface DAO<T extends NextGenFactionEntity> {
     }
 
     default @Nullable T findByName(@NotNull String name) {
-        String sql = "SELECT * FROM ? WHERE name = ?;";
+        String sql = "SELECT * FROM table_name WHERE name = ?;";
+
+        sql = sql.replace("table_name", this.getTableName());
 
         // Find in database.
         try (PreparedStatement statement = this.getPreparedStatement(sql)) {
 
             // Set table name and id.
-            statement.setString(1, this.getTableName());
-            statement.setString(2, name);
+            statement.setString(1, name);
 
             // Get from result set.
-            try (ResultSet resultSet = statement.executeQuery(sql)) {
+            try (ResultSet resultSet = statement.executeQuery()) {
                 @Nullable T entity = this.fromResultSet(resultSet);
                 return entity;
             }
@@ -105,17 +107,19 @@ public interface DAO<T extends NextGenFactionEntity> {
     }
 
     default boolean existsById(@NotNull UUID id) {
-        String sql = "SELECT count(*) AS count FROM ? WHERE id = ?;";
+        String sql = "SELECT count(*) AS count FROM table_name WHERE id = ?;";
+
+        sql = sql.replace("table_name", this.getTableName());
+
 
         // Find in database.
         try (PreparedStatement statement = this.getPreparedStatement(sql)) {
 
             // Set table name and id.
-            statement.setString(1, this.getTableName());
-            statement.setString(2, id.toString());
+            statement.setString(1, id.toString());
 
             // Get from result set.
-            try (ResultSet resultSet = statement.executeQuery(sql)) {
+            try (ResultSet resultSet = statement.executeQuery()) {
                 int count = resultSet.getInt("count");
                 return count > 0;
             }
@@ -130,17 +134,19 @@ public interface DAO<T extends NextGenFactionEntity> {
     }
 
     default boolean existsByName(@NotNull String name) {
-        String sql = "SELECT count(*) AS count FROM ? WHERE name = ?;";
+        String sql = "SELECT count(*) AS count FROM table_name WHERE name = ?;";
+
+        sql = sql.replace("table_name", this.getTableName());
+
 
         // Find in database.
         try (PreparedStatement statement = this.getPreparedStatement(sql)) {
 
             // Set table name and id.
-            statement.setString(1, this.getTableName());
-            statement.setString(2, name);
+            statement.setString(1, name);
 
             // Get from result set.
-            try (ResultSet resultSet = statement.executeQuery(sql)) {
+            try (ResultSet resultSet = statement.executeQuery()) {
                 int count = resultSet.getInt("count");
                 return count > 0;
             }
@@ -155,17 +161,19 @@ public interface DAO<T extends NextGenFactionEntity> {
     }
 
     default boolean deleteById(@NotNull UUID id) {
-        String sql = "DELETE FROM ? WHERE id = ?;";
+        String sql = "DELETE FROM table_name WHERE id = ?;";
+
+        sql = sql.replace("table_name", this.getTableName());
+
 
         // Find in database.
         try (PreparedStatement statement = this.getPreparedStatement(sql)) {
 
             // Set table name and id.
-            statement.setString(1, this.getTableName());
-            statement.setString(2, id.toString());
+            statement.setString(1, id.toString());
 
             // Get from result set.
-            int deleted = statement.executeUpdate(sql);
+            int deleted = statement.executeUpdate();
             return deleted == 0;
         }
         // Error
@@ -178,17 +186,18 @@ public interface DAO<T extends NextGenFactionEntity> {
     }
 
     default boolean deleteByName(@NotNull String name) {
-        String sql = "DELETE FROM ? WHERE name = ?;";
+        String sql = "DELETE FROM table_name WHERE name = ?;";
+
+        sql = sql.replace("table_name", this.getTableName());
 
         // Find in database.
         try (PreparedStatement statement = this.getPreparedStatement(sql)) {
 
             // Set table name and id.
-            statement.setString(1, this.getTableName());
-            statement.setString(2, name);
+            statement.setString(1, name);
 
             // Get from result set.
-            int deleted = statement.executeUpdate(sql);
+            int deleted = statement.executeUpdate();
             return deleted == 0;
         }
         // Error

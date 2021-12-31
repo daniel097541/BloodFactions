@@ -81,4 +81,63 @@ public class FactionsDAOImpl implements FactionsDAO {
         }
         return null;
     }
+
+
+    private void insertChunkIfNotExists(FChunk chunk) {
+        String chunkInsertion = "INSERT INTO claims (id, x, z, world_id) SELECT * FROM ( SELECT ?, ?, ?, ?) AS tmp " +
+                "WHERE NOT EXISTS ( SELECT id FROM claims WHERE id = ?) LIMIT 1;";
+        try (PreparedStatement statement = this.getPreparedStatement(chunkInsertion)) {
+            statement.setString(1, chunk.getId());
+            statement.setInt(2, chunk.getX());
+            statement.setInt(3, chunk.getZ());
+            statement.setString(4, chunk.getWorldId().toString());
+            statement.setString(5, chunk.getId());
+
+            statement.executeUpdate();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    @Override
+    public void claimForFaction(Faction faction, FChunk chunk, UUID claimerId) {
+
+        this.insertChunkIfNotExists(chunk);
+
+        String sql = "INSERT INTO as_faction_claims (faction_id, claim_id, claimed_by) VALUES (?,?,?);";
+
+        try (PreparedStatement statement = this.getPreparedStatement(sql)) {
+
+            statement.setString(1, faction.getId().toString());
+            statement.setString(2, faction.getName());
+            statement.setString(3, claimerId.toString());
+
+            statement.executeUpdate();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+    }
+
+    @Override
+    public Faction insert(Faction faction) {
+
+        boolean isSystemFaction = faction instanceof SystemFactionImpl;
+
+        String sql = "INSERT INTO factions (id, name, system_faction) VALUES (?,?,?);";
+
+        try (PreparedStatement statement = this.getPreparedStatement(sql)) {
+
+            statement.setString(1, faction.getId().toString());
+            statement.setString(2, faction.getName());
+            statement.setBoolean(3, isSystemFaction);
+
+            statement.executeUpdate();
+            return faction;
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return null;
+    }
 }

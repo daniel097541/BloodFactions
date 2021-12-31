@@ -19,6 +19,11 @@ public class ConsolePlayerImpl implements FPlayer {
     }
 
     @Override
+    public int getPower() {
+        return 0;
+    }
+
+    @Override
     public boolean hasBukkitPermission(String bukkitPermission) {
         // Console has all permissions.
         return true;

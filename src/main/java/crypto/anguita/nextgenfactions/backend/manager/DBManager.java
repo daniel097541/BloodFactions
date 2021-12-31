@@ -44,6 +44,7 @@ public class DBManager {
         String sql = "CREATE TABLE IF NOT EXISTS factions ( " +
                 " id VARCHAR[36] PRIMARY KEY, " +
                 " name VARCHAR[50] NOT NULL, " +
+                " system_faction BOOLEAN DEFAULT false, " +
                 " creation_date REAL DEFAULT (datetime('now', 'localtime')) " +
                 ");";
 

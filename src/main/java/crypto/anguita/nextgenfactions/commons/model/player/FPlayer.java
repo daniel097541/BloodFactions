@@ -17,6 +17,8 @@ import java.util.Objects;
 
 public interface FPlayer extends NextGenFactionEntity {
 
+    int getPower();
+
     default void sms(@NotNull MessageContext context) {
         new MessageContextHandler() {
         }.handle(context);

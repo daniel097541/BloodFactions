@@ -1,16 +1,16 @@
 package crypto.anguita.nextgenfactions.commons.api;
 
-import crypto.anguita.nextgenfactions.commons.events.faction.unpermissioned.CreateFactionByNameEvent;
 import crypto.anguita.nextgenfactions.commons.events.faction.callback.CheckIfFactionExistsByNameEvent;
 import crypto.anguita.nextgenfactions.commons.events.faction.callback.GetFactionAtChunkEvent;
 import crypto.anguita.nextgenfactions.commons.events.faction.callback.GetFactionByNameEvent;
 import crypto.anguita.nextgenfactions.commons.events.faction.callback.GetFactionEvent;
+import crypto.anguita.nextgenfactions.commons.events.faction.unpermissioned.CreateFactionByNameEvent;
 import crypto.anguita.nextgenfactions.commons.events.land.callback.GetClaimsOfFactionEvent;
-import crypto.anguita.nextgenfactions.commons.events.player.unpermissioned.SavePlayerEvent;
 import crypto.anguita.nextgenfactions.commons.events.player.callback.CheckIfPlayerHasFactionEvent;
 import crypto.anguita.nextgenfactions.commons.events.player.callback.GetPlayerByNameEvent;
 import crypto.anguita.nextgenfactions.commons.events.player.callback.GetPlayerEvent;
 import crypto.anguita.nextgenfactions.commons.events.player.callback.PlayerHasPermissionEvent;
+import crypto.anguita.nextgenfactions.commons.events.player.unpermissioned.SavePlayerEvent;
 import crypto.anguita.nextgenfactions.commons.events.shared.callback.GetFactionOfPlayerEvent;
 import crypto.anguita.nextgenfactions.commons.events.shared.callback.GetPlayersInFactionEvent;
 import crypto.anguita.nextgenfactions.commons.model.faction.Faction;
@@ -18,6 +18,7 @@ import crypto.anguita.nextgenfactions.commons.model.land.FChunk;
 import crypto.anguita.nextgenfactions.commons.model.land.FLocation;
 import crypto.anguita.nextgenfactions.commons.model.permission.Action;
 import crypto.anguita.nextgenfactions.commons.model.player.FPlayer;
+import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -29,6 +30,7 @@ public class NextGenFactionsAPI {
 
     /**
      * Gets the Faction that owns this location.
+     *
      * @param location
      * @return
      */
@@ -117,6 +119,16 @@ public class NextGenFactionsAPI {
     }
 
     /**
+     * Gets the player by its Bukkit player.
+     *
+     * @param player
+     * @return
+     */
+    public static @Nullable FPlayer getPlayer(@NotNull Player player) {
+        return getPlayer(player.getUniqueId());
+    }
+
+    /**
      * Gets the player by its name.
      *
      * @param name
@@ -171,7 +183,7 @@ public class NextGenFactionsAPI {
         return event.getFaction();
     }
 
-    public static @NotNull Set<FChunk> getAllClaims(@NotNull Faction faction){
+    public static @NotNull Set<FChunk> getAllClaims(@NotNull Faction faction) {
         GetClaimsOfFactionEvent event = new GetClaimsOfFactionEvent(faction);
         return event.getChunks();
     }
