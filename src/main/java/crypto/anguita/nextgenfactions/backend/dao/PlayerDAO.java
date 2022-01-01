@@ -106,6 +106,11 @@ public interface PlayerDAO extends DAO<FPlayer> {
         return new HashSet<>();
     }
 
+    /**
+     * Checks whether a player has Faction.
+     * @param playerId
+     * @return
+     */
     default boolean checkIfPlayerHasFaction(@NotNull UUID playerId) {
 
         String sql = "SELECT count(*) AS count FROM as_faction_players AS rel " +
@@ -131,6 +136,10 @@ public interface PlayerDAO extends DAO<FPlayer> {
         return false;
     }
 
+    /**
+     * Kicks all players from the Faction.
+     * @param faction
+     */
     default void removeAllPlayersFromFaction(Faction faction) {
 
         String sql = "DELETE FROM as_faction_players WHERE faction_id = ?;";
@@ -144,6 +153,12 @@ public interface PlayerDAO extends DAO<FPlayer> {
         }
     }
 
+    /**
+     * Checks if the player has permissions to perform the action.
+     * @param player
+     * @param permissionType
+     * @return
+     */
     default boolean checkIfPlayerHasPermission(FPlayer player, PermissionType permissionType) {
         return true;
     }
