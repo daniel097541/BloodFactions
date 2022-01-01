@@ -27,13 +27,13 @@ public class SystemConfigItems {
     public static ConfigItem DEFAULT_FACTIONS_FACTION_LESS_ALLOW_FLY = new ConfigItemImpl(factionLessPath + systemFactionAllowFlightSection, false);
     public static ConfigItem DEFAULT_FACTIONS_FACTION_LESS_COLOR= new ConfigItemImpl(factionLessPath + systemFactionColorSection, "&7");
 
-    public static ConfigItem DEFAULT_FACTIONS_WAR_ZONE_ID = new ConfigItemImpl(factionLessPath + systemFactionIdSection, "00000000-0000-0000-0000-000000000001");
+    public static ConfigItem DEFAULT_FACTIONS_WAR_ZONE_ID = new ConfigItemImpl(warZonePath + systemFactionIdSection, "00000000-0000-0000-0000-000000000001");
     public static ConfigItem DEFAULT_FACTIONS_WAR_ZONE_NAME = new ConfigItemImpl(warZonePath + ".name", "WarZone");
     public static ConfigItem DEFAULT_FACTIONS_WAR_ZONE_PVP = new ConfigItemImpl(warZonePath + ".blocks-pvp", false);
     public static ConfigItem DEFAULT_FACTIONS_WAR_ZONE_ALLOW_FLY = new ConfigItemImpl(warZonePath + ".allow-flight", false);
     public static ConfigItem DEFAULT_FACTIONS_WAR_ZONE_COLOR= new ConfigItemImpl(warZonePath + ".color", "&c");
 
-    public static ConfigItem DEFAULT_FACTIONS_PEACE_ZONE_ID = new ConfigItemImpl(factionLessPath + systemFactionIdSection, "00000000-0000-0000-0000-000000000002");
+    public static ConfigItem DEFAULT_FACTIONS_PEACE_ZONE_ID = new ConfigItemImpl(peaceZonePath + systemFactionIdSection, "00000000-0000-0000-0000-000000000002");
     public static ConfigItem DEFAULT_FACTIONS_PEACE_ZONE_NAME = new ConfigItemImpl(peaceZonePath + ".name", "PeaceZone");
     public static ConfigItem DEFAULT_FACTIONS_PEACE_ZONE_PVP = new ConfigItemImpl(peaceZonePath + ".blocks-pvp", true);
     public static ConfigItem DEFAULT_FACTIONS_PEACE_ZONE_ALLOW_FLY = new ConfigItemImpl(peaceZonePath + ".allow-flight", true);
