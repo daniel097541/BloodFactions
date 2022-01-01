@@ -92,7 +92,7 @@ public interface DAO<T extends NextGenFactionEntity> {
                     RemovalCause cause = notification.getCause();
                     // Explicit delete, means remove from database.
                     if (Objects.nonNull(id) && cause.equals(RemovalCause.EXPLICIT)) {
-                        deleteById(id);
+                        deleteByIdInDB(id);
                     }
                 })
                 .build(
@@ -164,7 +164,7 @@ public interface DAO<T extends NextGenFactionEntity> {
         return null;
     }
 
-    default boolean existsById(@NotNull UUID id) {
+    default boolean existsByIdInDB(@NotNull UUID id) {
         String sql = "SELECT count(*) AS count FROM table_name WHERE id = ?;";
 
         sql = sql.replace("table_name", this.getTableName());
@@ -189,6 +189,17 @@ public interface DAO<T extends NextGenFactionEntity> {
 
         // Error or not found.
         return false;
+    }
+
+    default boolean existsById(@NotNull UUID id) {
+        return this.existsById(id, true);
+    }
+
+    default boolean existsById(@NotNull UUID id, boolean forceDBCheck) {
+        if (forceDBCheck) {
+            return this.existsByIdInDB(id);
+        }
+        return this.getCache().asMap().containsKey(id);
     }
 
     default boolean existsByName(@NotNull String name) {
@@ -218,7 +229,7 @@ public interface DAO<T extends NextGenFactionEntity> {
         return false;
     }
 
-    default boolean deleteById(@NotNull UUID id) {
+    default boolean deleteByIdInDB(@NotNull UUID id) {
         String sql = "DELETE FROM table_name WHERE id = ?;";
 
         sql = sql.replace("table_name", this.getTableName());
@@ -243,27 +254,8 @@ public interface DAO<T extends NextGenFactionEntity> {
         return false;
     }
 
-    default boolean deleteByName(@NotNull String name) {
-        String sql = "DELETE FROM table_name WHERE name = ?;";
-
-        sql = sql.replace("table_name", this.getTableName());
-
-        // Find in database.
-        try (PreparedStatement statement = this.getPreparedStatement(sql)) {
-
-            // Set table name and id.
-            statement.setString(1, name);
-
-            // Get from result set.
-            int deleted = statement.executeUpdate();
-            return deleted == 0;
-        }
-        // Error
-        catch (Exception e) {
-            e.printStackTrace();
-        }
-
-        // Error or not found.
-        return false;
+    default boolean deleteById(@NotNull UUID id) {
+        this.getCache().invalidate(id);
+        return true;
     }
 }

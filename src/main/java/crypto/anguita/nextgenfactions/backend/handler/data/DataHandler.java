@@ -41,7 +41,4 @@ public interface DataHandler<T extends NextGenFactionEntity> extends Listener {
         return this.getDao().deleteById(id);
     }
 
-    default boolean deleteByName(@NotNull String name) {
-        return this.getDao().deleteByName(name);
-    }
 }
