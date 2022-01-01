@@ -2,7 +2,7 @@ package crypto.anguita.nextgenfactions;
 
 import com.google.inject.Inject;
 import com.google.inject.Injector;
-import crypto.anguita.nextgenfactions.backend.handler.CommandHandler;
+import crypto.anguita.nextgenfactions.backend.handler.command.CommandHandler;
 import crypto.anguita.nextgenfactions.backend.handler.data.FactionsHandler;
 import crypto.anguita.nextgenfactions.backend.handler.data.PlayerHandler;
 import crypto.anguita.nextgenfactions.frontend.listener.PlayerListener;

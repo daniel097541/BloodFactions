@@ -1,12 +1,10 @@
 package crypto.anguita.nextgenfactions.backend.manager;
 
+import crypto.anguita.nextgenfactions.commons.model.permission.PermissionType;
 import lombok.SneakyThrows;
 
 import javax.inject.Singleton;
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.PreparedStatement;
-import java.sql.Statement;
+import java.sql.*;
 
 @Singleton
 public class DBManager {
@@ -22,7 +20,7 @@ public class DBManager {
     }
 
     @SneakyThrows
-    public Statement getStatement(){
+    public Statement getStatement() {
         return this.connection.createStatement();
     }
 
@@ -69,10 +67,11 @@ public class DBManager {
                 " player_id VARCHAR[36], " +
                 " invited_by VARCHAR[36], " +
                 " joined_date REAL DEFAULT (datetime('now', 'localtime')), " +
-                " UNIQUE (faction_id, player_id), " +
+//                " UNIQUE (faction_id, player_id), " +
                 " FOREIGN KEY (player_id) REFERENCES players(id), " +
                 " FOREIGN KEY (faction_id) REFERENCES factions(id), " +
-                " FOREIGN KEY (invited_by) REFERENCES players(id) " +
+                " FOREIGN KEY (invited_by) REFERENCES players(id), " +
+                " PRIMARY KEY(player_id, faction_id) " +
                 ");";
 
         this.executeUpdate(sql);
@@ -96,10 +95,77 @@ public class DBManager {
                 " claim_id VARCHAR[255], " +
                 " claimed_date REAL DEFAULT (datetime('now', 'localtime'))," +
                 " claimed_by VARCHAR[36], " +
-                " UNIQUE (faction_id, claim_id), " +
+//                " UNIQUE (faction_id, claim_id), " +
                 " FOREIGN KEY (faction_id) REFERENCES factions(id)," +
                 " FOREIGN KEY (claim_id) REFERENCES claims(id)," +
-                " FOREIGN KEY (claimed_by) REFERENCES players(id)" +
+                " FOREIGN KEY (claimed_by) REFERENCES players(id), " +
+                " PRIMARY KEY(faction_id, claim_id) " +
+                ");";
+
+        this.executeUpdate(sql);
+    }
+
+
+    private void insertPermission(PermissionType permissionType) {
+        String sql = "INSERT INTO ref_permissions (name) VALUES (?);";
+        try (PreparedStatement preparedStatement = getPreparedStatement(sql)) {
+            preparedStatement.setString(1, permissionType.name());
+            preparedStatement.executeUpdate();
+        } catch (SQLException ignored) {
+        }
+    }
+
+    private void loadPermissionsTable() {
+
+        String sql = "CREATE TABLE IF NOT EXISTS ref_permissions(" +
+                " id INTEGER PRIMARY KEY, " +
+                " name VARCHAR[255] UNIQUE NOT NULL " +
+                ");";
+
+        this.executeUpdate(sql);
+
+        for (PermissionType permissionType : PermissionType.values()) {
+            this.insertPermission(permissionType);
+        }
+
+    }
+
+    private void loadRolesTable() {
+
+        String sql = "CREATE TABLE IF NOT EXISTS faction_roles(" +
+                " id VARCHAR[36] NOT NULL, " +
+                " name VARCHAR[255] NOT NULL, " +
+                " faction_id VARCHAR[36] NOT NULL, " +
+                " FOREIGN KEY (faction_id) REFERENCES factions(id)," +
+                " UNIQUE (name, faction_id), " +
+                " PRIMARY KEY (id, faction_id) " +
+                ");";
+
+        this.executeUpdate(sql);
+    }
+
+    private void loadPlayerPermissionsTable() {
+
+        String sql = "CREATE TABLE IF NOT EXISTS as_player_permissions(" +
+                " player_id VARCHAR[36], " +
+                " permission_id INTEGER, " +
+                " faction_id VARCHAR[36]," +
+                " UNIQUE (player_id, permission_id), " +
+                " FOREIGN KEY (permission_id) REFERENCES ref_permissions(id)," +
+                " FOREIGN KEY (faction_id) REFERENCES factions(id)," +
+                " FOREIGN KEY (player_id) REFERENCES players(id)" +
+                ");";
+
+        this.executeUpdate(sql);
+    }
+
+    private void loadRolesPermissionsTable() {
+
+        String sql = "CREATE TABLE IF NOT EXISTS as_role_permissions(" +
+                " role_id VARCHAR[36], " +
+                " permission_id INTEGER, " +
+                " PRIMARY KEY (role_id, permission_id), " +
+                " FOREIGN KEY (permission_id) REFERENCES ref_permissions(id)" +
                 ");";
 
         this.executeUpdate(sql);
@@ -111,5 +177,9 @@ public class DBManager {
         this.loadClaimsTable();
         this.loadFactionPlayersTable();
         this.loadFactionClaimsTable();
+        this.loadPermissionsTable();
+        this.loadRolesTable();
+        this.loadPlayerPermissionsTable();
+        this.loadRolesPermissionsTable();
     }
 }

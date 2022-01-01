@@ -1,6 +1,7 @@
 package crypto.anguita.nextgenfactions.backend.dao;
 
 import crypto.anguita.nextgenfactions.commons.model.faction.Faction;
+import crypto.anguita.nextgenfactions.commons.model.permission.PermissionType;
 import crypto.anguita.nextgenfactions.commons.model.player.FPlayer;
 import crypto.anguita.nextgenfactions.commons.model.player.FPlayerImpl;
 import org.jetbrains.annotations.NotNull;
@@ -141,5 +142,9 @@ public interface PlayerDAO extends DAO<FPlayer> {
         } catch (Exception e) {
             e.printStackTrace();
         }
+    }
+
+    default boolean checkIfPlayerHasPermission(FPlayer player, PermissionType permissionType) {
+        return true;
     }
 }
