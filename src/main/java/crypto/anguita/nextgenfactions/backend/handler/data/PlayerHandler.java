@@ -24,7 +24,7 @@ public interface PlayerHandler extends DataHandler<FPlayer> {
 
 
     @EventHandler(priority = EventPriority.HIGHEST)
-    default void checkIfPlayerHasFaction(CheckIfPlayerHasFactionEvent event){
+    default void checkIfPlayerHasFaction(CheckIfPlayerHasFactionEvent event) {
         FPlayer player = event.getPlayer();
         boolean hasFaction = this.getDao().checkIfPlayerHasFaction(player.getId());
         event.setHasFaction(hasFaction);
@@ -42,16 +42,18 @@ public interface PlayerHandler extends DataHandler<FPlayer> {
             player = new FPlayerImpl(offlinePlayer.getUniqueId(), offlinePlayer.getName(), 0);
             player = this.getDao().insert(player);
 
-            // Add the player to the faction-less faction.
-            Faction factionLessFaction = NextGenFactionsAPI.getFactionByName("Wilderness");
-            this.getDao().addPlayerToFaction(player, factionLessFaction, player);
+            if (Objects.nonNull(player)) {
+                // Add the player to the faction-less faction.
+                Faction factionLessFaction = NextGenFactionsAPI.getFactionLessFaction();
+                this.getDao().addPlayerToFaction(player, factionLessFaction, player);
+            }
         }
 
         event.setPlayer(player);
     }
 
     @EventHandler(priority = EventPriority.HIGHEST)
-    default void getPlayersInFaction(GetPlayersInFactionEvent event){
+    default void getPlayersInFaction(GetPlayersInFactionEvent event) {
         Faction faction = event.getFaction();
         Set<FPlayer> playersInFaction = this.getDao().findPlayersInFaction(faction.getId());
         event.setPlayers(playersInFaction);

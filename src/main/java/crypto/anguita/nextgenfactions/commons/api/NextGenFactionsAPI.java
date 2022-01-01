@@ -1,9 +1,6 @@
 package crypto.anguita.nextgenfactions.commons.api;
 
-import crypto.anguita.nextgenfactions.commons.events.faction.callback.CheckIfFactionExistsByNameEvent;
-import crypto.anguita.nextgenfactions.commons.events.faction.callback.GetFactionAtChunkEvent;
-import crypto.anguita.nextgenfactions.commons.events.faction.callback.GetFactionByNameEvent;
-import crypto.anguita.nextgenfactions.commons.events.faction.callback.GetFactionEvent;
+import crypto.anguita.nextgenfactions.commons.events.faction.callback.*;
 import crypto.anguita.nextgenfactions.commons.events.faction.unpermissioned.CreateFactionByNameEvent;
 import crypto.anguita.nextgenfactions.commons.events.land.callback.GetClaimsOfFactionEvent;
 import crypto.anguita.nextgenfactions.commons.events.player.callback.CheckIfPlayerHasFactionEvent;
@@ -215,6 +212,20 @@ public class NextGenFactionsAPI {
         long end = System.currentTimeMillis();
         logAction(start, end, APIAction.CHECK_IF_FACTION_EXISTS_BY_NAME);
         return exists;
+    }
+
+    /**
+     * Gets a Faction less faction.
+     *
+     * @return
+     */
+    public static @NotNull Faction getFactionLessFaction() {
+        long start = System.currentTimeMillis();
+        GetFactionLessFactionEvent event = new GetFactionLessFactionEvent();
+        Faction faction = event.getFaction();
+        long end = System.currentTimeMillis();
+        logAction(start, end, APIAction.GET_FACTION_BY_NAME);
+        return faction;
     }
 
     /**

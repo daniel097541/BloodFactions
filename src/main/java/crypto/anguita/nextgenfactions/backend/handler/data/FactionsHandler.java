@@ -4,14 +4,12 @@ import crypto.anguita.nextgenfactions.backend.config.system.SystemConfigItems;
 import crypto.anguita.nextgenfactions.backend.dao.FactionsDAO;
 import crypto.anguita.nextgenfactions.backend.dao.PlayerDAO;
 import crypto.anguita.nextgenfactions.commons.config.NGFConfig;
-import crypto.anguita.nextgenfactions.commons.events.faction.callback.CheckIfFactionExistsByNameEvent;
-import crypto.anguita.nextgenfactions.commons.events.faction.callback.GetFactionAtChunkEvent;
-import crypto.anguita.nextgenfactions.commons.events.faction.callback.GetFactionByNameEvent;
-import crypto.anguita.nextgenfactions.commons.events.faction.callback.GetFactionEvent;
+import crypto.anguita.nextgenfactions.commons.events.faction.callback.*;
 import crypto.anguita.nextgenfactions.commons.events.faction.permissioned.DisbandFactionEvent;
 import crypto.anguita.nextgenfactions.commons.events.faction.unpermissioned.CreateFactionByNameEvent;
 import crypto.anguita.nextgenfactions.commons.events.faction.unpermissioned.CreateFactionEvent;
 import crypto.anguita.nextgenfactions.commons.events.shared.callback.GetFactionOfPlayerEvent;
+import crypto.anguita.nextgenfactions.commons.exceptions.NoFactionForFactionLessException;
 import crypto.anguita.nextgenfactions.commons.model.faction.Faction;
 import crypto.anguita.nextgenfactions.commons.model.faction.FactionImpl;
 import crypto.anguita.nextgenfactions.commons.model.faction.SystemFactionImpl;
@@ -19,7 +17,9 @@ import crypto.anguita.nextgenfactions.commons.model.land.FChunk;
 import crypto.anguita.nextgenfactions.commons.model.player.FPlayer;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
+import org.jetbrains.annotations.NotNull;
 
+import java.util.HashSet;
 import java.util.Objects;
 import java.util.Set;
 import java.util.UUID;
@@ -33,18 +33,49 @@ public interface FactionsHandler extends DataHandler<Faction> {
 
     NGFConfig getSystemConfig();
 
-    default void onLoad() {
-        Set<String> systemFactions = this.getSystemConfig().getKeys(SystemConfigItems.defaultFactionsPath);
+    @EventHandler(priority = EventPriority.HIGHEST)
+    default void handleGetFactionLessFaction(GetFactionLessFactionEvent event) throws NoFactionForFactionLessException {
+        Faction factionLessFaction = this.getFactionForFactionLess();
+        event.setFaction(factionLessFaction);
+    }
 
+    default @NotNull Faction getFactionForFactionLess() throws NoFactionForFactionLessException {
+        Set<String> systemFactions = this.getSystemConfig().getKeys(SystemConfigItems.defaultFactionsPath);
         for (String factionSection : systemFactions) {
 
+            boolean isForFactionLess = (boolean) this.getSystemConfig().read(SystemConfigItems.defaultFactionsPath + "." + factionSection + SystemConfigItems.systemFactionDefaultFaction);
+            if (isForFactionLess) {
+                UUID id = UUID.fromString((String) this.getSystemConfig().read(SystemConfigItems.defaultFactionsPath + "." + factionSection + SystemConfigItems.systemFactionIdSection));
+                String factionName = (String) this.getSystemConfig().read(SystemConfigItems.defaultFactionsPath + "." + factionSection + SystemConfigItems.systemFactionNameSection);
+                return new SystemFactionImpl(id, factionName);
+            }
+        }
+        throw new NoFactionForFactionLessException();
+    }
+
+    default Set<Faction> getSystemFactions() {
+        Set<String> systemFactions = this.getSystemConfig().getKeys(SystemConfigItems.defaultFactionsPath);
+        Set<Faction> factions = new HashSet<>();
+        for (String factionSection : systemFactions) {
             UUID id = UUID.fromString((String) this.getSystemConfig().read(SystemConfigItems.defaultFactionsPath + "." + factionSection + SystemConfigItems.systemFactionIdSection));
             String factionName = (String) this.getSystemConfig().read(SystemConfigItems.defaultFactionsPath + "." + factionSection + SystemConfigItems.systemFactionNameSection);
             Faction systemFaction = new SystemFactionImpl(id, factionName);
+            factions.add(systemFaction);
+        }
+        return factions;
+    }
+
+    default void onLoad() {
+
+        Set<Faction> systemFactions = this.getSystemFactions();
+
+        for (Faction faction : systemFactions) {
+            UUID id = faction.getId();
             if (!this.getDao().existsById(id)) {
-                this.getDao().insert(systemFaction);
+                this.getDao().insert(faction);
             }
         }
+
     }
 
     default Faction createFaction(Faction faction, FPlayer player) {
