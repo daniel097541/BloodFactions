@@ -46,7 +46,13 @@ public interface PlayerDAO extends DAO<FPlayer> {
         return players;
     }
 
-    default boolean addPlayerToFaction(FPlayer player, Faction faction) {
+    /**
+     * Adds a player to the faction.
+     *
+     * @param player
+     * @param faction
+     */
+    default void addPlayerToFaction(FPlayer player, Faction faction) {
 
         String sql = "INSERT INTO as_faction_players (faction_id, player_id, invited_by) VALUES (?,?,?);";
 
@@ -57,14 +63,17 @@ public interface PlayerDAO extends DAO<FPlayer> {
             preparedStatement.setString(3, player.getId().toString());
 
             preparedStatement.executeUpdate();
-            return true;
         } catch (Exception e) {
             e.printStackTrace();
         }
-
-        return false;
     }
 
+    /**
+     * Gets all players in faction.
+     *
+     * @param factionId
+     * @return
+     */
     default @NotNull Set<FPlayer> findPlayersInFaction(@NotNull UUID factionId) {
         String sql = "SELECT * FROM as_faction_players AS rel " +
                 " JOIN players AS p ON p.id = rel.player_id " +

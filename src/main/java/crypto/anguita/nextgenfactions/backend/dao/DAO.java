@@ -2,6 +2,7 @@ package crypto.anguita.nextgenfactions.backend.dao;
 
 import com.google.common.cache.*;
 import crypto.anguita.nextgenfactions.commons.model.NextGenFactionEntity;
+import crypto.anguita.nextgenfactions.commons.model.faction.Faction;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -257,5 +258,4 @@ public interface DAO<T extends NextGenFactionEntity> {
         // Error or not found.
         return false;
     }
-
 }

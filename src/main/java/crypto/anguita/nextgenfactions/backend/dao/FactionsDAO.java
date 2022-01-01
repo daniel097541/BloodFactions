@@ -113,4 +113,22 @@ public interface FactionsDAO extends DAO<Faction> {
         }
         return null;
     }
+
+    default Faction getFactionOfPlayer(UUID id) {
+        String sql = "SELECT * FROM as_faction_players AS rel " +
+                " JOIN factions AS f ON f.id = rel.faction_id " +
+                " WHERE rel.player_id = ?;";
+
+        try (PreparedStatement preparedStatement = this.getPreparedStatement(sql)) {
+
+            preparedStatement.setString(1, id.toString());
+
+            try (ResultSet rs = preparedStatement.executeQuery()) {
+                return this.fromResultSet(rs);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
 }

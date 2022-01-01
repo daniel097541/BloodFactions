@@ -5,8 +5,10 @@ import crypto.anguita.nextgenfactions.commons.events.faction.callback.CheckIfFac
 import crypto.anguita.nextgenfactions.commons.events.faction.callback.GetFactionAtChunkEvent;
 import crypto.anguita.nextgenfactions.commons.events.faction.callback.GetFactionByNameEvent;
 import crypto.anguita.nextgenfactions.commons.events.faction.callback.GetFactionEvent;
+import crypto.anguita.nextgenfactions.commons.events.shared.callback.GetFactionOfPlayerEvent;
 import crypto.anguita.nextgenfactions.commons.model.faction.Faction;
 import crypto.anguita.nextgenfactions.commons.model.land.FChunk;
+import crypto.anguita.nextgenfactions.commons.model.player.FPlayer;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 
@@ -37,6 +39,13 @@ public interface FactionsHandler extends DataHandler<Faction> {
         String name = event.getName();
         boolean exists = this.existsByName(name);
         event.setExists(exists);
+    }
+
+    @EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
+    default void handleGetFactionOfPlayer(GetFactionOfPlayerEvent event){
+        FPlayer player = event.getPlayer();
+        Faction faction = this.getDao().getFactionOfPlayer(player.getId());
+        event.setFaction(faction);
     }
 
     default Faction getFactionLess() {

@@ -3,6 +3,7 @@ package crypto.anguita.nextgenfactions.backend.handler.data;
 import crypto.anguita.nextgenfactions.backend.dao.PlayerDAO;
 import crypto.anguita.nextgenfactions.commons.api.NextGenFactionsAPI;
 import crypto.anguita.nextgenfactions.commons.events.player.callback.GetPlayerEvent;
+import crypto.anguita.nextgenfactions.commons.events.shared.callback.GetPlayersInFactionEvent;
 import crypto.anguita.nextgenfactions.commons.model.faction.Faction;
 import crypto.anguita.nextgenfactions.commons.model.player.FPlayer;
 import crypto.anguita.nextgenfactions.commons.model.player.FPlayerImpl;
@@ -12,6 +13,7 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 
 import java.util.Objects;
+import java.util.Set;
 import java.util.UUID;
 
 public interface PlayerHandler extends DataHandler<FPlayer> {
@@ -38,6 +40,13 @@ public interface PlayerHandler extends DataHandler<FPlayer> {
         }
 
         event.setPlayer(player);
+    }
+
+    @EventHandler(priority = EventPriority.HIGHEST)
+    default void getPlayersInFaction(GetPlayersInFactionEvent event){
+        Faction faction = event.getFaction();
+        Set<FPlayer> playersInFaction = this.getDao().findPlayersInFaction(faction.getId());
+        event.setPlayers(playersInFaction);
     }
 
 }
