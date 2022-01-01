@@ -1,6 +1,7 @@
 package crypto.anguita.nextgenfactions.backend.handler.data.impl;
 
 import crypto.anguita.nextgenfactions.backend.dao.FactionsDAO;
+import crypto.anguita.nextgenfactions.backend.dao.PlayerDAO;
 import crypto.anguita.nextgenfactions.backend.handler.data.FactionsHandler;
 import crypto.anguita.nextgenfactions.commons.model.faction.SystemFactionImpl;
 import lombok.Getter;
@@ -15,12 +16,14 @@ import java.util.UUID;
 public class FactionsHandlerImpl implements FactionsHandler {
 
     private final FactionsDAO dao;
+    private final PlayerDAO playerDAO;
     private final JavaPlugin plugin;
 
     @Inject
-    public FactionsHandlerImpl(JavaPlugin plugin, FactionsDAO factionsDAO) {
+    public FactionsHandlerImpl(JavaPlugin plugin, FactionsDAO factionsDAO, PlayerDAO playerDAO) {
         this.dao = factionsDAO;
         this.plugin = plugin;
+        this.playerDAO = playerDAO;
         this.autoRegister();
         this.onLoad();
     }

@@ -24,13 +24,23 @@ public class CreateSubCommand extends FSubCommandImpl {
 
     @Override
     public boolean execute(String[] args, FPlayer player) {
-        String name = args[1];
 
+        boolean hasFaction = player.hasFaction();
+
+        // Player is already in a faction.
+        if(hasFaction){
+            String successMessage = (String) this.getLangConfig().get(LangConfigItems.COMMANDS_F_CREATE_PLAYER_ALREADY_HAS_FACTION);
+            MessageContext messageContext = new MessageContextImpl(player, successMessage);
+            player.sms(messageContext);
+            return false;
+        }
+
+        String name = args[1];
         boolean exists = NextGenFactionsAPI.checkIfFactionExistsByName(name);
 
         // No faction with name.
         if (!exists) {
-            Faction faction = NextGenFactionsAPI.createFaction(name);
+            Faction faction = NextGenFactionsAPI.createFaction(name, player);
 
             // Faction created successfully.
             if (Objects.nonNull(faction)) {

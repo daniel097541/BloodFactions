@@ -2,6 +2,7 @@ package crypto.anguita.nextgenfactions.backend.handler.data;
 
 import crypto.anguita.nextgenfactions.backend.dao.PlayerDAO;
 import crypto.anguita.nextgenfactions.commons.api.NextGenFactionsAPI;
+import crypto.anguita.nextgenfactions.commons.events.player.callback.CheckIfPlayerHasFactionEvent;
 import crypto.anguita.nextgenfactions.commons.events.player.callback.GetPlayerEvent;
 import crypto.anguita.nextgenfactions.commons.events.shared.callback.GetPlayersInFactionEvent;
 import crypto.anguita.nextgenfactions.commons.model.faction.Faction;
@@ -23,6 +24,13 @@ public interface PlayerHandler extends DataHandler<FPlayer> {
 
 
     @EventHandler(priority = EventPriority.HIGHEST)
+    default void checkIfPlayerHasFaction(CheckIfPlayerHasFactionEvent event){
+        FPlayer player = event.getPlayer();
+        boolean hasFaction = this.getDao().checkIfPlayerHasFaction(player.getId());
+        event.setHasFaction(hasFaction);
+    }
+
+    @EventHandler(priority = EventPriority.HIGHEST)
     default void getPlayer(GetPlayerEvent event) {
         UUID uuid = event.getId();
         FPlayer player = this.getById(uuid);
@@ -36,7 +44,7 @@ public interface PlayerHandler extends DataHandler<FPlayer> {
 
             // Add the player to the faction-less faction.
             Faction factionLessFaction = NextGenFactionsAPI.getFactionByName("Wilderness");
-            this.getDao().addPlayerToFaction(player, factionLessFaction);
+            this.getDao().addPlayerToFaction(player, factionLessFaction, player);
         }
 
         event.setPlayer(player);

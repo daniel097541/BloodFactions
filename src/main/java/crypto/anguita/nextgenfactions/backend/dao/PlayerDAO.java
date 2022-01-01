@@ -46,13 +46,29 @@ public interface PlayerDAO extends DAO<FPlayer> {
         return players;
     }
 
+    default void removePlayerFromFaction(@NotNull FPlayer player) {
+
+        String sql = "DELETE FROM as_faction_players WHERE player_id = ?;";
+
+        try (PreparedStatement statement = this.getPreparedStatement(sql)) {
+            statement.setString(1, player.getId().toString());
+            statement.executeUpdate();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+    }
+
     /**
      * Adds a player to the faction.
      *
      * @param player
      * @param faction
      */
-    default void addPlayerToFaction(FPlayer player, Faction faction) {
+    default void addPlayerToFaction(@NotNull FPlayer player, @NotNull Faction faction, @NotNull FPlayer invitedBy) {
+
+        // First remove any existing relationship of the player with another faction.
+        this.removePlayerFromFaction(player);
 
         String sql = "INSERT INTO as_faction_players (faction_id, player_id, invited_by) VALUES (?,?,?);";
 
@@ -60,7 +76,7 @@ public interface PlayerDAO extends DAO<FPlayer> {
 
             preparedStatement.setString(1, faction.getId().toString());
             preparedStatement.setString(2, player.getId().toString());
-            preparedStatement.setString(3, player.getId().toString());
+            preparedStatement.setString(3, invitedBy.getId().toString());
 
             preparedStatement.executeUpdate();
         } catch (Exception e) {
@@ -89,4 +105,28 @@ public interface PlayerDAO extends DAO<FPlayer> {
         return new HashSet<>();
     }
 
+    default boolean checkIfPlayerHasFaction(@NotNull UUID playerId) {
+
+        String sql = "SELECT count(*) AS count FROM as_faction_players AS rel " +
+                " JOIN factions AS f ON f.id = rel.faction_id AND NOT f.system_faction " +
+                " WHERE rel.player_id = ?;";
+        try (PreparedStatement statement = this.getPreparedStatement(sql)) {
+
+            statement.setString(1, playerId.toString());
+
+            try (ResultSet rs = statement.executeQuery()) {
+
+                if (rs.next()) {
+                    int count = rs.getInt("count");
+                    return count > 0;
+                } else {
+                    return false;
+                }
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return false;
+    }
 }

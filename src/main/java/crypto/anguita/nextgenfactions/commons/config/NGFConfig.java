@@ -32,8 +32,7 @@ public interface NGFConfig {
         String folder = this.getPlugin().getDataFolder().getPath();
 
         File file = new File(folder + "/" + this.getConfigType().getPath());
-        YamlConfiguration yamlConfiguration = new YamlConfiguration();
-        yamlConfiguration.load(file);
+        YamlConfiguration yamlConfiguration = YamlConfiguration.loadConfiguration(file);
 
         // Sets file.
         this.setFile(file);
@@ -62,7 +61,7 @@ public interface NGFConfig {
         this.getItems()
                 .values()
                 .stream()
-                .filter(configItem -> this.exists(configItem.getPath()))
+                .filter(configItem -> !this.exists(configItem.getPath()))
                 .forEach(configItem -> this.write(configItem.getPath(), configItem.getDefaultValue()));
 
         // Save after writing defaults.

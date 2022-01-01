@@ -1,8 +1,8 @@
 package crypto.anguita.nextgenfactions.commons.command;
 
+import crypto.anguita.nextgenfactions.commons.api.NextGenFactionsAPI;
 import crypto.anguita.nextgenfactions.commons.model.player.ConsolePlayerImpl;
 import crypto.anguita.nextgenfactions.commons.model.player.FPlayer;
-import crypto.anguita.nextgenfactions.commons.model.player.FPlayerImpl;
 import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
@@ -43,7 +43,7 @@ public interface FCommand extends CommandExecutor {
 
         // The sender is a player.
         if (sender instanceof Player) {
-            player = FPlayerImpl.fromPlayer((Player) sender);
+            player = NextGenFactionsAPI.getPlayer((Player) sender);
         }
 
         // The sender is the console.
@@ -53,7 +53,7 @@ public interface FCommand extends CommandExecutor {
 
         // No args = help command
         if (args.length == 0) {
-            args[0] = "help";
+            args = new String[]{"help"};
         }
 
         // Run sub command if found.

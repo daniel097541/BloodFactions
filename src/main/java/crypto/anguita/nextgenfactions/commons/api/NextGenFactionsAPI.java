@@ -107,9 +107,9 @@ public class NextGenFactionsAPI {
      * @param name
      * @return
      */
-    public static @Nullable Faction createFaction(@NotNull String name) {
+    public static @Nullable Faction createFaction(@NotNull String name, @NotNull FPlayer player) {
         long start = System.currentTimeMillis();
-        CreateFactionByNameEvent event = new CreateFactionByNameEvent(name);
+        CreateFactionByNameEvent event = new CreateFactionByNameEvent(name, player);
         Faction faction = event.getFaction();
         long end = System.currentTimeMillis();
         logAction(start, end, APIAction.CREATE_FACTION);
