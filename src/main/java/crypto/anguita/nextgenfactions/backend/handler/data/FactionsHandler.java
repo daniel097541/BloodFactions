@@ -35,17 +35,15 @@ public interface FactionsHandler extends DataHandler<Faction> {
 
     default void onLoad() {
         Set<String> systemFactions = this.getSystemConfig().getKeys(SystemConfigItems.defaultFactionsPath);
-        String baseCaseUUID = "00000000-0000-0000-0000-00000000000";
-        int i = 0;
+
         for (String factionSection : systemFactions) {
 
+            UUID id = UUID.fromString((String) this.getSystemConfig().read(SystemConfigItems.defaultFactionsPath + "." + factionSection + SystemConfigItems.systemFactionIdSection));
             String factionName = (String) this.getSystemConfig().read(SystemConfigItems.defaultFactionsPath + "." + factionSection + SystemConfigItems.systemFactionNameSection);
-            UUID id = UUID.fromString(baseCaseUUID + i);
             Faction systemFaction = new SystemFactionImpl(id, factionName);
             if (!this.getDao().existsById(id)) {
                 this.getDao().insert(systemFaction);
             }
-            i++;
         }
     }
 
