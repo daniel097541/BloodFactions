@@ -69,7 +69,7 @@ public class DBManager {
                 " player_id VARCHAR[36], " +
                 " invited_by VARCHAR[36], " +
                 " joined_date REAL DEFAULT (datetime('now', 'localtime')), " +
-//                " PRIMARY KEY (faction_id, player_id), " +
+                " UNIQUE (faction_id, player_id), " +
                 " FOREIGN KEY (player_id) REFERENCES players(id), " +
                 " FOREIGN KEY (faction_id) REFERENCES factions(id), " +
                 " FOREIGN KEY (invited_by) REFERENCES players(id) " +
@@ -96,7 +96,7 @@ public class DBManager {
                 " claim_id VARCHAR[255], " +
                 " claimed_date REAL DEFAULT (datetime('now', 'localtime'))," +
                 " claimed_by VARCHAR[36], " +
-//                " PRIMARY KEY (faction_id, claim_id), " +
+                " UNIQUE (faction_id, claim_id), " +
                 " FOREIGN KEY (faction_id) REFERENCES factions(id)," +
                 " FOREIGN KEY (claim_id) REFERENCES claims(id)," +
                 " FOREIGN KEY (claimed_by) REFERENCES players(id)" +
