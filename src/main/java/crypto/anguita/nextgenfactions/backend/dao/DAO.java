@@ -2,7 +2,6 @@ package crypto.anguita.nextgenfactions.backend.dao;
 
 import com.google.common.cache.*;
 import crypto.anguita.nextgenfactions.commons.model.NextGenFactionEntity;
-import crypto.anguita.nextgenfactions.commons.model.faction.Faction;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -13,6 +12,7 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
 import java.util.UUID;
+import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 
 public interface DAO<T extends NextGenFactionEntity> {
@@ -99,12 +99,12 @@ public interface DAO<T extends NextGenFactionEntity> {
                         new CacheLoader<UUID, T>() {
                             @Override
                             public T load(@NotNull UUID key) {
-                                return findById(key);
+                                return findByIdInDB(key);
                             }
                         });
     }
 
-    default @Nullable T findById(@NotNull UUID id) {
+    default @Nullable T findByIdInDB(@NotNull UUID id) {
         String sql = "SELECT * FROM table_name WHERE id = ?;";
 
         sql = sql.replace("table_name", this.getTableName());
@@ -127,6 +127,14 @@ public interface DAO<T extends NextGenFactionEntity> {
         }
 
         // Error or not found.
+        return null;
+    }
+
+    default @Nullable T findById(@NotNull UUID id) {
+        try {
+            return this.getCache().get(id);
+        } catch (CacheLoader.InvalidCacheLoadException | ExecutionException ignored) {
+        }
         return null;
     }
 
