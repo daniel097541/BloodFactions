@@ -18,6 +18,7 @@ import crypto.anguita.nextgenfactions.commons.model.land.FChunk;
 import crypto.anguita.nextgenfactions.commons.model.land.FLocation;
 import crypto.anguita.nextgenfactions.commons.model.permission.Action;
 import crypto.anguita.nextgenfactions.commons.model.player.FPlayer;
+import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -28,6 +29,18 @@ import java.util.UUID;
 
 public class NextGenFactionsAPI {
 
+    private static boolean debug = true;
+
+    private static void logAction(long start, long end, APIAction action) {
+        if (debug) {
+            String message = "API >> Time to perform action {action}: {time} ms";
+            message = message
+                    .replace("{action}", action.name())
+                    .replace("{time}", String.valueOf(end - start));
+            Bukkit.getConsoleSender().sendMessage(message);
+        }
+    }
+
     /**
      * Gets the Faction that owns this location.
      *
@@ -35,11 +48,15 @@ public class NextGenFactionsAPI {
      * @return
      */
     public static @Nullable Faction getFactionAtLocation(FLocation location) {
+        long start = System.currentTimeMillis();
+        Faction faction = null;
         FChunk chunk = location.getChunk();
         if (Objects.nonNull(chunk)) {
-            return getFactionAtChunk(chunk);
+            faction = getFactionAtChunk(chunk);
         }
-        return null;
+        long end = System.currentTimeMillis();
+        logAction(start, end, APIAction.GET_FACTION_AT_LOCATION);
+        return faction;
     }
 
     /**
@@ -49,8 +66,12 @@ public class NextGenFactionsAPI {
      * @return
      */
     public static @NotNull Faction getFactionAtChunk(@NotNull FChunk chunk) {
+        long start = System.currentTimeMillis();
         GetFactionAtChunkEvent event = new GetFactionAtChunkEvent(chunk);
-        return event.getFaction();
+        Faction faction = event.getFaction();
+        long end = System.currentTimeMillis();
+        logAction(start, end, APIAction.GET_FACTION_AT_CHUNK);
+        return faction;
     }
 
     /**
@@ -60,8 +81,12 @@ public class NextGenFactionsAPI {
      * @return
      */
     public static @NotNull Set<FPlayer> getPlayersInFaction(@NotNull Faction faction) {
+        long start = System.currentTimeMillis();
         GetPlayersInFactionEvent event = new GetPlayersInFactionEvent(faction);
-        return event.getPlayers();
+        Set<FPlayer> players = event.getPlayers();
+        long end = System.currentTimeMillis();
+        logAction(start, end, APIAction.GET_PLAYERS_OF_FACTION);
+        return players;
     }
 
     /**
@@ -70,7 +95,10 @@ public class NextGenFactionsAPI {
      * @param player
      */
     public static void savePlayer(@NotNull FPlayer player) {
+        long start = System.currentTimeMillis();
         new SavePlayerEvent(player);
+        long end = System.currentTimeMillis();
+        logAction(start, end, APIAction.SAVE_PLAYER);
     }
 
     /**
@@ -80,8 +108,12 @@ public class NextGenFactionsAPI {
      * @return
      */
     public static @Nullable Faction createFaction(@NotNull String name) {
+        long start = System.currentTimeMillis();
         CreateFactionByNameEvent event = new CreateFactionByNameEvent(name);
-        return event.getFaction();
+        Faction faction = event.getFaction();
+        long end = System.currentTimeMillis();
+        logAction(start, end, APIAction.CREATE_FACTION);
+        return faction;
     }
 
     /**
@@ -92,8 +124,12 @@ public class NextGenFactionsAPI {
      * @return
      */
     public static boolean checkIfPlayerHasPermission(@NotNull FPlayer player, @NotNull Action action) {
+        long start = System.currentTimeMillis();
         PlayerHasPermissionEvent event = new PlayerHasPermissionEvent(player, action);
-        return event.isHasPermission();
+        boolean hasPermission = event.isHasPermission();
+        long end = System.currentTimeMillis();
+        logAction(start, end, APIAction.CHECK_IF_PLAYER_HAS_PERMISSION);
+        return hasPermission;
     }
 
     /**
@@ -103,8 +139,12 @@ public class NextGenFactionsAPI {
      * @return
      */
     public static boolean checkIfPlayerHasFaction(@NotNull FPlayer player) {
+        long start = System.currentTimeMillis();
         CheckIfPlayerHasFactionEvent event = new CheckIfPlayerHasFactionEvent(player);
-        return event.isHasFaction();
+        boolean hasFaction = event.isHasFaction();
+        long end = System.currentTimeMillis();
+        logAction(start, end, APIAction.CHECK_IF_PLAYER_HAS_FACTION);
+        return hasFaction;
     }
 
     /**
@@ -114,8 +154,12 @@ public class NextGenFactionsAPI {
      * @return
      */
     public static @Nullable FPlayer getPlayer(@NotNull UUID id) {
+        long start = System.currentTimeMillis();
         GetPlayerEvent event = new GetPlayerEvent(id);
-        return event.getPlayer();
+        FPlayer player = event.getPlayer();
+        long end = System.currentTimeMillis();
+        logAction(start, end, APIAction.GET_PLAYER);
+        return player;
     }
 
     /**
@@ -135,8 +179,12 @@ public class NextGenFactionsAPI {
      * @return
      */
     public static @Nullable FPlayer getPlayerByName(@NotNull String name) {
+        long start = System.currentTimeMillis();
         GetPlayerByNameEvent event = new GetPlayerByNameEvent(name);
-        return event.getPlayer();
+        FPlayer player = event.getPlayer();
+        long end = System.currentTimeMillis();
+        logAction(start, end, APIAction.GET_PLAYER_BY_NAME);
+        return player;
     }
 
     /**
@@ -146,8 +194,12 @@ public class NextGenFactionsAPI {
      * @return
      */
     public static @Nullable Faction getFaction(@NotNull UUID id) {
+        long start = System.currentTimeMillis();
         GetFactionEvent event = new GetFactionEvent(id);
-        return event.getFaction();
+        Faction faction = event.getFaction();
+        long end = System.currentTimeMillis();
+        logAction(start, end, APIAction.GET_PLAYER_BY_NAME);
+        return faction;
     }
 
     /**
@@ -157,8 +209,12 @@ public class NextGenFactionsAPI {
      * @return
      */
     public static boolean checkIfFactionExistsByName(@NotNull String name) {
+        long start = System.currentTimeMillis();
         CheckIfFactionExistsByNameEvent event = new CheckIfFactionExistsByNameEvent(name);
-        return event.isExists();
+        boolean exists = event.isExists();
+        long end = System.currentTimeMillis();
+        logAction(start, end, APIAction.CHECK_IF_FACTION_EXISTS_BY_NAME);
+        return exists;
     }
 
     /**
@@ -168,8 +224,12 @@ public class NextGenFactionsAPI {
      * @return
      */
     public static @Nullable Faction getFactionByName(@NotNull String name) {
+        long start = System.currentTimeMillis();
         GetFactionByNameEvent event = new GetFactionByNameEvent(name);
-        return event.getFaction();
+        Faction faction = event.getFaction();
+        long end = System.currentTimeMillis();
+        logAction(start, end, APIAction.GET_FACTION_BY_NAME);
+        return faction;
     }
 
     /**
@@ -179,13 +239,21 @@ public class NextGenFactionsAPI {
      * @return
      */
     public static @NotNull Faction getFactionOfPlayer(@NotNull FPlayer player) {
+        long start = System.currentTimeMillis();
         GetFactionOfPlayerEvent event = new GetFactionOfPlayerEvent(player);
-        return event.getFaction();
+        Faction faction = event.getFaction();
+        long end = System.currentTimeMillis();
+        logAction(start, end, APIAction.GET_FACTION_OF_PLAYER);
+        return faction;
     }
 
     public static @NotNull Set<FChunk> getAllClaims(@NotNull Faction faction) {
+        long start = System.currentTimeMillis();
         GetClaimsOfFactionEvent event = new GetClaimsOfFactionEvent(faction);
-        return event.getChunks();
+        Set<FChunk> chunks = event.getChunks();
+        long end = System.currentTimeMillis();
+        logAction(start, end, APIAction.GET_CLAIMS_OF_FACTION);
+        return chunks;
     }
 
 }
