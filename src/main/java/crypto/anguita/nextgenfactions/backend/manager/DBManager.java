@@ -172,6 +172,21 @@ public class DBManager {
         this.executeUpdate(sql);
     }
 
+    private void loadPlayerRoleTable() {
+
+        String sql = "CREATE TABLE IF NOT EXISTS as_player_role(" +
+                " role_id VARCHAR[36], " +
+                " player_id VARCHAR[36], " +
+                " faction_id VARCHAR[36], "+
+                " PRIMARY KEY (role_id, player_id, faction_id), " +
+                " FOREIGN KEY (player_id) REFERENCES players(id)," +
+                " FOREIGN KEY (faction_id) REFERENCES factions(id)," +
+                " FOREIGN KEY (role_id) REFERENCES roles(id)" +
+                ");";
+
+        this.executeUpdate(sql);
+    }
+
     private void load() {
         this.loadFactionsTable();
         this.loadPlayersTable();
@@ -182,5 +197,6 @@ public class DBManager {
         this.loadRolesTable();
         this.loadPlayerPermissionsTable();
         this.loadRolesPermissionsTable();
+        this.loadPlayerRoleTable();
     }
 }
