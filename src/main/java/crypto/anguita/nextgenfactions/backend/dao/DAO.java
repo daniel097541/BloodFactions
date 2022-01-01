@@ -131,11 +131,7 @@ public interface DAO<T extends NextGenFactionEntity> {
     }
 
     default @Nullable T findById(@NotNull UUID id) {
-        try {
-            return this.getCache().get(id);
-        } catch (CacheLoader.InvalidCacheLoadException | ExecutionException ignored) {
-        }
-        return null;
+        return findByIdInDB(id);
     }
 
     default @Nullable T findByName(@NotNull String name) {
@@ -243,7 +239,7 @@ public interface DAO<T extends NextGenFactionEntity> {
 
             // Get from result set.
             int deleted = statement.executeUpdate();
-            return deleted == 0;
+            return deleted > 0;
         }
         // Error
         catch (Exception e) {
@@ -255,7 +251,6 @@ public interface DAO<T extends NextGenFactionEntity> {
     }
 
     default boolean deleteById(@NotNull UUID id) {
-        this.getCache().invalidate(id);
-        return true;
+        return this.deleteByIdInDB(id);
     }
 }

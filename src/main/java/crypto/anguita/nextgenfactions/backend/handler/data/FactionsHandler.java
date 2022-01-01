@@ -6,6 +6,7 @@ import crypto.anguita.nextgenfactions.commons.events.faction.callback.CheckIfFac
 import crypto.anguita.nextgenfactions.commons.events.faction.callback.GetFactionAtChunkEvent;
 import crypto.anguita.nextgenfactions.commons.events.faction.callback.GetFactionByNameEvent;
 import crypto.anguita.nextgenfactions.commons.events.faction.callback.GetFactionEvent;
+import crypto.anguita.nextgenfactions.commons.events.faction.permissioned.DisbandFactionEvent;
 import crypto.anguita.nextgenfactions.commons.events.faction.unpermissioned.CreateFactionByNameEvent;
 import crypto.anguita.nextgenfactions.commons.events.faction.unpermissioned.CreateFactionEvent;
 import crypto.anguita.nextgenfactions.commons.events.shared.callback.GetFactionOfPlayerEvent;
@@ -33,6 +34,24 @@ public interface FactionsHandler extends DataHandler<Faction> {
         }
         return faction;
     }
+
+    @EventHandler(priority = EventPriority.HIGHEST)
+    default void handleDisbandFaction(DisbandFactionEvent event){
+        FPlayer player = event.getPlayer();
+        Faction faction = event.getFaction();
+
+        // Delete players
+        this.getPlayerDAO().removeAllPlayersFromFaction(faction);
+
+        // Delete claims
+        this.getDao().removeAllClaimsOfFaction(faction);
+
+        // Delete faction
+        boolean disbanded = this.getDao().deleteById(faction.getId());
+
+        event.setDisbanded(disbanded);
+    }
+
 
     @EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
     default void handleCreateFaction(CreateFactionByNameEvent event) {

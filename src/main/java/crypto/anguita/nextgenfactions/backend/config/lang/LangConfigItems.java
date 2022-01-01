@@ -15,6 +15,9 @@ public class LangConfigItems {
     public static ConfigItem COMMANDS_F_CREATE_FAIL = new ConfigItemImpl("commands.f-create.fail", "&cFaction creation failed.");
     public static ConfigItem COMMANDS_F_CREATE_PLAYER_ALREADY_HAS_FACTION = new ConfigItemImpl("commands.f-create.player-already-has-faction", "&cYou already have a faction!");
 
+    public static ConfigItem COMMANDS_F_DISBAND_NO_FACTION = new ConfigItemImpl("commands.f-disband.no-faction", "&cYou are not in a faction.");
+    public static ConfigItem COMMANDS_F_DISBAND_SUCCESS = new ConfigItemImpl("commands.f-disband.success", "&aFaction successfully disbanded.");
+    public static ConfigItem COMMANDS_F_DISBAND_FAIL = new ConfigItemImpl("commands.f-disband.fail", "&cFailed to disband faction.");
 
     public static Map<String, ConfigItem> asMap() {
         Map<String, ConfigItem> items = new HashMap<>();

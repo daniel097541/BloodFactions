@@ -131,4 +131,17 @@ public interface FactionsDAO extends DAO<Faction> {
         }
         return null;
     }
+
+    default void removeAllClaimsOfFaction(Faction faction) {
+
+        String sql = "DELETE FROM as_faction_claims WHERE faction_id = ?;";
+
+        try (PreparedStatement statement = this.getPreparedStatement(sql)) {
+            statement.setString(1, faction.getId().toString());
+
+            statement.executeUpdate();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
 }

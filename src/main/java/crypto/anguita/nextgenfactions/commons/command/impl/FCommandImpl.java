@@ -1,6 +1,7 @@
 package crypto.anguita.nextgenfactions.commons.command.impl;
 
 import crypto.anguita.nextgenfactions.commons.annotation.command.CreateCommand;
+import crypto.anguita.nextgenfactions.commons.annotation.command.DisbandCommand;
 import crypto.anguita.nextgenfactions.commons.annotation.config.LangConfiguration;
 import crypto.anguita.nextgenfactions.commons.command.FCommand;
 import crypto.anguita.nextgenfactions.commons.command.FSubCommand;
@@ -26,7 +27,8 @@ public class FCommandImpl implements FCommand {
     @Inject
     public FCommandImpl(JavaPlugin plugin,
                         @LangConfiguration NGFConfig langConfig,
-                        @CreateCommand FSubCommand createSubCommand) {
+                        @CreateCommand FSubCommand createSubCommand,
+                        @DisbandCommand FSubCommand disbandSubCommand) {
 
         this.langConfig = langConfig;
         PluginCommand pluginCommand = plugin.getCommand("f");
@@ -39,6 +41,7 @@ public class FCommandImpl implements FCommand {
 
         // Create sub command.
         this.addSubCommand(createSubCommand);
+        this.addSubCommand(disbandSubCommand);
 
     }
 }
