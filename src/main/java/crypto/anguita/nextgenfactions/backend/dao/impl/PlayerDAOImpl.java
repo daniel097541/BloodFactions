@@ -5,12 +5,9 @@ import crypto.anguita.nextgenfactions.backend.dao.PlayerDAO;
 import crypto.anguita.nextgenfactions.backend.manager.DBManager;
 import crypto.anguita.nextgenfactions.commons.model.player.FPlayer;
 import lombok.Getter;
-import org.jetbrains.annotations.NotNull;
 
 import javax.inject.Inject;
 import javax.inject.Singleton;
-import java.sql.PreparedStatement;
-import java.sql.Statement;
 import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 
@@ -24,15 +21,5 @@ public class PlayerDAOImpl implements PlayerDAO {
     @Inject
     public PlayerDAOImpl(DBManager dbManager) {
         this.dbManager = dbManager;
-    }
-
-    @Override
-    public @NotNull Statement getStatement() {
-        return this.dbManager.getStatement();
-    }
-
-    @Override
-    public @NotNull PreparedStatement getPreparedStatement(String sql) {
-        return this.dbManager.getPreparedStatement(sql);
     }
 }

@@ -1,5 +1,6 @@
 package crypto.anguita.nextgenfactions.backend.dao;
 
+import crypto.anguita.nextgenfactions.commons.model.permission.PermissionType;
 import crypto.anguita.nextgenfactions.commons.model.role.FactionRole;
 import crypto.anguita.nextgenfactions.commons.model.role.FactionRoleImpl;
 import org.jetbrains.annotations.NotNull;
@@ -72,5 +73,99 @@ public interface RolesDAO extends DAO<FactionRole> {
         return roles;
     }
 
+    default @NotNull Set<PermissionType> getRolePermissions(@NotNull UUID roleId) {
+        final String sql = "SELECT * FROM as_role_permissions AS rel " +
+                " WHERE rel.role_id = ?;";
+
+        final Set<PermissionType> permissions = new HashSet<>();
+
+        try (final PreparedStatement statement = this.getPreparedStatement(sql)) {
+
+            statement.setString(1, roleId.toString());
+
+            try (final ResultSet rs = statement.executeQuery()) {
+
+                while (rs.next()) {
+                    int id = rs.getInt("permission_id");
+                    PermissionType permissionType = PermissionType.fromId(id);
+                    permissions.add(permissionType);
+                }
+
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return permissions;
+    }
+
+    /**
+     * Adds a permission to the given role.
+     *
+     * @param role
+     * @param permissionType
+     */
+    default void addPermissionToRole(@NotNull FactionRole role, @NotNull PermissionType permissionType) {
+        final String sql = "INSERT INTO as_role_permissions (role_id, permission_id) VALUES (?, ?);";
+        try (PreparedStatement preparedStatement = this.getPreparedStatement(sql)) {
+            preparedStatement.setString(1, role.getId().toString());
+            preparedStatement.setInt(2, permissionType.getId());
+
+            preparedStatement.executeUpdate();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    /**
+     * Removes a permission from the given role.
+     *
+     * @param role
+     * @param permissionType
+     */
+    default void removePermissionFromRole(@NotNull FactionRole role, @NotNull PermissionType permissionType) {
+        final String sql = "DELETE FROM as_role_permissions WHERE role_id = ? AND permission_id = ?;";
+        try (final PreparedStatement preparedStatement = this.getPreparedStatement(sql)) {
+            preparedStatement.setString(1, role.getId().toString());
+            preparedStatement.setInt(2, permissionType.getId());
+
+            preparedStatement.executeUpdate();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    /**
+     * Checks if a role has the permission.
+     *
+     * @param role
+     * @param permissionType
+     * @return
+     */
+    default boolean roleHasPermission(@NotNull FactionRole role, @NotNull PermissionType permissionType) {
+
+        final String sql = "SELECT count(*) AS count FROM as_role_permissions AS rel " +
+                " WHERE rel.role_id = ? AND permission_id = ?;";
+
+        try (final PreparedStatement statement = this.getPreparedStatement(sql)) {
+
+            statement.setString(1, role.getId().toString());
+            statement.setInt(2, permissionType.getId());
+
+            try (final ResultSet rs = statement.executeQuery()) {
+                if (rs.next()) {
+                    int count = rs.getInt("count");
+                    return count > 0;
+                } else {
+                    return false;
+                }
+            }
+        } catch (final Exception e) {
+            e.printStackTrace();
+        }
+
+        return true;
+    }
 
 }

@@ -1,6 +1,7 @@
 package crypto.anguita.nextgenfactions.backend.dao;
 
 import com.google.common.cache.*;
+import crypto.anguita.nextgenfactions.backend.manager.DBManager;
 import crypto.anguita.nextgenfactions.commons.model.NextGenFactionEntity;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -12,22 +13,28 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
 import java.util.UUID;
-import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 
 public interface DAO<T extends NextGenFactionEntity> {
+
+    @NotNull DBManager getDbManager();
 
     @NotNull LoadingCache<UUID, T> getCache();
 
     @NotNull String getTableName();
 
-    @NotNull Statement getStatement();
-
-    @NotNull PreparedStatement getPreparedStatement(String sql);
-
     @Nullable T fromResultSet(ResultSet rs);
 
     @NotNull Set<T> getSetFromResultSet(ResultSet rs);
+
+    default @NotNull Statement getStatement() {
+        return this.getDbManager().getStatement();
+    }
+
+
+    default @NotNull PreparedStatement getPreparedStatement(String sql) {
+        return this.getDbManager().getPreparedStatement(sql);
+    }
 
     default @Nullable T insert(@NotNull T entity) {
         StringBuilder sql = new StringBuilder("INSERT INTO ");

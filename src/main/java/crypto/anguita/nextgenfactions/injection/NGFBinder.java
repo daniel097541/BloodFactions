@@ -6,8 +6,10 @@ import com.google.inject.Injector;
 import crypto.anguita.nextgenfactions.backend.config.lang.LangConfig;
 import crypto.anguita.nextgenfactions.backend.dao.FactionsDAO;
 import crypto.anguita.nextgenfactions.backend.dao.PlayerDAO;
+import crypto.anguita.nextgenfactions.backend.dao.RolesDAO;
 import crypto.anguita.nextgenfactions.backend.dao.impl.FactionsDAOImpl;
 import crypto.anguita.nextgenfactions.backend.dao.impl.PlayerDAOImpl;
+import crypto.anguita.nextgenfactions.backend.dao.impl.RolesDAOImpl;
 import crypto.anguita.nextgenfactions.backend.handler.command.CommandHandler;
 import crypto.anguita.nextgenfactions.backend.handler.command.CommandHandlerImpl;
 import crypto.anguita.nextgenfactions.backend.handler.data.FactionsHandler;
@@ -60,6 +62,7 @@ public class NGFBinder extends AbstractModule {
         // Bind DAOs
         this.bind(FactionsDAO.class).to(FactionsDAOImpl.class);
         this.bind(PlayerDAO.class).to(PlayerDAOImpl.class);
+        this.bind(RolesDAO.class).to(RolesDAOImpl.class);
 
 
         // Bind frontend listeners

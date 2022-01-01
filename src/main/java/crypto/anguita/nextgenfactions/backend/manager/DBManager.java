@@ -107,9 +107,10 @@ public class DBManager {
 
 
     private void insertPermission(PermissionType permissionType) {
-        String sql = "INSERT INTO ref_permissions (name) VALUES (?);";
+        String sql = "INSERT INTO ref_permissions (id, name) VALUES (?, ?);";
         try (PreparedStatement preparedStatement = getPreparedStatement(sql)) {
-            preparedStatement.setString(1, permissionType.name());
+            preparedStatement.setInt(1, permissionType.getId());
+            preparedStatement.setString(2, permissionType.name());
             preparedStatement.executeUpdate();
         } catch (SQLException ignored) {
         }
