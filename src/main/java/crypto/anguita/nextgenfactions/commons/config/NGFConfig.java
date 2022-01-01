@@ -1,11 +1,14 @@
 package crypto.anguita.nextgenfactions.commons.config;
 
 import lombok.SneakyThrows;
+import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.plugin.java.JavaPlugin;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.io.File;
-import java.util.Map;
+import java.util.*;
 
 public interface NGFConfig {
 
@@ -42,6 +45,24 @@ public interface NGFConfig {
 
         // Loads defaults.
         this.loadDefaults();
+    }
+
+    default @NotNull Set<String> getKeys(@NotNull String configSection) {
+        ConfigurationSection cs = this.getYaml().getConfigurationSection(configSection);
+        if (Objects.nonNull(cs)) {
+            return cs.getKeys(false);
+        } else {
+            return new HashSet<>();
+        }
+    }
+
+    default @NotNull Map<String, Object> getChildren(@NotNull String configurationSection) {
+        ConfigurationSection cs = this.getYaml().getConfigurationSection(configurationSection);
+        if (Objects.nonNull(cs)) {
+            return cs.getValues(true);
+        } else {
+            return new HashMap<>();
+        }
     }
 
     default void write(String path, Object value) {

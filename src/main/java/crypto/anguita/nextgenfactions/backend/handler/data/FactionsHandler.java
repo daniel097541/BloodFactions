@@ -1,7 +1,9 @@
 package crypto.anguita.nextgenfactions.backend.handler.data;
 
+import crypto.anguita.nextgenfactions.backend.config.system.SystemConfigItems;
 import crypto.anguita.nextgenfactions.backend.dao.FactionsDAO;
 import crypto.anguita.nextgenfactions.backend.dao.PlayerDAO;
+import crypto.anguita.nextgenfactions.commons.config.NGFConfig;
 import crypto.anguita.nextgenfactions.commons.events.faction.callback.CheckIfFactionExistsByNameEvent;
 import crypto.anguita.nextgenfactions.commons.events.faction.callback.GetFactionAtChunkEvent;
 import crypto.anguita.nextgenfactions.commons.events.faction.callback.GetFactionByNameEvent;
@@ -12,12 +14,14 @@ import crypto.anguita.nextgenfactions.commons.events.faction.unpermissioned.Crea
 import crypto.anguita.nextgenfactions.commons.events.shared.callback.GetFactionOfPlayerEvent;
 import crypto.anguita.nextgenfactions.commons.model.faction.Faction;
 import crypto.anguita.nextgenfactions.commons.model.faction.FactionImpl;
+import crypto.anguita.nextgenfactions.commons.model.faction.SystemFactionImpl;
 import crypto.anguita.nextgenfactions.commons.model.land.FChunk;
 import crypto.anguita.nextgenfactions.commons.model.player.FPlayer;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 
 import java.util.Objects;
+import java.util.Set;
 import java.util.UUID;
 
 public interface FactionsHandler extends DataHandler<Faction> {
@@ -27,16 +31,34 @@ public interface FactionsHandler extends DataHandler<Faction> {
 
     PlayerDAO getPlayerDAO();
 
+    NGFConfig getSystemConfig();
+
+    default void onLoad() {
+        Set<String> systemFactions = this.getSystemConfig().getKeys(SystemConfigItems.defaultFactionsPath);
+        String baseCaseUUID = "00000000-0000-0000-0000-00000000000";
+        int i = 0;
+        for (String factionSection : systemFactions) {
+
+            String factionName = (String) this.getSystemConfig().read(SystemConfigItems.defaultFactionsPath + "." + factionSection + SystemConfigItems.systemFactionNameSection);
+            UUID id = UUID.fromString(baseCaseUUID + i);
+            Faction systemFaction = new SystemFactionImpl(id, factionName);
+            if (!this.getDao().existsById(id)) {
+                this.getDao().insert(systemFaction);
+            }
+            i++;
+        }
+    }
+
     default Faction createFaction(Faction faction, FPlayer player) {
         faction = this.getDao().insert(faction);
-        if(Objects.nonNull(faction)) {
+        if (Objects.nonNull(faction)) {
             this.getPlayerDAO().addPlayerToFaction(player, faction, player);
         }
         return faction;
     }
 
     @EventHandler(priority = EventPriority.HIGHEST)
-    default void handleDisbandFaction(DisbandFactionEvent event){
+    default void handleDisbandFaction(DisbandFactionEvent event) {
         FPlayer player = event.getPlayer();
         Faction faction = event.getFaction();
 

@@ -73,6 +73,11 @@ public interface RolesDAO extends DAO<FactionRole> {
         return roles;
     }
 
+    /**
+     * Gets the permissions of the role.
+     * @param roleId
+     * @return
+     */
     default @NotNull Set<PermissionType> getRolePermissions(@NotNull UUID roleId) {
         final String sql = "SELECT * FROM as_role_permissions AS rel " +
                 " WHERE rel.role_id = ?;";

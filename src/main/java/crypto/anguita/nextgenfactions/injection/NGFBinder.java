@@ -4,6 +4,7 @@ import com.google.inject.AbstractModule;
 import com.google.inject.Guice;
 import com.google.inject.Injector;
 import crypto.anguita.nextgenfactions.backend.config.lang.LangConfig;
+import crypto.anguita.nextgenfactions.backend.config.system.SystemConfig;
 import crypto.anguita.nextgenfactions.backend.dao.FactionsDAO;
 import crypto.anguita.nextgenfactions.backend.dao.PlayerDAO;
 import crypto.anguita.nextgenfactions.backend.dao.RolesDAO;
@@ -20,6 +21,7 @@ import crypto.anguita.nextgenfactions.backend.manager.DBManager;
 import crypto.anguita.nextgenfactions.commons.annotation.command.CreateCommand;
 import crypto.anguita.nextgenfactions.commons.annotation.command.DisbandCommand;
 import crypto.anguita.nextgenfactions.commons.annotation.config.LangConfiguration;
+import crypto.anguita.nextgenfactions.commons.annotation.config.SystemConfiguration;
 import crypto.anguita.nextgenfactions.commons.command.FCommand;
 import crypto.anguita.nextgenfactions.commons.command.FSubCommand;
 import crypto.anguita.nextgenfactions.commons.command.impl.CreateSubCommand;
@@ -49,6 +51,7 @@ public class NGFBinder extends AbstractModule {
 
         // Bind configs.
         this.bind(NGFConfig.class).annotatedWith(LangConfiguration.class).to(LangConfig.class);
+        this.bind(NGFConfig.class).annotatedWith(SystemConfiguration.class).to(SystemConfig.class);
 
         // Bind commands.
         this.bind(FCommand.class).to(FCommandImpl.class);
