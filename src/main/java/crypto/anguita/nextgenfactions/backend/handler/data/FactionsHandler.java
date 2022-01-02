@@ -9,6 +9,8 @@ import crypto.anguita.nextgenfactions.commons.events.faction.callback.*;
 import crypto.anguita.nextgenfactions.commons.events.faction.permissioned.DisbandFactionEvent;
 import crypto.anguita.nextgenfactions.commons.events.faction.unpermissioned.CreateFactionByNameEvent;
 import crypto.anguita.nextgenfactions.commons.events.faction.unpermissioned.CreateFactionEvent;
+import crypto.anguita.nextgenfactions.commons.events.role.GetDefaultRoleOfFactionEvent;
+import crypto.anguita.nextgenfactions.commons.events.role.GetRolesOfFactionEvent;
 import crypto.anguita.nextgenfactions.commons.events.shared.callback.GetFactionOfPlayerEvent;
 import crypto.anguita.nextgenfactions.commons.exceptions.NoFactionForFactionLessException;
 import crypto.anguita.nextgenfactions.commons.model.faction.Faction;
@@ -162,21 +164,21 @@ public interface FactionsHandler extends DataHandler<Faction> {
         event.setFaction(faction);
     }
 
-    @EventHandler(priority = EventPriority.LOWEST, ignoreCancelled = true)
+    @EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
     default void handleGetFaction(GetFactionEvent getFactionEvent) {
         UUID id = getFactionEvent.getId();
         Faction faction = this.getById(id);
         getFactionEvent.setFaction(faction);
     }
 
-    @EventHandler(priority = EventPriority.LOWEST, ignoreCancelled = true)
+    @EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
     default void handleGetFactionByName(GetFactionByNameEvent getFactionEvent) {
         String name = getFactionEvent.getName();
         Faction faction = this.getByName(name);
         getFactionEvent.setFaction(faction);
     }
 
-    @EventHandler(priority = EventPriority.LOWEST, ignoreCancelled = true)
+    @EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
     default void handleFactionExistsByName(CheckIfFactionExistsByNameEvent event) {
         String name = event.getName();
         boolean exists = this.existsByName(name);
@@ -195,7 +197,7 @@ public interface FactionsHandler extends DataHandler<Faction> {
         return this.getById(UUID.fromString(id));
     }
 
-    @EventHandler(priority = EventPriority.LOWEST, ignoreCancelled = true)
+    @EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
     default void handleGetFactionAtChunk(GetFactionAtChunkEvent event) {
         FChunk chunk = event.getChunk();
         Faction faction = this.getDao().getFactionAtChunk(chunk);
@@ -208,5 +210,18 @@ public interface FactionsHandler extends DataHandler<Faction> {
         event.setFaction(faction);
     }
 
+    @EventHandler(priority = EventPriority.HIGHEST)
+    default void handleGetDefaultRole(GetDefaultRoleOfFactionEvent event){
+        Faction faction = event.getFaction();
+        FactionRole role = this.getRolesDAO().getDefaultRole(faction.getId());
+        event.setDefaultRole(role);
+    }
+
+    @EventHandler(priority = EventPriority.HIGHEST)
+    default void handleGetRolesOfFaction(GetRolesOfFactionEvent event){
+        Faction faction = event.getFaction();
+        Set<FactionRole> roles = this.getRolesDAO().getAllRolesOfFaction(faction.getId());
+        event.setRoles(roles);
+    }
 
 }

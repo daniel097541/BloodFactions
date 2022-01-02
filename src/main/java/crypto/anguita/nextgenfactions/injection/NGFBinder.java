@@ -17,6 +17,8 @@ import crypto.anguita.nextgenfactions.backend.handler.data.FactionsHandler;
 import crypto.anguita.nextgenfactions.backend.handler.data.PlayerHandler;
 import crypto.anguita.nextgenfactions.backend.handler.data.impl.FactionsHandlerImpl;
 import crypto.anguita.nextgenfactions.backend.handler.data.impl.PlayerHandlerImpl;
+import crypto.anguita.nextgenfactions.backend.handler.permissions.PermissionsHandler;
+import crypto.anguita.nextgenfactions.backend.handler.permissions.PermissionsHandlerImpl;
 import crypto.anguita.nextgenfactions.backend.manager.DBManager;
 import crypto.anguita.nextgenfactions.commons.annotation.command.CreateCommand;
 import crypto.anguita.nextgenfactions.commons.annotation.command.DisbandCommand;
@@ -75,6 +77,7 @@ public class NGFBinder extends AbstractModule {
         this.bind(CommandHandler.class).to(CommandHandlerImpl.class);
         this.bind(FactionsHandler.class).to(FactionsHandlerImpl.class);
         this.bind(PlayerHandler.class).to(PlayerHandlerImpl.class);
+        this.bind(PermissionsHandler.class).to(PermissionsHandlerImpl.class);
 
     }
 }

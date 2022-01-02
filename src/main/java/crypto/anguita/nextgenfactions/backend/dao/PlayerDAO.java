@@ -160,6 +160,27 @@ public interface PlayerDAO extends DAO<FPlayer> {
      * @return
      */
     default boolean checkIfPlayerHasPermission(FPlayer player, PermissionType permissionType) {
-        return true;
+
+        String sql = "SELECT count(*) AS count FROM as_player_permissions AS rel " +
+                " WHERE rel.player_id = ? AND permission_id = ?;";
+
+        try(PreparedStatement statement = this.getPreparedStatement(sql)){
+
+            statement.setString(1, player.getId().toString());
+            statement.setInt(1, permissionType.getId());
+
+            try(ResultSet rs = statement.executeQuery()){
+                if(rs.next()){
+                    int count = rs.getInt("count");
+                    return count > 0;
+                }
+            }
+
+        }
+        catch (Exception e){
+            e.printStackTrace();
+        }
+
+        return false;
     }
 }

@@ -185,14 +185,13 @@ public interface RolesDAO extends DAO<FactionRole> {
      * @param playerId
      * @return
      */
-    default @Nullable FactionRole getRoleOFPlayerInFaction(@NotNull UUID playerId, @NotNull UUID factionId) {
+    default @Nullable FactionRole getRoleOFPlayer(@NotNull UUID playerId) {
         final String sql = "SELECT * FROM as_player_role AS rel " +
                 " JOIN roles AS r ON r.id = rel.role_id " +
-                " WHERE rel.player_id = ? AND rel.faction_id = ?;";
+                " WHERE rel.player_id = ?;";
 
         try (final PreparedStatement statement = this.getPreparedStatement(sql)) {
             statement.setString(1, playerId.toString());
-            statement.setString(2, factionId.toString());
             try (final ResultSet rs = statement.executeQuery()) {
                 return this.fromResultSet(rs);
             }
