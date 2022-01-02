@@ -134,12 +134,4 @@ public interface FPlayer extends NextGenFactionEntity {
         return Objects.nonNull(player) && player.hasPermission(bukkitPermission);
     }
 
-    default Map<String, Object> getAsMap() {
-        Map<String, Object> attMap = new HashMap<>();
-        attMap.put("id", this.getId().toString());
-        attMap.put("name", this.getName());
-        attMap.put("power", this.getPower());
-        return attMap;
-    }
-
 }

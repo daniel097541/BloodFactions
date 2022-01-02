@@ -22,7 +22,8 @@ public interface RolesDAO extends DAO<FactionRole> {
                 UUID id = UUID.fromString(rs.getString("id"));
                 String name = rs.getString("name");
                 boolean isDefaultRole = rs.getBoolean("default_role");
-                return new FactionRoleImpl(id, name, isDefaultRole);
+                UUID factionId = UUID.fromString(rs.getString("faction_id"));
+                return new FactionRoleImpl(id, factionId, name, isDefaultRole);
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -38,7 +39,8 @@ public interface RolesDAO extends DAO<FactionRole> {
                 UUID id = UUID.fromString(rs.getString("id"));
                 String name = rs.getString("name");
                 boolean isDefaultRole = rs.getBoolean("default_role");
-                FactionRole role = new FactionRoleImpl(id, name, isDefaultRole);
+                UUID factionId = UUID.fromString(rs.getString("faction_id"));
+                FactionRole role = new FactionRoleImpl(id, factionId, name, isDefaultRole);
                 roles.add(role);
             }
         } catch (Exception e) {
@@ -77,6 +79,7 @@ public interface RolesDAO extends DAO<FactionRole> {
 
     /**
      * Gets the permissions of the role.
+     *
      * @param roleId
      * @return
      */

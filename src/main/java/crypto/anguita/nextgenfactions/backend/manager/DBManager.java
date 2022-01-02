@@ -140,7 +140,7 @@ public class DBManager {
                 " faction_id VARCHAR[36] NOT NULL, " +
                 " FOREIGN KEY (faction_id) REFERENCES factions(id)," +
                 " UNIQUE (name, faction_id), " +
-                " PRIMARY KEY (id, faction_id) " +
+                " PRIMARY KEY (id) " +
                 ");";
 
         this.executeUpdate(sql);

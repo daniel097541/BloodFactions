@@ -48,6 +48,7 @@ public class SystemConfigItems {
     public static String modPath = defaultRolesPath + ".mod";
     public static String adminPath = defaultRolesPath + ".admin";
 
+    public static String roleIdSection = ".id";
     public static String roleNameSection = ".name";
     public static String rolePermissionsSection = ".permissions";
     public static String roleDefaultSection = ".default-role";
@@ -61,16 +62,19 @@ public class SystemConfigItems {
     };
     public static String[] adminPermissions = new String[]{PermissionType.ALL.name()};
 
+    public static ConfigItem DEFAULT_ROLES_MEMBER_ID = new ConfigItemImpl( memberPath + roleIdSection, "00000000-0000-0000-0000-000000000000");
     public static ConfigItem DEFAULT_ROLES_MEMBER_NAME = new ConfigItemImpl( memberPath + roleNameSection, "Member");
     public static ConfigItem DEFAULT_ROLES_MEMBER_PERMISSIONS = new ConfigItemImpl( memberPath + rolePermissionsSection, memberPermissions);
     public static ConfigItem DEFAULT_ROLES_MEMBER_DEFAULT = new ConfigItemImpl( memberPath + roleDefaultSection, true);
     public static ConfigItem DEFAULT_ROLES_MEMBER_CHAT_SYMBOL = new ConfigItemImpl( memberPath + roleChatSymbolSection, "+");
 
+    public static ConfigItem DEFAULT_ROLES_MOD_ID = new ConfigItemImpl( modPath + roleIdSection, "00000000-0000-0000-0000-000000000001");
     public static ConfigItem DEFAULT_ROLES_MOD_NAME = new ConfigItemImpl( modPath + roleNameSection, "Mod");
     public static ConfigItem DEFAULT_ROLES_MOD_PERMISSIONS = new ConfigItemImpl( modPath + rolePermissionsSection, modPermissions);
     public static ConfigItem DEFAULT_ROLES_MOD_DEFAULT = new ConfigItemImpl( modPath + roleDefaultSection, false);
     public static ConfigItem DEFAULT_ROLES_MOD_CHAT_SYMBOL = new ConfigItemImpl( modPath + roleChatSymbolSection, "*");
 
+    public static ConfigItem DEFAULT_ROLES_ADMIN_ID = new ConfigItemImpl( adminPath + roleIdSection, "00000000-0000-0000-0000-000000000002");
     public static ConfigItem DEFAULT_ROLES_ADMIN_NAME = new ConfigItemImpl( adminPath + roleNameSection, "Admin");
     public static ConfigItem DEFAULT_ROLES_ADMIN_PERMISSIONS = new ConfigItemImpl( adminPath + rolePermissionsSection, adminPermissions);
     public static ConfigItem DEFAULT_ROLES_ADMIN_DEFAULT = new ConfigItemImpl( adminPath + roleDefaultSection, false);

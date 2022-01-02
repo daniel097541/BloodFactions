@@ -3,6 +3,7 @@ package crypto.anguita.nextgenfactions.backend.handler.data;
 import crypto.anguita.nextgenfactions.backend.config.system.SystemConfigItems;
 import crypto.anguita.nextgenfactions.backend.dao.FactionsDAO;
 import crypto.anguita.nextgenfactions.backend.dao.PlayerDAO;
+import crypto.anguita.nextgenfactions.backend.dao.RolesDAO;
 import crypto.anguita.nextgenfactions.commons.config.NGFConfig;
 import crypto.anguita.nextgenfactions.commons.events.faction.callback.*;
 import crypto.anguita.nextgenfactions.commons.events.faction.permissioned.DisbandFactionEvent;
@@ -14,15 +15,16 @@ import crypto.anguita.nextgenfactions.commons.model.faction.Faction;
 import crypto.anguita.nextgenfactions.commons.model.faction.FactionImpl;
 import crypto.anguita.nextgenfactions.commons.model.faction.SystemFactionImpl;
 import crypto.anguita.nextgenfactions.commons.model.land.FChunk;
+import crypto.anguita.nextgenfactions.commons.model.permission.PermissionType;
 import crypto.anguita.nextgenfactions.commons.model.player.FPlayer;
+import crypto.anguita.nextgenfactions.commons.model.role.FactionRole;
+import crypto.anguita.nextgenfactions.commons.model.role.FactionRoleImpl;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.HashSet;
-import java.util.Objects;
-import java.util.Set;
-import java.util.UUID;
+import java.util.*;
+import java.util.stream.Collectors;
 
 public interface FactionsHandler extends DataHandler<Faction> {
 
@@ -30,6 +32,8 @@ public interface FactionsHandler extends DataHandler<Faction> {
     FactionsDAO getDao();
 
     PlayerDAO getPlayerDAO();
+
+    RolesDAO getRolesDAO();
 
     NGFConfig getSystemConfig();
 
@@ -78,10 +82,47 @@ public interface FactionsHandler extends DataHandler<Faction> {
 
     }
 
+    default Map<FactionRole, Set<PermissionType>> getDefaultRoles(UUID factionId) {
+        Set<String> rolesSections = this.getSystemConfig().getKeys(SystemConfigItems.defaultRolesPath);
+        Map<FactionRole, Set<PermissionType>> factionRoles = new HashMap<>();
+        for (String roleSection : rolesSections) {
+
+            UUID id = UUID.randomUUID();//fromString((String) this.getSystemConfig().read(SystemConfigItems.defaultRolesPath + "." + roleSection + SystemConfigItems.roleIdSection));
+            String name = (String) this.getSystemConfig().read(SystemConfigItems.defaultRolesPath + "." + roleSection + SystemConfigItems.roleNameSection);
+            String[] permissions = (String[]) this.getSystemConfig().read(SystemConfigItems.defaultRolesPath + "." + roleSection + SystemConfigItems.rolePermissionsSection);
+            boolean defaultRole = (boolean) this.getSystemConfig().read(SystemConfigItems.defaultRolesPath + "." + roleSection + SystemConfigItems.roleDefaultSection);
+
+            factionRoles.put(new FactionRoleImpl(id, factionId, name, defaultRole), Arrays.stream(permissions).map(PermissionType::fromName).collect(Collectors.toSet()));
+        }
+        return factionRoles;
+    }
+
     default Faction createFaction(Faction faction, FPlayer player) {
+
+        // Insert in DB
         faction = this.getDao().insert(faction);
+
+        // Add player to faction
         if (Objects.nonNull(faction)) {
+
+            // Add player to faction.
             this.getPlayerDAO().addPlayerToFaction(player, faction, player);
+
+            // Create roles
+            Map<FactionRole, Set<PermissionType>> rolesPermissions = this.getDefaultRoles(faction.getId());
+            for (Map.Entry<FactionRole, Set<PermissionType>> entry : rolesPermissions.entrySet()) {
+
+                FactionRole role = entry.getKey();
+                Set<PermissionType> permissions = entry.getValue();
+
+                // Create role
+                this.getRolesDAO().insert(role);
+
+                // Permissions
+                for (PermissionType permissionType : permissions) {
+                    this.getRolesDAO().addPermissionToRole(role, permissionType);
+                }
+            }
         }
         return faction;
     }

@@ -62,15 +62,19 @@ public interface DAO<T extends NextGenFactionEntity> {
                 if (value instanceof String) {
                     statement.setString(i, (String) value);
                 }
-                if (value instanceof Integer) {
+                else if (value instanceof Integer) {
                     statement.setInt(i, (int) value);
                 }
-                if (value instanceof Boolean) {
+                else if (value instanceof Boolean) {
                     statement.setBoolean(i, (boolean) value);
                 }
-                if (value instanceof Float) {
+                else if (value instanceof Float) {
                     statement.setFloat(i, (float) value);
                 }
+                else {
+                    statement.setString(i, value.toString());
+                }
+
                 i++;
             }
             statement.executeUpdate();

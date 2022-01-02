@@ -30,4 +30,12 @@ public enum PermissionType {
         return null;
     }
 
+    public static @Nullable PermissionType fromName(String name) {
+        for (PermissionType permissionType : PermissionType.values()) {
+            if (permissionType.name().equals(name)) {
+                return permissionType;
+            }
+        }
+        return null;
+    }
 }
