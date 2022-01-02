@@ -21,7 +21,8 @@ public interface RolesDAO extends DAO<FactionRole> {
             if (rs.next()) {
                 UUID id = UUID.fromString(rs.getString("id"));
                 String name = rs.getString("name");
-                return new FactionRoleImpl(id, name);
+                boolean isDefaultRole = rs.getBoolean("default_role");
+                return new FactionRoleImpl(id, name, isDefaultRole);
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -36,7 +37,8 @@ public interface RolesDAO extends DAO<FactionRole> {
             while (rs.next()) {
                 UUID id = UUID.fromString(rs.getString("id"));
                 String name = rs.getString("name");
-                FactionRole role = new FactionRoleImpl(id, name);
+                boolean isDefaultRole = rs.getBoolean("default_role");
+                FactionRole role = new FactionRoleImpl(id, name, isDefaultRole);
                 roles.add(role);
             }
         } catch (Exception e) {

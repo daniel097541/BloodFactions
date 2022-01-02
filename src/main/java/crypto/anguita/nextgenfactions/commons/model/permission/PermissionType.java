@@ -4,6 +4,7 @@ import lombok.Getter;
 import org.jetbrains.annotations.Nullable;
 
 public enum PermissionType {
+    ALL(0),
     DISBAND(1),
     INVITE(2),
     KICK(3),

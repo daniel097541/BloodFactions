@@ -133,9 +133,10 @@ public class DBManager {
 
     private void loadRolesTable() {
 
-        String sql = "CREATE TABLE IF NOT EXISTS faction_roles(" +
+        String sql = "CREATE TABLE IF NOT EXISTS roles(" +
                 " id VARCHAR[36] NOT NULL, " +
                 " name VARCHAR[255] NOT NULL, " +
+                " default_role BOOLEAN DEFAULT false, " +
                 " faction_id VARCHAR[36] NOT NULL, " +
                 " FOREIGN KEY (faction_id) REFERENCES factions(id)," +
                 " UNIQUE (name, faction_id), " +

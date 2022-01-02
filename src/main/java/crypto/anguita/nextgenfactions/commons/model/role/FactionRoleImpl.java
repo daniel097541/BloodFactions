@@ -12,4 +12,5 @@ import java.util.UUID;
 public class FactionRoleImpl implements FactionRole {
     private final UUID id;
     private String name;
+    private boolean defaultRole;
 }
