@@ -5,6 +5,7 @@ import crypto.anguita.nextgenfactions.commons.api.PermissionNextGenFactionsAPI;
 import crypto.anguita.nextgenfactions.commons.model.NextGenFactionEntity;
 import crypto.anguita.nextgenfactions.commons.model.land.FChunk;
 import crypto.anguita.nextgenfactions.commons.model.player.FPlayer;
+import crypto.anguita.nextgenfactions.commons.model.role.FactionRole;
 
 import java.util.Map;
 import java.util.Set;
@@ -115,5 +116,23 @@ public interface Faction extends NextGenFactionEntity {
      */
     default boolean disband(FPlayer playerDisbanding) {
         return PermissionNextGenFactionsAPI.disbandFaction(this, playerDisbanding);
+    }
+
+    /**
+     * Gets the default role of the faction.
+     *
+     * @return
+     */
+    default FactionRole getDefaultRole() {
+        return NextGenFactionsAPI.getDefaultRoleOfFaction(this);
+    }
+
+    /**
+     * Gets the set of roles of the faction.
+     *
+     * @return
+     */
+    default Set<FactionRole> getRoles() {
+        return NextGenFactionsAPI.getRolesOfFaction(this);
     }
 }

@@ -1,6 +1,7 @@
 package crypto.anguita.nextgenfactions.backend.dao;
 
 import crypto.anguita.nextgenfactions.commons.model.permission.PermissionType;
+import crypto.anguita.nextgenfactions.commons.model.player.FPlayer;
 import crypto.anguita.nextgenfactions.commons.model.role.FactionRole;
 import crypto.anguita.nextgenfactions.commons.model.role.FactionRoleImpl;
 import org.jetbrains.annotations.NotNull;
@@ -199,6 +200,50 @@ public interface RolesDAO extends DAO<FactionRole> {
             e.printStackTrace();
         }
         return null;
+    }
+
+    /**
+     * Gets the default role of the faction.
+     * @param factionId
+     * @return
+     */
+    default @Nullable FactionRole getDefaultRole(@NotNull UUID factionId){
+        final String sql = "SELECT * FROM roles AS r " +
+                " WHERE r.faction_id = ? AND default_role = true;";
+        try(final PreparedStatement statement = this.getPreparedStatement(sql)){
+            statement.setString(1, factionId.toString());
+            try(final ResultSet rs = statement.executeQuery()){
+                return this.fromResultSet(rs);
+            }
+        }
+        catch (final Exception e){
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    /**
+     * Sets the role of the player.
+     * @param player
+     * @param role
+     * @return
+     */
+    default boolean setPlayersRole(@NotNull FPlayer player, @NotNull FactionRole role){
+        UUID playerId = player.getId();
+        UUID roleId = role.getId();
+
+        final String sql = "INSERT INTO as_player_role (player_id, role_id) VALUES (?,?);";
+
+        try(final PreparedStatement statement = this.getPreparedStatement(sql)){
+            statement.setString(1, playerId.toString());
+            statement.setString(2, roleId.toString());
+            statement.executeUpdate();
+            return true;
+        }
+        catch (Exception e){
+            e.printStackTrace();
+        }
+        return false;
     }
 
 }

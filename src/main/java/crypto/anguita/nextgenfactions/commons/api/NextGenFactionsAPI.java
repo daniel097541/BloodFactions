@@ -8,6 +8,9 @@ import crypto.anguita.nextgenfactions.commons.events.player.callback.GetPlayerBy
 import crypto.anguita.nextgenfactions.commons.events.player.callback.GetPlayerEvent;
 import crypto.anguita.nextgenfactions.commons.events.player.callback.PlayerHasPermissionEvent;
 import crypto.anguita.nextgenfactions.commons.events.player.unpermissioned.SavePlayerEvent;
+import crypto.anguita.nextgenfactions.commons.events.role.GetDefaultRoleOfFactionEvent;
+import crypto.anguita.nextgenfactions.commons.events.role.GetRoleOfPlayerEvent;
+import crypto.anguita.nextgenfactions.commons.events.role.GetRolesOfFactionEvent;
 import crypto.anguita.nextgenfactions.commons.events.shared.callback.GetFactionOfPlayerEvent;
 import crypto.anguita.nextgenfactions.commons.events.shared.callback.GetPlayersInFactionEvent;
 import crypto.anguita.nextgenfactions.commons.model.faction.Faction;
@@ -15,6 +18,7 @@ import crypto.anguita.nextgenfactions.commons.model.land.FChunk;
 import crypto.anguita.nextgenfactions.commons.model.land.FLocation;
 import crypto.anguita.nextgenfactions.commons.model.permission.Action;
 import crypto.anguita.nextgenfactions.commons.model.player.FPlayer;
+import crypto.anguita.nextgenfactions.commons.model.role.FactionRole;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
@@ -267,4 +271,33 @@ public class NextGenFactionsAPI {
         return chunks;
     }
 
+    public static @Nullable FactionRole getRoleOfPlayer(@NotNull FPlayer player) {
+        long start = System.currentTimeMillis();
+        FactionRole role = null;
+        if (player.hasFaction()) {
+            GetRoleOfPlayerEvent event = new GetRoleOfPlayerEvent(player);
+            role = event.getRole();
+        }
+        long end = System.currentTimeMillis();
+        logAction(start, end, APIAction.GET_ROLE_OF_PLAYER);
+        return role;
+    }
+
+    public static @Nullable FactionRole getDefaultRoleOfFaction(@NotNull Faction faction) {
+        long start = System.currentTimeMillis();
+        GetDefaultRoleOfFactionEvent event = new GetDefaultRoleOfFactionEvent(faction);
+        FactionRole role = event.getDefaultRole();
+        long end = System.currentTimeMillis();
+        logAction(start, end, APIAction.GET_DEFAULT_ROLE_OF_FACTION);
+        return role;
+    }
+
+    public static @NotNull Set<FactionRole> getRolesOfFaction(@NotNull Faction faction) {
+        long start = System.currentTimeMillis();
+        GetRolesOfFactionEvent event = new GetRolesOfFactionEvent(faction);
+        Set<FactionRole> roles = event.getRoles();
+        long end = System.currentTimeMillis();
+        logAction(start, end, APIAction.GET_ROLES_OF_FACTION);
+        return roles;
+    }
 }

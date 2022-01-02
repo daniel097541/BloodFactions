@@ -7,9 +7,12 @@ import crypto.anguita.nextgenfactions.commons.events.land.permissioned.ClaimEven
 import crypto.anguita.nextgenfactions.commons.events.land.permissioned.MultiClaimEvent;
 import crypto.anguita.nextgenfactions.commons.events.land.permissioned.MultiUnClaimEvent;
 import crypto.anguita.nextgenfactions.commons.events.land.permissioned.UnClaimEvent;
+import crypto.anguita.nextgenfactions.commons.events.role.ChangeRoleOfPlayerEvent;
 import crypto.anguita.nextgenfactions.commons.model.faction.Faction;
 import crypto.anguita.nextgenfactions.commons.model.land.FChunk;
 import crypto.anguita.nextgenfactions.commons.model.player.FPlayer;
+import crypto.anguita.nextgenfactions.commons.model.role.FactionRole;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.Map;
 import java.util.Set;
@@ -105,5 +108,20 @@ public class PermissionNextGenFactionsAPI {
         return event.isKicked();
     }
 
+    /**
+     * Changes the role of a player.
+     * @param player
+     * @param newRole
+     * @param playerChangingTheRole
+     * @return
+     */
+    public static boolean changeRoleOfPlayer(@NotNull FPlayer player, @NotNull FactionRole newRole, @NotNull FPlayer playerChangingTheRole){
+        boolean changed = false;
+        if(player.hasFaction()){
+            ChangeRoleOfPlayerEvent event = new ChangeRoleOfPlayerEvent(player, newRole, playerChangingTheRole);
+            changed = event.isChanged();
+        }
+        return changed;
+    }
 
 }

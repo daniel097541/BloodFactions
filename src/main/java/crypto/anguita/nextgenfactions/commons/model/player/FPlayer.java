@@ -1,12 +1,14 @@
 package crypto.anguita.nextgenfactions.commons.model.player;
 
 import crypto.anguita.nextgenfactions.commons.api.NextGenFactionsAPI;
+import crypto.anguita.nextgenfactions.commons.api.PermissionNextGenFactionsAPI;
 import crypto.anguita.nextgenfactions.commons.messages.handler.MessageContextHandler;
 import crypto.anguita.nextgenfactions.commons.messages.model.MessageContext;
 import crypto.anguita.nextgenfactions.commons.messages.model.MessageContextImpl;
 import crypto.anguita.nextgenfactions.commons.model.NextGenFactionEntity;
 import crypto.anguita.nextgenfactions.commons.model.faction.Faction;
 import crypto.anguita.nextgenfactions.commons.model.permission.Action;
+import crypto.anguita.nextgenfactions.commons.model.role.FactionRole;
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
@@ -132,6 +134,34 @@ public interface FPlayer extends NextGenFactionEntity {
     default boolean hasBukkitPermission(String bukkitPermission) {
         Player player = this.getBukkitPlayer();
         return Objects.nonNull(player) && player.hasPermission(bukkitPermission);
+    }
+
+    /**
+     * Gets the role of the player.
+     * @return
+     */
+    default @Nullable FactionRole getRole(){
+        return NextGenFactionsAPI.getRoleOfPlayer(this);
+    }
+
+    /**
+     * Changes the role of a player.
+     * @param role
+     * @param playerChangingTheRole
+     * @return
+     */
+    default boolean changeRole(FactionRole role, FPlayer playerChangingTheRole){
+        return PermissionNextGenFactionsAPI.changeRoleOfPlayer(this, role, playerChangingTheRole);
+    }
+
+    /**
+     * Changes the role of other player.
+     * @param otherPlayer
+     * @param role
+     * @return
+     */
+    default boolean changeRoleOfPlayer(FPlayer otherPlayer, FactionRole role){
+        return otherPlayer.changeRole(role, this);
     }
 
 }
