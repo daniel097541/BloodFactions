@@ -43,7 +43,9 @@ public class DBManager {
                 " id VARCHAR[36] PRIMARY KEY, " +
                 " name VARCHAR[50] NOT NULL, " +
                 " system_faction BOOLEAN DEFAULT false, " +
-                " creation_date REAL DEFAULT (datetime('now', 'localtime')) " +
+                " owner_id VARCHAR[36] NOT NULL," +
+                " creation_date REAL DEFAULT (datetime('now', 'localtime')), " +
+                " FOREIGN KEY (owner_id) REFERENCES players(id)" +
                 ");";
 
         this.executeUpdate(sql);
@@ -187,8 +189,8 @@ public class DBManager {
     }
 
     private void load() {
-        this.loadFactionsTable();
         this.loadPlayersTable();
+        this.loadFactionsTable();
         this.loadClaimsTable();
         this.loadFactionPlayersTable();
         this.loadFactionClaimsTable();

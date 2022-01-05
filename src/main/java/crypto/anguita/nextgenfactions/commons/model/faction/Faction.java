@@ -9,10 +9,13 @@ import crypto.anguita.nextgenfactions.commons.model.role.FactionRole;
 
 import java.util.Map;
 import java.util.Set;
+import java.util.UUID;
 
 public interface Faction extends NextGenFactionEntity {
 
     boolean isSystemFaction();
+
+    UUID getOwnerId();
 
     /**
      * Checks if is claim of Faction.

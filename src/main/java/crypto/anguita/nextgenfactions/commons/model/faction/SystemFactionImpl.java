@@ -12,7 +12,11 @@ import java.util.UUID;
 @EqualsAndHashCode
 public class SystemFactionImpl implements Faction {
     private final UUID id;
+
     private final String name;
+
+    @ColumnName("owner_id")
+    private final UUID ownerId;
 
     @ColumnName("system_faction")
     private final boolean systemFaction = true;

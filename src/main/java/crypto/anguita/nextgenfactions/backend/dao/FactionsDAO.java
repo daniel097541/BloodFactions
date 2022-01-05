@@ -23,15 +23,15 @@ public interface FactionsDAO extends DAO<Faction> {
                 UUID id = UUID.fromString(rs.getString("id"));
                 String name = rs.getString("name");
                 boolean isSystemFaction = rs.getBoolean("system_faction");
+                UUID ownerId = UUID.fromString(rs.getString("owner_id"));
 
                 // Returns normal faction.
                 if (!isSystemFaction) {
-                    factions.add(new FactionImpl(id, name));
+                    factions.add(new FactionImpl(id, name, ownerId));
                 }
                 // Returns sys faction.
                 else {
-                    factions.add(new SystemFactionImpl(id, name));
-                    factions.add(new SystemFactionImpl(id, name));
+                    factions.add(new SystemFactionImpl(id, name, ownerId));
                 }
             }
         } catch (Exception e) {
@@ -98,14 +98,15 @@ public interface FactionsDAO extends DAO<Faction> {
                 UUID id = UUID.fromString(rs.getString("id"));
                 String name = rs.getString("name");
                 boolean isSystemFaction = rs.getBoolean("system_faction");
+                UUID ownerId = UUID.fromString(rs.getString("owner_id"));
 
                 // Returns normal faction.
                 if (!isSystemFaction) {
-                    return new FactionImpl(id, name);
+                    return new FactionImpl(id, name, ownerId);
                 }
                 // Returns sys faction.
                 else {
-                    return new SystemFactionImpl(id, name);
+                    return new SystemFactionImpl(id, name, ownerId);
                 }
             }
         } catch (Exception e) {

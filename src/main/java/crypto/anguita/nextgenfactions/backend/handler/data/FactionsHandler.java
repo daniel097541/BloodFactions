@@ -21,6 +21,7 @@ import crypto.anguita.nextgenfactions.commons.model.permission.PermissionType;
 import crypto.anguita.nextgenfactions.commons.model.player.FPlayer;
 import crypto.anguita.nextgenfactions.commons.model.role.FactionRole;
 import crypto.anguita.nextgenfactions.commons.model.role.FactionRoleImpl;
+import org.bukkit.Bukkit;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.jetbrains.annotations.NotNull;
@@ -53,10 +54,14 @@ public interface FactionsHandler extends DataHandler<Faction> {
             if (isForFactionLess) {
                 UUID id = UUID.fromString((String) this.getSystemConfig().read(SystemConfigItems.defaultFactionsPath + "." + factionSection + SystemConfigItems.systemFactionIdSection));
                 String factionName = (String) this.getSystemConfig().read(SystemConfigItems.defaultFactionsPath + "." + factionSection + SystemConfigItems.systemFactionNameSection);
-                return new SystemFactionImpl(id, factionName);
+                return new SystemFactionImpl(id, factionName, getDefaultOwnerId());
             }
         }
         throw new NoFactionForFactionLessException();
+    }
+
+    default UUID getDefaultOwnerId() {
+        return Bukkit.getOfflinePlayer("BrutalFiestas").getUniqueId();
     }
 
     default Set<Faction> getSystemFactions() {
@@ -65,7 +70,7 @@ public interface FactionsHandler extends DataHandler<Faction> {
         for (String factionSection : systemFactions) {
             UUID id = UUID.fromString((String) this.getSystemConfig().read(SystemConfigItems.defaultFactionsPath + "." + factionSection + SystemConfigItems.systemFactionIdSection));
             String factionName = (String) this.getSystemConfig().read(SystemConfigItems.defaultFactionsPath + "." + factionSection + SystemConfigItems.systemFactionNameSection);
-            Faction systemFaction = new SystemFactionImpl(id, factionName);
+            Faction systemFaction = new SystemFactionImpl(id, factionName, getDefaultOwnerId());
             factions.add(systemFaction);
         }
         return factions;
@@ -151,7 +156,7 @@ public interface FactionsHandler extends DataHandler<Faction> {
     default void handleCreateFaction(CreateFactionByNameEvent event) {
         String factionName = event.getName();
         FPlayer player = event.getPlayer();
-        Faction faction = new FactionImpl(UUID.randomUUID(), factionName);
+        Faction faction = new FactionImpl(UUID.randomUUID(), factionName, player.getId());
         faction = this.createFaction(faction, player);
         event.setFaction(faction);
     }
@@ -211,14 +216,14 @@ public interface FactionsHandler extends DataHandler<Faction> {
     }
 
     @EventHandler(priority = EventPriority.HIGHEST)
-    default void handleGetDefaultRole(GetDefaultRoleOfFactionEvent event){
+    default void handleGetDefaultRole(GetDefaultRoleOfFactionEvent event) {
         Faction faction = event.getFaction();
         FactionRole role = this.getRolesDAO().getDefaultRole(faction.getId());
         event.setDefaultRole(role);
     }
 
     @EventHandler(priority = EventPriority.HIGHEST)
-    default void handleGetRolesOfFaction(GetRolesOfFactionEvent event){
+    default void handleGetRolesOfFaction(GetRolesOfFactionEvent event) {
         Faction faction = event.getFaction();
         Set<FactionRole> roles = this.getRolesDAO().getAllRolesOfFaction(faction.getId());
         event.setRoles(roles);
