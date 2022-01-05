@@ -49,7 +49,7 @@ public class ClaimSubCommand extends FSubCommandImpl {
         }
 
         // Need more pow
-        if(!faction.canClaim()){
+        if(!faction.canClaim() && !player.isOp()){
             String successMessage = (String) this.getLangConfig().get(LangConfigItems.COMMANDS_F_CLAIM_NOT_ENOUGH_POWER);
             MessageContext messageContext = new MessageContextImpl(player, successMessage);
             player.sms(messageContext);
@@ -57,7 +57,7 @@ public class ClaimSubCommand extends FSubCommandImpl {
         }
 
         // Cannot over-claim faction
-        if (!factionAt.canBeOverClaimed()){
+        if (!factionAt.canBeOverClaimed() && !player.isOp()){
             String successMessage = (String) this.getLangConfig().get(LangConfigItems.COMMANDS_F_CLAIM_FACTION_IS_STRONG_TO_KEEP);
             MessageContext messageContext = new MessageContextImpl(player, successMessage);
             messageContext.setFaction(factionAt);

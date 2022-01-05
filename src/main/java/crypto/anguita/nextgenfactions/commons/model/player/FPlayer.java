@@ -180,4 +180,9 @@ public interface FPlayer extends NextGenFactionEntity {
         return null;
     }
 
+    default boolean isOp(){
+        OfflinePlayer offlinePlayer = this.getBukkitOfflinePlayer();
+        return offlinePlayer.isOp();
+    }
+
 }
