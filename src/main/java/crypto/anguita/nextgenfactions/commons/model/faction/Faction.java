@@ -37,6 +37,15 @@ public interface Faction extends NextGenFactionEntity {
     }
 
     /**
+     * Gets the total amount of claims.
+     *
+     * @return
+     */
+    default int getAmountOfClaims() {
+        return NextGenFactionsAPI.getNumberOfClaimsOfFaction(this);
+    }
+
+    /**
      * Un claims a set of chunks from the Faction.
      *
      * @param chunks
@@ -138,4 +147,41 @@ public interface Faction extends NextGenFactionEntity {
     default Set<FactionRole> getRoles() {
         return NextGenFactionsAPI.getRolesOfFaction(this);
     }
+
+    /**
+     * Checks if a faction can be over-claimed by other faction.
+     *
+     * @return
+     */
+    default boolean canBeOverClaimed() {
+        int power = this.getPower();
+        int claimsCount = this.getAmountOfClaims();
+        return claimsCount > power;
+    }
+
+    /**
+     * Checks if the faction can claim.
+     * @return
+     */
+    default boolean canClaim(){
+        int power = this.getPower();
+        int claimsCount = this.getAmountOfClaims();
+        return claimsCount < power;
+    }
+
+    /**
+     * Gets the total power of the faction.
+     *
+     * @return
+     */
+    default int getPower() {
+        Set<FPlayer> players = this.getMembers();
+        int power = 0;
+        for (FPlayer member : players) {
+            power += member.getPower();
+        }
+        return power;
+    }
+
+
 }

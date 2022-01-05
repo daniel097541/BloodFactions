@@ -2,6 +2,7 @@ package crypto.anguita.nextgenfactions.commons.command;
 
 import crypto.anguita.nextgenfactions.commons.config.NGFConfig;
 import crypto.anguita.nextgenfactions.commons.model.player.FPlayer;
+import org.bukkit.Bukkit;
 
 public interface FSubCommand {
 

@@ -20,12 +20,14 @@ import crypto.anguita.nextgenfactions.backend.handler.data.impl.PlayerHandlerImp
 import crypto.anguita.nextgenfactions.backend.handler.permissions.PermissionsHandler;
 import crypto.anguita.nextgenfactions.backend.handler.permissions.PermissionsHandlerImpl;
 import crypto.anguita.nextgenfactions.backend.manager.DBManager;
+import crypto.anguita.nextgenfactions.commons.annotation.command.ClaimCommand;
 import crypto.anguita.nextgenfactions.commons.annotation.command.CreateCommand;
 import crypto.anguita.nextgenfactions.commons.annotation.command.DisbandCommand;
 import crypto.anguita.nextgenfactions.commons.annotation.config.LangConfiguration;
 import crypto.anguita.nextgenfactions.commons.annotation.config.SystemConfiguration;
 import crypto.anguita.nextgenfactions.commons.command.FCommand;
 import crypto.anguita.nextgenfactions.commons.command.FSubCommand;
+import crypto.anguita.nextgenfactions.commons.command.impl.ClaimSubCommand;
 import crypto.anguita.nextgenfactions.commons.command.impl.CreateSubCommand;
 import crypto.anguita.nextgenfactions.commons.command.impl.DisbandSubCommand;
 import crypto.anguita.nextgenfactions.commons.command.impl.FCommandImpl;
@@ -59,6 +61,7 @@ public class NGFBinder extends AbstractModule {
         this.bind(FCommand.class).to(FCommandImpl.class);
         this.bind(FSubCommand.class).annotatedWith(CreateCommand.class).to(CreateSubCommand.class);
         this.bind(FSubCommand.class).annotatedWith(DisbandCommand.class).to(DisbandSubCommand.class);
+        this.bind(FSubCommand.class).annotatedWith(ClaimCommand.class).to(ClaimSubCommand.class);
 
 
         // Bind db manager

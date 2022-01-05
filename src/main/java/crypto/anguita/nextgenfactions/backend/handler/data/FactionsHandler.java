@@ -9,6 +9,7 @@ import crypto.anguita.nextgenfactions.commons.events.faction.callback.*;
 import crypto.anguita.nextgenfactions.commons.events.faction.permissioned.DisbandFactionEvent;
 import crypto.anguita.nextgenfactions.commons.events.faction.unpermissioned.CreateFactionByNameEvent;
 import crypto.anguita.nextgenfactions.commons.events.faction.unpermissioned.CreateFactionEvent;
+import crypto.anguita.nextgenfactions.commons.events.land.callback.GetNumberOfClaimsEvent;
 import crypto.anguita.nextgenfactions.commons.events.role.GetDefaultRoleOfFactionEvent;
 import crypto.anguita.nextgenfactions.commons.events.role.GetRolesOfFactionEvent;
 import crypto.anguita.nextgenfactions.commons.events.shared.callback.GetFactionOfPlayerEvent;
@@ -132,6 +133,13 @@ public interface FactionsHandler extends DataHandler<Faction> {
             }
         }
         return faction;
+    }
+
+    @EventHandler(priority = EventPriority.HIGHEST)
+    default void handleGetCountOfClaims(GetNumberOfClaimsEvent event) {
+        Faction faction = event.getFaction();
+        int count = this.getDao().getCountOfClaims(faction.getId());
+        event.setNumberOfClaims(count);
     }
 
     @EventHandler(priority = EventPriority.HIGHEST)

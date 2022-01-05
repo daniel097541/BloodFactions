@@ -16,7 +16,7 @@ import java.util.UUID;
 public interface FactionsDAO extends DAO<Faction> {
 
     @Override
-    default @NotNull Set<Faction> getSetFromResultSet(ResultSet rs) {
+    default @NotNull Set<Faction> getSetFromResultSet(@NotNull ResultSet rs) {
         Set<Faction> factions = new HashSet<>();
         try {
             while (rs.next()) {
@@ -40,7 +40,7 @@ public interface FactionsDAO extends DAO<Faction> {
         return factions;
     }
 
-    default void insertChunkIfNotExists(FChunk chunk) {
+    default void insertChunkIfNotExists(@NotNull FChunk chunk) {
         String chunkInsertion = "INSERT INTO claims (id, x, z, world_id) SELECT * FROM ( SELECT ?, ?, ?, ?) AS tmp " +
                 "WHERE NOT EXISTS ( SELECT id FROM claims WHERE id = ?) LIMIT 1;";
         try (PreparedStatement statement = this.getPreparedStatement(chunkInsertion)) {
@@ -56,7 +56,7 @@ public interface FactionsDAO extends DAO<Faction> {
         }
     }
 
-    default void claimForFaction(Faction faction, FChunk chunk, UUID claimerId) {
+    default void claimForFaction(@NotNull Faction faction, @NotNull FChunk chunk, @NotNull UUID claimerId) {
 
         this.insertChunkIfNotExists(chunk);
 
@@ -75,7 +75,7 @@ public interface FactionsDAO extends DAO<Faction> {
 
     }
 
-    default Faction getFactionAtChunk(FChunk chunk) {
+    default Faction getFactionAtChunk(@NotNull FChunk chunk) {
         String sql = "SELECT * FROM as_faction_claims AS rel" +
                 " JOIN factions AS f ON f.id = rel.faction_id " +
                 " WHERE rel.claim_id = ?;";
@@ -92,7 +92,7 @@ public interface FactionsDAO extends DAO<Faction> {
     }
 
     @Override
-    default @Nullable Faction fromResultSet(ResultSet rs) {
+    default @Nullable Faction fromResultSet(@NotNull ResultSet rs) {
         try {
             if (rs.next()) {
                 UUID id = UUID.fromString(rs.getString("id"));
@@ -115,7 +115,7 @@ public interface FactionsDAO extends DAO<Faction> {
         return null;
     }
 
-    default Faction getFactionOfPlayer(UUID id) {
+    default Faction getFactionOfPlayer(@NotNull UUID id) {
         String sql = "SELECT * FROM as_faction_players AS rel " +
                 " JOIN factions AS f ON f.id = rel.faction_id " +
                 " WHERE rel.player_id = ?;";
@@ -133,7 +133,7 @@ public interface FactionsDAO extends DAO<Faction> {
         return null;
     }
 
-    default void removeAllClaimsOfFaction(Faction faction) {
+    default void removeAllClaimsOfFaction(@NotNull Faction faction) {
 
         String sql = "DELETE FROM as_faction_claims WHERE faction_id = ?;";
 
@@ -144,5 +144,28 @@ public interface FactionsDAO extends DAO<Faction> {
         } catch (Exception e) {
             e.printStackTrace();
         }
+    }
+
+    /**
+     * Gets the count of claims of a faction.
+     *
+     * @param factionId
+     * @return
+     */
+    default int getCountOfClaims(@NotNull UUID factionId) {
+        String sql = "SELECT count(*) AS count FROM as_faction_claims WHERE faction_id = ?;";
+        int count = -1;
+
+        try (PreparedStatement statement = this.getPreparedStatement(sql)) {
+            statement.setString(1, factionId.toString());
+            try (ResultSet rs = statement.executeQuery()) {
+                if (rs.next()) {
+                    count = rs.getInt("count");
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return count;
     }
 }

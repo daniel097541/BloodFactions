@@ -6,6 +6,8 @@ import org.jetbrains.annotations.Nullable;
 @Getter
 public enum SubCommandType {
 
+    UN_CLAIM(new String[]{"unclaim", "disclaim"}, "ngf.command.unclaim", "commands.f-unclaim", false, 2),
+    CLAIM(new String[]{"claim"}, "ngf.command.claim", "commands.f-claim", false, 2),
     CREATE(new String[]{"create", "new"}, "ngf.command.create", "commands.f-create", true, 2),
     DISBAND(new String[]{"disband", "delete", "del", "remove"}, "ngf.command.disband", "commands.f-disband", false, 1),
     INVITE(new String[]{"invite", "add"}, "ngf.command.invite", "commands.f-invite", true, 2),

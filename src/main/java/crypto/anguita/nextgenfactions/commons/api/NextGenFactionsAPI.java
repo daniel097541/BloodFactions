@@ -3,6 +3,7 @@ package crypto.anguita.nextgenfactions.commons.api;
 import crypto.anguita.nextgenfactions.commons.events.faction.callback.*;
 import crypto.anguita.nextgenfactions.commons.events.faction.unpermissioned.CreateFactionByNameEvent;
 import crypto.anguita.nextgenfactions.commons.events.land.callback.GetClaimsOfFactionEvent;
+import crypto.anguita.nextgenfactions.commons.events.land.callback.GetNumberOfClaimsEvent;
 import crypto.anguita.nextgenfactions.commons.events.player.callback.CheckIfPlayerHasFactionEvent;
 import crypto.anguita.nextgenfactions.commons.events.player.callback.GetPlayerByNameEvent;
 import crypto.anguita.nextgenfactions.commons.events.player.callback.GetPlayerEvent;
@@ -299,5 +300,14 @@ public class NextGenFactionsAPI {
         long end = System.currentTimeMillis();
         logAction(start, end, APIAction.GET_ROLES_OF_FACTION);
         return roles;
+    }
+
+    public static int getNumberOfClaimsOfFaction(@NotNull Faction faction) {
+        long start = System.currentTimeMillis();
+        GetNumberOfClaimsEvent event = new GetNumberOfClaimsEvent(faction);
+        int count = event.getNumberOfClaims();
+        long end = System.currentTimeMillis();
+        logAction(start, end, APIAction.GET_NUMBER_OF_CLAIMS);
+        return count;
     }
 }

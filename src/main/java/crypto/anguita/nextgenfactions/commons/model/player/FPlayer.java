@@ -7,9 +7,13 @@ import crypto.anguita.nextgenfactions.commons.messages.model.MessageContext;
 import crypto.anguita.nextgenfactions.commons.messages.model.MessageContextImpl;
 import crypto.anguita.nextgenfactions.commons.model.NextGenFactionEntity;
 import crypto.anguita.nextgenfactions.commons.model.faction.Faction;
+import crypto.anguita.nextgenfactions.commons.model.land.FChunk;
+import crypto.anguita.nextgenfactions.commons.model.land.impl.FChunkImpl;
 import crypto.anguita.nextgenfactions.commons.model.permission.Action;
 import crypto.anguita.nextgenfactions.commons.model.role.FactionRole;
 import org.bukkit.Bukkit;
+import org.bukkit.Chunk;
+import org.bukkit.Location;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
@@ -162,6 +166,18 @@ public interface FPlayer extends NextGenFactionEntity {
      */
     default boolean changeRoleOfPlayer(FPlayer otherPlayer, FactionRole role){
         return otherPlayer.changeRole(role, this);
+    }
+
+    default @Nullable FChunk getChunk(){
+        Player bukkitPlayer = this.getBukkitPlayer();
+
+        if(Objects.nonNull(bukkitPlayer)) {
+            Location location = bukkitPlayer.getLocation();
+            Chunk chunk = location.getChunk();
+            return FChunkImpl.fromChunk(chunk);
+        }
+
+        return null;
     }
 
 }
