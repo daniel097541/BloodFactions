@@ -5,6 +5,7 @@ import com.google.inject.Injector;
 import crypto.anguita.nextgenfactions.backend.handler.command.CommandHandler;
 import crypto.anguita.nextgenfactions.backend.handler.data.FactionsHandler;
 import crypto.anguita.nextgenfactions.backend.handler.data.PlayerHandler;
+import crypto.anguita.nextgenfactions.backend.handler.permissions.PermissionsHandler;
 import crypto.anguita.nextgenfactions.frontend.listener.PlayerListener;
 import crypto.anguita.nextgenfactions.injection.NGFBinder;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -20,6 +21,9 @@ public class NextGenFactionsPlugin extends JavaPlugin {
 
     @Inject
     private FactionsHandler factionsHandler;
+
+    @Inject
+    private PermissionsHandler permissionsHandler;
 
     @Inject
     private PlayerHandler playerHandler;

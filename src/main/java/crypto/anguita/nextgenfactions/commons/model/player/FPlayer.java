@@ -180,6 +180,10 @@ public interface FPlayer extends NextGenFactionEntity {
         return null;
     }
 
+    /**
+     * Checks if the player is an operator.
+     * @return
+     */
     default boolean isOp(){
         OfflinePlayer offlinePlayer = this.getBukkitOfflinePlayer();
         return offlinePlayer.isOp();
