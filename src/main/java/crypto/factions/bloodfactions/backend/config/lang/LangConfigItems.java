@@ -63,7 +63,7 @@ public class LangConfigItems {
 
     public static ConfigItem COMMANDS_F_SHOW_NO_FACTION = new ConfigItemImpl("commands.f-show.no-faction", "&cYou need a faction to do that.");
     public static ConfigItem COMMANDS_F_SHOW_SUCCESS = new ConfigItemImpl("commands.f-show.success", showBluePrint);
-    public static ConfigItem COMMANDS_F_SHOW_FACTION_DOES_NOT_EXIST = new ConfigItemImpl("commands.f-show.fail", "&cFaction show failed.");
+    public static ConfigItem COMMANDS_F_SHOW_FACTION_DOES_NOT_EXIST = new ConfigItemImpl("commands.f-show.fail", "&cThere is no faction with that name.");
 
 
     public static Map<String, ConfigItem> asMap() {
