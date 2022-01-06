@@ -14,6 +14,7 @@ import crypto.anguita.nextgenfactions.commons.events.role.GetRoleOfPlayerEvent;
 import crypto.anguita.nextgenfactions.commons.events.role.GetRolesOfFactionEvent;
 import crypto.anguita.nextgenfactions.commons.events.shared.callback.GetFactionOfPlayerEvent;
 import crypto.anguita.nextgenfactions.commons.events.shared.callback.GetPlayersInFactionEvent;
+import crypto.anguita.nextgenfactions.commons.logger.Logger;
 import crypto.anguita.nextgenfactions.commons.model.faction.Faction;
 import crypto.anguita.nextgenfactions.commons.model.land.FChunk;
 import crypto.anguita.nextgenfactions.commons.model.land.FLocation;
@@ -35,11 +36,11 @@ public class NextGenFactionsAPI {
 
     private static void logAction(long start, long end, APIAction action) {
         if (debug) {
-            String message = "API >> Time to perform action {action}: {time} ms";
+            String message = "Time to perform action {action}: {time} ms";
             message = message
                     .replace("{action}", action.name())
                     .replace("{time}", String.valueOf(end - start));
-            Bukkit.getConsoleSender().sendMessage(message);
+            Logger.logInfo("&aAPI", message);
         }
     }
 
