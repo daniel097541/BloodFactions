@@ -1,5 +1,6 @@
 package crypto.factions.bloodfactions.backend.handler.data;
 
+import crypto.factions.bloodfactions.backend.config.lang.LangConfigItems;
 import crypto.factions.bloodfactions.backend.config.system.SystemConfigItems;
 import crypto.factions.bloodfactions.backend.dao.FactionsDAO;
 import crypto.factions.bloodfactions.backend.dao.PlayerDAO;
@@ -10,6 +11,7 @@ import crypto.factions.bloodfactions.commons.events.faction.callback.*;
 import crypto.factions.bloodfactions.commons.events.faction.permissioned.DisbandFactionEvent;
 import crypto.factions.bloodfactions.commons.events.faction.unpermissioned.CreateFactionByNameEvent;
 import crypto.factions.bloodfactions.commons.events.faction.unpermissioned.CreateFactionEvent;
+import crypto.factions.bloodfactions.commons.events.faction.unpermissioned.ShowFactionEvent;
 import crypto.factions.bloodfactions.commons.events.land.callback.GetNumberOfClaimsEvent;
 import crypto.factions.bloodfactions.commons.events.land.permissioned.ClaimEvent;
 import crypto.factions.bloodfactions.commons.events.land.permissioned.OverClaimEvent;
@@ -28,6 +30,7 @@ import crypto.factions.bloodfactions.commons.model.permission.PermissionType;
 import crypto.factions.bloodfactions.commons.model.player.FPlayer;
 import crypto.factions.bloodfactions.commons.model.role.FactionRole;
 import crypto.factions.bloodfactions.commons.model.role.FactionRoleImpl;
+import crypto.factions.bloodfactions.commons.utils.StringUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
@@ -46,6 +49,8 @@ public interface FactionsHandler extends DataHandler<Faction> {
     RolesDAO getRolesDAO();
 
     NGFConfig getSystemConfig();
+
+    NGFConfig getLangConfig();
 
     @EventHandler(priority = EventPriority.HIGHEST)
     default void handleGetFactionLessFaction(GetFactionLessFactionEvent event) throws NoFactionForFactionLessException {
@@ -261,7 +266,7 @@ public interface FactionsHandler extends DataHandler<Faction> {
     }
 
     @EventHandler(priority = EventPriority.HIGH)
-    default void handleSetCore(SetCoreEvent event){
+    default void handleSetCore(SetCoreEvent event) {
         FLocation core = event.getCore();
         FPlayer player = event.getPlayer();
         Faction faction = event.getFaction();
@@ -273,7 +278,7 @@ public interface FactionsHandler extends DataHandler<Faction> {
     }
 
     @EventHandler(priority = EventPriority.HIGH)
-    default void handleGetCore(GetCoreEvent event){
+    default void handleGetCore(GetCoreEvent event) {
         Faction faction = event.getFaction();
         FLocation core = this.getDao().getCore(faction.getId());
         event.setCore(core);
@@ -296,6 +301,24 @@ public interface FactionsHandler extends DataHandler<Faction> {
             Logger.logInfo("Failed to un-claim.");
             event.setSuccess(false);
         }
+    }
+
+    @EventHandler(priority = EventPriority.HIGHEST)
+    default void handleShowFaction(ShowFactionEvent event) {
+        Faction faction = event.getFaction();
+        FPlayer player = event.getPlayer();
+        int power = faction.getPower();
+        Set<FPlayer> members = faction.getMembers();
+        FPlayer owner = faction.getOwner();
+
+        Map<String, String> placeHolders = new HashMap<>();
+        placeHolders.put("{faction_power}", String.valueOf(power));
+        placeHolders.put("{faction_name}", faction.getName());
+        placeHolders.put("{faction_members}", members.stream().map(FPlayer::getName).collect(Collectors.joining(", ")));
+        placeHolders.put("{faction_owner}", owner.getName());
+
+        String message = (String) this.getLangConfig().get(LangConfigItems.COMMANDS_F_SHOW_SUCCESS);
+        player.sms(StringUtils.replacePlaceHolders(message, placeHolders));
     }
 
 }

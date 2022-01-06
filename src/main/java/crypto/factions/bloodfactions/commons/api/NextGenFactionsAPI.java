@@ -2,6 +2,7 @@ package crypto.factions.bloodfactions.commons.api;
 
 import crypto.factions.bloodfactions.commons.events.faction.callback.*;
 import crypto.factions.bloodfactions.commons.events.faction.unpermissioned.CreateFactionByNameEvent;
+import crypto.factions.bloodfactions.commons.events.faction.unpermissioned.ShowFactionEvent;
 import crypto.factions.bloodfactions.commons.events.land.callback.GetClaimsOfFactionEvent;
 import crypto.factions.bloodfactions.commons.events.land.callback.GetNumberOfClaimsEvent;
 import crypto.factions.bloodfactions.commons.events.player.callback.CheckIfPlayerHasFactionEvent;
@@ -37,7 +38,7 @@ public class NextGenFactionsAPI {
         message = message
                 .replace("{action}", action.name())
                 .replace("{time}", String.valueOf(end - start));
-        Logger.logInfo("&aAPI", message);
+        Logger.logInfo("&dAPI", message);
     }
 
     /**
@@ -315,5 +316,12 @@ public class NextGenFactionsAPI {
         long end = System.currentTimeMillis();
         logAction(start, end, APIAction.GET_FACTIONS_CORE);
         return core;
+    }
+
+    public static void showFactionToPlayer(FPlayer player, Faction faction) {
+        long start = System.currentTimeMillis();
+        new ShowFactionEvent(faction, player);
+        long end = System.currentTimeMillis();
+        logAction(start, end, APIAction.SHOW_FACTION);
     }
 }

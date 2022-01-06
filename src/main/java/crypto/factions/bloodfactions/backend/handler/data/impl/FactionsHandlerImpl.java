@@ -4,6 +4,7 @@ import crypto.factions.bloodfactions.backend.dao.FactionsDAO;
 import crypto.factions.bloodfactions.backend.dao.PlayerDAO;
 import crypto.factions.bloodfactions.backend.dao.RolesDAO;
 import crypto.factions.bloodfactions.backend.handler.data.FactionsHandler;
+import crypto.factions.bloodfactions.commons.annotation.config.LangConfiguration;
 import crypto.factions.bloodfactions.commons.annotation.config.SystemConfiguration;
 import crypto.factions.bloodfactions.commons.config.NGFConfig;
 import lombok.Getter;
@@ -21,18 +22,21 @@ public class FactionsHandlerImpl implements FactionsHandler {
     private final RolesDAO rolesDAO;
     private final JavaPlugin plugin;
     private final NGFConfig systemConfig;
+    private final NGFConfig langConfig;
 
     @Inject
     public FactionsHandlerImpl(JavaPlugin plugin,
                                FactionsDAO factionsDAO,
                                PlayerDAO playerDAO,
                                RolesDAO rolesDAO,
-                               @SystemConfiguration NGFConfig systemConfig) {
+                               @SystemConfiguration NGFConfig systemConfig,
+                               @LangConfiguration NGFConfig langConfig) {
         this.dao = factionsDAO;
         this.plugin = plugin;
         this.playerDAO = playerDAO;
         this.rolesDAO = rolesDAO;
         this.systemConfig = systemConfig;
+        this.langConfig = langConfig;
         this.autoRegister();
         this.onLoad();
     }

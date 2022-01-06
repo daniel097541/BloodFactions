@@ -205,4 +205,8 @@ public interface FPlayer extends NextGenFactionEntity {
         return null;
     }
 
+    default void showFaction(Faction faction){
+        NextGenFactionsAPI.showFactionToPlayer(this, faction);
+    }
+
 }

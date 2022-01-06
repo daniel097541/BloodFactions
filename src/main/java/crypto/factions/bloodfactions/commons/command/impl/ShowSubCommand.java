@@ -27,21 +27,6 @@ public class ShowSubCommand extends FSubCommandImpl {
         super(SubCommandType.SHOW, langConfig);
     }
 
-    private void showFaction(FPlayer player, Faction faction){
-        int power = faction.getPower();
-        Set<FPlayer> members = faction.getMembers();
-        FPlayer owner = faction.getOwner();
-
-        Map<String, String> placeHolders = new HashMap<>();
-        placeHolders.put("{faction_power}", String.valueOf(power));
-        placeHolders.put("{faction_name}", faction.getName());
-        placeHolders.put("{faction_members}", members.stream().map(FPlayer::getName).collect(Collectors.joining(", ")));
-        placeHolders.put("{faction_owner}", owner.getName());
-
-        String message = (String) this.getLangConfig().get(LangConfigItems.COMMANDS_F_SHOW_SUCCESS);
-        player.sms(StringUtils.replacePlaceHolders(message, placeHolders));
-    }
-
     @Override
     public boolean execute(String[] args, FPlayer player) {
 
@@ -58,7 +43,7 @@ public class ShowSubCommand extends FSubCommandImpl {
             }
 
             Faction faction = player.getFaction();
-            this.showFaction(player, faction);
+            player.showFaction(faction);
             return true;
         }
 
@@ -68,7 +53,7 @@ public class ShowSubCommand extends FSubCommandImpl {
             String factionName = args[1];
             Faction faction = NextGenFactionsAPI.getFactionByName(factionName);
             if(Objects.nonNull(faction)){
-                this.showFaction(player, faction);
+                player.showFaction(faction);
                 return true;
             }
             else{
