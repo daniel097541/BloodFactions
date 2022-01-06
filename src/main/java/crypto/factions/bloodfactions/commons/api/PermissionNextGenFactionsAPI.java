@@ -1,5 +1,6 @@
 package crypto.factions.bloodfactions.commons.api;
 
+import crypto.factions.bloodfactions.commons.events.faction.SetCoreEvent;
 import crypto.factions.bloodfactions.commons.events.faction.permissioned.DisbandFactionEvent;
 import crypto.factions.bloodfactions.commons.events.faction.permissioned.InvitePlayerToFactionEvent;
 import crypto.factions.bloodfactions.commons.events.faction.permissioned.KickPlayerFromFactionEvent;
@@ -8,6 +9,7 @@ import crypto.factions.bloodfactions.commons.events.role.ChangeRoleOfPlayerEvent
 import crypto.factions.bloodfactions.commons.logger.Logger;
 import crypto.factions.bloodfactions.commons.model.faction.Faction;
 import crypto.factions.bloodfactions.commons.model.land.FChunk;
+import crypto.factions.bloodfactions.commons.model.land.FLocation;
 import crypto.factions.bloodfactions.commons.model.player.FPlayer;
 import crypto.factions.bloodfactions.commons.model.role.FactionRole;
 import org.jetbrains.annotations.NotNull;
@@ -169,5 +171,14 @@ public class PermissionNextGenFactionsAPI {
         long end = System.currentTimeMillis();
         logAction(start, end, PermissionedAPIAction.OVER_CLAIM);
         return overClaimed;
+    }
+
+    public static boolean setCore(FPlayer player, Faction faction, FLocation location) {
+        long start = System.currentTimeMillis();
+        SetCoreEvent event = new SetCoreEvent(faction, player, location);
+        boolean success = event.isSuccess();
+        long end = System.currentTimeMillis();
+        logAction(start, end, PermissionedAPIAction.SET_CORE);
+        return success;
     }
 }

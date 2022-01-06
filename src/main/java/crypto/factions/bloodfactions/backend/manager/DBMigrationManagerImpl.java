@@ -169,6 +169,23 @@ public class DBMigrationManagerImpl implements DBMigrationManager{
         this.dbManager.executeUpdate(sql);
     }
 
+    private void loadTeleportsTable(){
+
+        String sql = "CREATE TABLE IF NOT EXISTS factions_tps(" +
+                " faction_id VARCHAR[36] NOT NULL," +
+                " world_id VARCHAR[36] NOT NULL," +
+                " x INTEGER NOT NULL," +
+                " y INTEGER NOT NULL," +
+                " z INTEGER NOT NULL," +
+                " created_by VARCHAR[36] NOT NULL," +
+                " is_core BOOLEAN NOT NULL DEFAULT false," +
+                " PRIMARY KEY (faction_id, world_id, x, y, z)," +
+                " FOREIGN KEY (faction_id) REFERENCES factions(id)," +
+                " FOREIGN KEY (created_by) REFERENCES players(id));";
+
+        this.dbManager.executeUpdate(sql);
+    }
+
     private void load() {
         this.loadPlayersTable();
         this.loadFactionsTable();
@@ -180,5 +197,6 @@ public class DBMigrationManagerImpl implements DBMigrationManager{
         this.loadPlayerPermissionsTable();
         this.loadRolesPermissionsTable();
         this.loadPlayerRoleTable();
+        this.loadTeleportsTable();
     }
 }

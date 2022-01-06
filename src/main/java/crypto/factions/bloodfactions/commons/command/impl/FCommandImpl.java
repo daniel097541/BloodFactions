@@ -1,9 +1,6 @@
 package crypto.factions.bloodfactions.commons.command.impl;
 
-import crypto.factions.bloodfactions.commons.annotation.command.ClaimCommand;
-import crypto.factions.bloodfactions.commons.annotation.command.CreateCommand;
-import crypto.factions.bloodfactions.commons.annotation.command.DisbandCommand;
-import crypto.factions.bloodfactions.commons.annotation.command.UnClaimCommand;
+import crypto.factions.bloodfactions.commons.annotation.command.*;
 import crypto.factions.bloodfactions.commons.annotation.config.LangConfiguration;
 import crypto.factions.bloodfactions.commons.command.FCommand;
 import crypto.factions.bloodfactions.commons.command.FSubCommand;
@@ -32,7 +29,8 @@ public class FCommandImpl implements FCommand {
                         @CreateCommand FSubCommand createSubCommand,
                         @DisbandCommand FSubCommand disbandSubCommand,
                         @ClaimCommand FSubCommand claimCommand,
-                        @UnClaimCommand FSubCommand unClaimSubCommand
+                        @UnClaimCommand FSubCommand unClaimSubCommand,
+                        @HomeCommand FSubCommand homeSubCommand
                         ) {
 
         this.langConfig = langConfig;
@@ -49,6 +47,7 @@ public class FCommandImpl implements FCommand {
         this.addSubCommand(disbandSubCommand);
         this.addSubCommand(claimCommand);
         this.addSubCommand(unClaimSubCommand);
+        this.addSubCommand(homeSubCommand);
 
     }
 }

@@ -45,6 +45,13 @@ public class LangConfigItems {
     public static ConfigItem COMMANDS_F_UN_CLAIM_SUCCESS = new ConfigItemImpl("commands.f-unclaim.success", "&aYou successfully un-claimed this chunk from &7{faction_name}.");
     public static ConfigItem COMMANDS_F_UN_CLAIM_FAIL = new ConfigItemImpl("commands.f-unclaim.fail", "&cFailed to un-claim this chunk.");
 
+    // Home
+    public static ConfigItem COMMANDS_F_HOME_NO_FACTION = new ConfigItemImpl("commands.f-home.no-faction", "&cYou need a faction to do that.");
+    public static ConfigItem COMMANDS_F_HOME_SUCCESS = new ConfigItemImpl("commands.f-home.success", "&aTeleported to your home!");
+    public static ConfigItem COMMANDS_F_HOME_FAIL = new ConfigItemImpl("commands.f-home.fail", "&cFaction home failed.");
+    public static ConfigItem COMMANDS_F_HOME_NOT_SET = new ConfigItemImpl("commands.f-home.home-is-not-set", "&cYour faction does not have a home, set it with: &7/f home set");
+    public static ConfigItem COMMANDS_F_HOME_SET_SUCCESS= new ConfigItemImpl("commands.f-home.set-success", "&aYou successfully set the home of your faction!");
+
 
     public static Map<String, ConfigItem> asMap() {
         Map<String, ConfigItem> items = new HashMap<>();

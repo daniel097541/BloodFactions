@@ -24,10 +24,7 @@ import crypto.factions.bloodfactions.backend.handler.permissions.PermissionsHand
 import crypto.factions.bloodfactions.backend.manager.DBManager;
 import crypto.factions.bloodfactions.backend.manager.DBMigrationManager;
 import crypto.factions.bloodfactions.backend.manager.DBMigrationManagerImpl;
-import crypto.factions.bloodfactions.commons.annotation.command.ClaimCommand;
-import crypto.factions.bloodfactions.commons.annotation.command.CreateCommand;
-import crypto.factions.bloodfactions.commons.annotation.command.DisbandCommand;
-import crypto.factions.bloodfactions.commons.annotation.command.UnClaimCommand;
+import crypto.factions.bloodfactions.commons.annotation.command.*;
 import crypto.factions.bloodfactions.commons.annotation.config.LangConfiguration;
 import crypto.factions.bloodfactions.commons.annotation.config.SystemConfiguration;
 import crypto.factions.bloodfactions.commons.command.FCommand;
@@ -65,6 +62,7 @@ public class NGFBinder extends AbstractModule {
         this.bind(FSubCommand.class).annotatedWith(DisbandCommand.class).to(DisbandSubCommand.class);
         this.bind(FSubCommand.class).annotatedWith(ClaimCommand.class).to(ClaimSubCommand.class);
         this.bind(FSubCommand.class).annotatedWith(UnClaimCommand.class).to(UnClaimSubCommand.class);
+        this.bind(FSubCommand.class).annotatedWith(HomeCommand.class).to(HomeSubCommand.class);
 
 
         // Bind db manager

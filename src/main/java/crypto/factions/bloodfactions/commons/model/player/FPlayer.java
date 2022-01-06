@@ -8,7 +8,9 @@ import crypto.factions.bloodfactions.commons.messages.model.MessageContextImpl;
 import crypto.factions.bloodfactions.commons.model.NextGenFactionEntity;
 import crypto.factions.bloodfactions.commons.model.faction.Faction;
 import crypto.factions.bloodfactions.commons.model.land.FChunk;
+import crypto.factions.bloodfactions.commons.model.land.FLocation;
 import crypto.factions.bloodfactions.commons.model.land.impl.FChunkImpl;
+import crypto.factions.bloodfactions.commons.model.land.impl.FLocationImpl;
 import crypto.factions.bloodfactions.commons.model.permission.Action;
 import crypto.factions.bloodfactions.commons.model.role.FactionRole;
 import org.bukkit.Bukkit;
@@ -185,6 +187,21 @@ public interface FPlayer extends NextGenFactionEntity {
     default boolean isOp(){
         OfflinePlayer offlinePlayer = this.getBukkitOfflinePlayer();
         return offlinePlayer.isOp();
+    }
+
+    default void teleport(@NotNull FLocation home){
+        Player bukkitPlayer = this.getBukkitPlayer();
+        if(Objects.nonNull(bukkitPlayer)){
+            bukkitPlayer.teleport(Objects.requireNonNull(home.getBukkitLocation()));
+        }
+    }
+
+    default @Nullable FLocation getLocation(){
+        Player bukkitPlayer = this.getBukkitPlayer();
+        if(Objects.nonNull(bukkitPlayer)){
+            return FLocationImpl.fromLocation(bukkitPlayer.getLocation());
+        }
+        return null;
     }
 
 }

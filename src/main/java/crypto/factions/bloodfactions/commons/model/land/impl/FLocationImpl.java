@@ -4,9 +4,11 @@ import crypto.factions.bloodfactions.commons.model.land.FLocation;
 import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
+import org.bukkit.Location;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.Objects;
 import java.util.UUID;
 
 @Getter
@@ -33,5 +35,9 @@ public class FLocationImpl implements FLocation {
             return new FLocationImpl(worldId, x, y, z);
         }
         return null;
+    }
+
+    public static FLocation fromLocation(Location location) {
+        return new FLocationImpl(Objects.requireNonNull(location.getWorld()).getUID(), location.getBlockX(), location.getBlockY(), location.getBlockZ());
     }
 }

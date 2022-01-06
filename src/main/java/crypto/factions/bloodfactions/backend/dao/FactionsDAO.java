@@ -5,6 +5,8 @@ import crypto.factions.bloodfactions.commons.model.faction.Faction;
 import crypto.factions.bloodfactions.commons.model.faction.FactionImpl;
 import crypto.factions.bloodfactions.commons.model.faction.SystemFactionImpl;
 import crypto.factions.bloodfactions.commons.model.land.FChunk;
+import crypto.factions.bloodfactions.commons.model.land.FLocation;
+import crypto.factions.bloodfactions.commons.model.land.impl.FLocationImpl;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -224,5 +226,51 @@ public interface FactionsDAO extends DAO<Faction> {
         }
 
         return false;
+    }
+
+    default @Nullable FLocation getCore(UUID factionId) {
+
+        String sql = "SELECT * FROM factions_tps WHERE faction_id = ? AND is_core = 1;";
+
+        try (PreparedStatement statement = this.getPreparedStatement(sql)) {
+
+            statement.setString(1, factionId.toString());
+
+            try (ResultSet rs = statement.executeQuery()) {
+                if (rs.next()) {
+
+                    UUID worldId = UUID.fromString(rs.getString("world_id"));
+                    int x = rs.getInt("x");
+                    int y = rs.getInt("y");
+                    int z = rs.getInt("z");
+
+                    return new FLocationImpl(worldId, x, y, z);
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return null;
+    }
+
+    default void setCore(@NotNull UUID factionId, @NotNull UUID playerId, @NotNull FLocation core) {
+
+        String sql = "INSERT INTO factions_tps (faction_id, world_id, x, y, z, created_by, is_core) VALUES (?, ?, ?, ?, ?, ?, ?);";
+
+        try (PreparedStatement statement = this.getPreparedStatement(sql)) {
+
+            statement.setString(1, factionId.toString());
+            statement.setString(2, core.getWorldId().toString());
+            statement.setInt(3, core.getX());
+            statement.setInt(4, core.getY());
+            statement.setInt(5, core.getZ());
+            statement.setString(6, playerId.toString());
+            statement.setBoolean(7, true);
+
+            statement.executeUpdate();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 }

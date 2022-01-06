@@ -4,6 +4,7 @@ import crypto.factions.bloodfactions.commons.api.NextGenFactionsAPI;
 import crypto.factions.bloodfactions.commons.api.PermissionNextGenFactionsAPI;
 import crypto.factions.bloodfactions.commons.model.NextGenFactionEntity;
 import crypto.factions.bloodfactions.commons.model.land.FChunk;
+import crypto.factions.bloodfactions.commons.model.land.FLocation;
 import crypto.factions.bloodfactions.commons.model.player.FPlayer;
 import crypto.factions.bloodfactions.commons.model.role.FactionRole;
 
@@ -16,6 +17,14 @@ public interface Faction extends NextGenFactionEntity {
     boolean isSystemFaction();
 
     UUID getOwnerId();
+
+    default boolean setCore(FPlayer player, FLocation location) {
+        return PermissionNextGenFactionsAPI.setCore(player, this, location);
+    }
+
+    default FLocation getCore(){
+        return NextGenFactionsAPI.getCoreOfFaction(this);
+    }
 
     default boolean isFactionLessFaction() {
         Faction factionLessFaction = NextGenFactionsAPI.getFactionLessFaction();

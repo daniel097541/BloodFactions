@@ -13,7 +13,8 @@ public enum PermissionType {
     UN_CLAIM(6),
     MULTI_CLAIM(7),
     MULTI_UN_CLAIM(8),
-    CHANGE_ROLES(9);
+    CHANGE_ROLES(9),
+    SET_CORE(10);
 
     @Getter
     private final int id;

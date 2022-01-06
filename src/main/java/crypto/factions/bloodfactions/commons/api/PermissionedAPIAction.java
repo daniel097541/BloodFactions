@@ -10,6 +10,7 @@ public enum PermissionedAPIAction {
     INVITE,
     KICK,
     CHANGE_ROLE,
-    OVER_CLAIM
+    OVER_CLAIM,
+    SET_CORE
 
 }

@@ -307,4 +307,13 @@ public class NextGenFactionsAPI {
         logAction(start, end, APIAction.GET_NUMBER_OF_CLAIMS);
         return count;
     }
+
+    public static FLocation getCoreOfFaction(Faction faction) {
+        long start = System.currentTimeMillis();
+        GetCoreEvent event = new GetCoreEvent(faction);
+        FLocation core = event.getCore();
+        long end = System.currentTimeMillis();
+        logAction(start, end, APIAction.GET_FACTIONS_CORE);
+        return core;
+    }
 }

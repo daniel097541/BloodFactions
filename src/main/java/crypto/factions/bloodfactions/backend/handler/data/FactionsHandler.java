@@ -5,6 +5,7 @@ import crypto.factions.bloodfactions.backend.dao.FactionsDAO;
 import crypto.factions.bloodfactions.backend.dao.PlayerDAO;
 import crypto.factions.bloodfactions.backend.dao.RolesDAO;
 import crypto.factions.bloodfactions.commons.config.NGFConfig;
+import crypto.factions.bloodfactions.commons.events.faction.SetCoreEvent;
 import crypto.factions.bloodfactions.commons.events.faction.callback.*;
 import crypto.factions.bloodfactions.commons.events.faction.permissioned.DisbandFactionEvent;
 import crypto.factions.bloodfactions.commons.events.faction.unpermissioned.CreateFactionByNameEvent;
@@ -22,6 +23,7 @@ import crypto.factions.bloodfactions.commons.model.faction.Faction;
 import crypto.factions.bloodfactions.commons.model.faction.FactionImpl;
 import crypto.factions.bloodfactions.commons.model.faction.SystemFactionImpl;
 import crypto.factions.bloodfactions.commons.model.land.FChunk;
+import crypto.factions.bloodfactions.commons.model.land.FLocation;
 import crypto.factions.bloodfactions.commons.model.permission.PermissionType;
 import crypto.factions.bloodfactions.commons.model.player.FPlayer;
 import crypto.factions.bloodfactions.commons.model.role.FactionRole;
@@ -209,19 +211,14 @@ public interface FactionsHandler extends DataHandler<Faction> {
         event.setFaction(faction);
     }
 
-    default Faction getFactionLess() {
-        String id = "00000000-0000-0000-0000-000000000000";
-        return this.getById(UUID.fromString(id));
-    }
-
     @EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
-    default void handleGetFactionAtChunk(GetFactionAtChunkEvent event) {
+    default void handleGetFactionAtChunk(GetFactionAtChunkEvent event) throws NoFactionForFactionLessException {
         FChunk chunk = event.getChunk();
         Faction faction = this.getDao().getFactionAtChunk(chunk.getId());
 
         // If the faction is null, then return faction less.
         if (Objects.isNull(faction)) {
-            faction = this.getFactionLess();
+            faction = this.getFactionForFactionLess();
         }
 
         event.setFaction(faction);
@@ -263,7 +260,22 @@ public interface FactionsHandler extends DataHandler<Faction> {
         event.setSuccess(unClaimed);
     }
 
-    @EventHandler(priority = EventPriority.HIGHEST)
+    @EventHandler(priority = EventPriority.HIGH)
+    default void handleSetCore(SetCoreEvent event){
+        FLocation core = event.getCore();
+        FPlayer player = event.getPlayer();
+        Faction faction = event.getFaction();
+        this.getDao().setCore(faction.getId(), player.getId(), core);
+    }
+
+    @EventHandler(priority = EventPriority.HIGH)
+    default void handleGetCore(GetCoreEvent event){
+        Faction faction = event.getFaction();
+        FLocation core = this.getDao().getCore(faction.getId());
+        event.setCore(core);
+    }
+
+    @EventHandler(priority = EventPriority.HIGH)
     default void handleOverClaim(OverClaimEvent event) {
         Faction faction = event.getFaction();
         Faction overClaimedFaction = event.getOverClaimedFaction();
