@@ -210,4 +210,8 @@ public interface Faction extends NextGenFactionEntity {
     }
 
 
+    default FPlayer getOwner(){
+        return NextGenFactionsAPI.getPlayer(this.getOwnerId());
+    }
+
 }

@@ -63,6 +63,7 @@ public class NGFBinder extends AbstractModule {
         this.bind(FSubCommand.class).annotatedWith(ClaimCommand.class).to(ClaimSubCommand.class);
         this.bind(FSubCommand.class).annotatedWith(UnClaimCommand.class).to(UnClaimSubCommand.class);
         this.bind(FSubCommand.class).annotatedWith(HomeCommand.class).to(HomeSubCommand.class);
+        this.bind(FSubCommand.class).annotatedWith(ShowCommand.class).to(ShowSubCommand.class);
 
 
         // Bind db manager

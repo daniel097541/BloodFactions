@@ -50,8 +50,20 @@ public class LangConfigItems {
     public static ConfigItem COMMANDS_F_HOME_SUCCESS = new ConfigItemImpl("commands.f-home.success", "&aTeleported to your home!");
     public static ConfigItem COMMANDS_F_HOME_FAIL = new ConfigItemImpl("commands.f-home.fail", "&cFaction home failed.");
     public static ConfigItem COMMANDS_F_HOME_NOT_SET = new ConfigItemImpl("commands.f-home.home-is-not-set", "&cYour faction does not have a home, set it with: &7/f home set");
-    public static ConfigItem COMMANDS_F_HOME_SET_SUCCESS= new ConfigItemImpl("commands.f-home.set-success", "&aYou successfully set the home of your faction!");
-    public static ConfigItem COMMANDS_F_HOME_NOT_YOUR_LAND= new ConfigItemImpl("commands.f-home.not-your-land", "&cThis chunk is not claimed by your faction.");
+    public static ConfigItem COMMANDS_F_HOME_SET_SUCCESS = new ConfigItemImpl("commands.f-home.set-success", "&aYou successfully set the home of your faction!");
+    public static ConfigItem COMMANDS_F_HOME_NOT_YOUR_LAND = new ConfigItemImpl("commands.f-home.not-your-land", "&cThis chunk is not claimed by your faction.");
+
+
+    // Show
+    public static String showBluePrint = "&7----------- &e{faction_name} &7-----------\n" +
+            "\n" +
+            "   &d- &7Faction power: &e{faction_power} \n" +
+            "   &d- &7Faction members: &e{faction_members} \n" +
+            "   &d- &7Owner: &e{faction_owner} \n";
+
+    public static ConfigItem COMMANDS_F_SHOW_NO_FACTION = new ConfigItemImpl("commands.f-show.no-faction", "&cYou need a faction to do that.");
+    public static ConfigItem COMMANDS_F_SHOW_SUCCESS = new ConfigItemImpl("commands.f-show.success", showBluePrint);
+    public static ConfigItem COMMANDS_F_SHOW_FACTION_DOES_NOT_EXIST = new ConfigItemImpl("commands.f-show.fail", "&cFaction show failed.");
 
 
     public static Map<String, ConfigItem> asMap() {
@@ -62,7 +74,7 @@ public class LangConfigItems {
                     try {
                         ConfigItem item = (ConfigItem) field.get(null);
                         items.put(item.getPath(), item);
-                    } catch (IllegalAccessException ignored) {
+                    } catch (Exception ignored) {
                     }
 
                 });

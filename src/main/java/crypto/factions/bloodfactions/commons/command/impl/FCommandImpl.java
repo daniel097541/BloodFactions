@@ -30,7 +30,8 @@ public class FCommandImpl implements FCommand {
                         @DisbandCommand FSubCommand disbandSubCommand,
                         @ClaimCommand FSubCommand claimCommand,
                         @UnClaimCommand FSubCommand unClaimSubCommand,
-                        @HomeCommand FSubCommand homeSubCommand
+                        @HomeCommand FSubCommand homeSubCommand,
+                        @ShowCommand FSubCommand showSubCommand
                         ) {
 
         this.langConfig = langConfig;
@@ -48,6 +49,7 @@ public class FCommandImpl implements FCommand {
         this.addSubCommand(claimCommand);
         this.addSubCommand(unClaimSubCommand);
         this.addSubCommand(homeSubCommand);
+        this.addSubCommand(showSubCommand);
 
     }
 }
