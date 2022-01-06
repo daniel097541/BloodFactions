@@ -14,7 +14,7 @@ public interface FSubCommand {
     }
 
     default String getNoPermissionMessage() {
-        return (String) this.getLangConfig().read(this.getSubCommandType().getCommandLangPath() + ".no-permission");
+        return (String) this.getLangConfig().read("commands.messages.no-permission");
     }
 
     default boolean run(String[] args, FPlayer player) {

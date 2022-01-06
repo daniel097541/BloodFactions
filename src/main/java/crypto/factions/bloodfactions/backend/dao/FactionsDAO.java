@@ -217,8 +217,8 @@ public interface FactionsDAO extends DAO<Faction> {
             statement.setString(1, factionId.toString());
             statement.setString(2, chunkId);
 
-            statement.executeUpdate();
-            return true;
+            int deleted = statement.executeUpdate();
+            return deleted > 0;
         } catch (Exception e) {
             Logger.logError("Error removing claim.", e);
         }

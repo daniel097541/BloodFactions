@@ -162,9 +162,9 @@ public class PermissionNextGenFactionsAPI {
         return changed;
     }
 
-    public static boolean overClaim(Faction faction, FChunk chunk, FPlayer player) {
+    public static boolean overClaim(Faction faction, Faction overClaimedFaction, FChunk chunk, FPlayer player) {
         long start = System.currentTimeMillis();
-        OverClaimEvent overClaimEvent = new OverClaimEvent(player.getFaction(), faction, player, chunk);
+        OverClaimEvent overClaimEvent = new OverClaimEvent(faction, overClaimedFaction, player, chunk);
         boolean overClaimed = overClaimEvent.isSuccess();
         long end = System.currentTimeMillis();
         logAction(start, end, PermissionedAPIAction.OVER_CLAIM);

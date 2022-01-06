@@ -45,9 +45,8 @@ public interface PlayerListener extends Listener {
                 player.sms(messageContext);
             }
         } else {
-
             // Not wilderness.
-            if (!factionAt.equals(playersFaction)) {
+            if (!factionAt.isFactionLessFaction()) {
                 event.setCancelled(true);
                 String message = (String) this.getLangConfig().read(LangConfigItems.ACTIONS_BREAK_NOT_YOUR_FACTION.getPath());
                 MessageContext messageContext = new MessageContextImpl(player, message);

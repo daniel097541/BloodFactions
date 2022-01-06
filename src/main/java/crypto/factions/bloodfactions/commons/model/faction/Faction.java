@@ -17,6 +17,11 @@ public interface Faction extends NextGenFactionEntity {
 
     UUID getOwnerId();
 
+    default boolean isFactionLessFaction() {
+        Faction factionLessFaction = NextGenFactionsAPI.getFactionLessFaction();
+        return factionLessFaction.equals(this);
+    }
+
     /**
      * Checks if is claim of Faction.
      *
@@ -97,7 +102,7 @@ public interface Faction extends NextGenFactionEntity {
      * @return
      */
     default boolean overClaim(FChunk chunk, FPlayer player, Faction otherFaction) {
-        return PermissionNextGenFactionsAPI.overClaim(this, chunk, player);
+        return PermissionNextGenFactionsAPI.overClaim(this, otherFaction, chunk, player);
     }
 
     /**
@@ -172,9 +177,10 @@ public interface Faction extends NextGenFactionEntity {
 
     /**
      * Checks if the faction can claim.
+     *
      * @return
      */
-    default boolean canClaim(){
+    default boolean canClaim() {
         int power = this.getPower();
         int claimsCount = this.getAmountOfClaims();
         return claimsCount < power;
