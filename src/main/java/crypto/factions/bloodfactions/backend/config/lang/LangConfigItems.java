@@ -9,6 +9,9 @@ import java.util.Map;
 
 public class LangConfigItems {
 
+    // Actions messages
+    public static ConfigItem ACTIONS_BREAK_NOT_YOUR_FACTION = new ConfigItemImpl("actions.block-break.not-your-faction", "&7This land is claimed by: &c{faction_name}&7, you cannot break blocks here!");
+
     // Create command
     public static ConfigItem COMMANDS_F_CREATE_FACTION_ALREADY_EXISTS = new ConfigItemImpl("commands.f-create.faction-already-exists", "&cThere is already a faction with that name.");
     public static ConfigItem COMMANDS_F_CREATE_FACTION_SUCCESS = new ConfigItemImpl("commands.f-create.success", "&7You successfully created a new faction called: &a{faction_name} &7!");
@@ -34,6 +37,7 @@ public class LangConfigItems {
     public static ConfigItem COMMANDS_F_UN_CLAIM_NO_FACTION = new ConfigItemImpl("commands.f-unclaim.no-faction", "&cYou are not in a faction.");
     public static ConfigItem COMMANDS_F_UN_CLAIM_SUCCESS = new ConfigItemImpl("commands.f-unclaim.success", "&aYou successfully un-claimed this chunk from &7{faction_name}.");
     public static ConfigItem COMMANDS_F_UN_CLAIM_FAIL = new ConfigItemImpl("commands.f-unclaim.fail", "&cFailed to un-claim this chunk.");
+
 
 
     public static Map<String, ConfigItem> asMap() {

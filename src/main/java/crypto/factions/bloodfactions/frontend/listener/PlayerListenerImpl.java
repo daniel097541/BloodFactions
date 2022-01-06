@@ -1,40 +1,24 @@
 package crypto.factions.bloodfactions.frontend.listener;
 
-import crypto.factions.bloodfactions.commons.api.NextGenFactionsAPI;
-import crypto.factions.bloodfactions.commons.model.faction.Faction;
-import crypto.factions.bloodfactions.commons.model.player.FPlayer;
-import org.bukkit.entity.Player;
-import org.bukkit.event.EventHandler;
-import org.bukkit.event.EventPriority;
-import org.bukkit.event.player.PlayerJoinEvent;
+import crypto.factions.bloodfactions.commons.annotation.config.LangConfiguration;
+import crypto.factions.bloodfactions.commons.config.NGFConfig;
+import lombok.Getter;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import javax.inject.Inject;
 import javax.inject.Singleton;
-import java.util.Set;
 
 @Singleton
+@Getter
 public class PlayerListenerImpl implements PlayerListener {
 
     private final JavaPlugin plugin;
+    private final NGFConfig langConfig;
 
     @Inject
-    public PlayerListenerImpl(JavaPlugin plugin) {
+    public PlayerListenerImpl(JavaPlugin plugin, @LangConfiguration NGFConfig langConfig) {
         this.plugin = plugin;
+        this.langConfig = langConfig;
         this.plugin.getServer().getPluginManager().registerEvents(this, this.plugin);
-    }
-
-    @EventHandler(priority = EventPriority.HIGHEST)
-    public void onPlayerJoin(PlayerJoinEvent event) {
-        Player player = event.getPlayer();
-        FPlayer fPlayer = NextGenFactionsAPI.getPlayer(player);
-
-        Faction faction = fPlayer.getFaction();
-
-        fPlayer.sms("&aHey! " + faction.getName());
-
-
-        Set<FPlayer> players = NextGenFactionsAPI.getPlayersInFaction(fPlayer.getFaction());
-
     }
 }
