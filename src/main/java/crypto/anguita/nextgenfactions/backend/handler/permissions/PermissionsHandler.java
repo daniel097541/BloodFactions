@@ -43,7 +43,7 @@ public interface PermissionsHandler extends Listener {
     }
 
 
-    @EventHandler(priority = EventPriority.HIGHEST)
+    @EventHandler(priority = EventPriority.LOWEST)
     default void checkPermissions(PermissionEvent event) {
 
         FPlayer player = event.getPlayer();

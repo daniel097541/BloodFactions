@@ -10,10 +10,12 @@ import crypto.anguita.nextgenfactions.commons.events.faction.permissioned.Disban
 import crypto.anguita.nextgenfactions.commons.events.faction.unpermissioned.CreateFactionByNameEvent;
 import crypto.anguita.nextgenfactions.commons.events.faction.unpermissioned.CreateFactionEvent;
 import crypto.anguita.nextgenfactions.commons.events.land.callback.GetNumberOfClaimsEvent;
+import crypto.anguita.nextgenfactions.commons.events.land.permissioned.ClaimEvent;
 import crypto.anguita.nextgenfactions.commons.events.role.GetDefaultRoleOfFactionEvent;
 import crypto.anguita.nextgenfactions.commons.events.role.GetRolesOfFactionEvent;
 import crypto.anguita.nextgenfactions.commons.events.shared.callback.GetFactionOfPlayerEvent;
 import crypto.anguita.nextgenfactions.commons.exceptions.NoFactionForFactionLessException;
+import crypto.anguita.nextgenfactions.commons.logger.Logger;
 import crypto.anguita.nextgenfactions.commons.model.faction.Faction;
 import crypto.anguita.nextgenfactions.commons.model.faction.FactionImpl;
 import crypto.anguita.nextgenfactions.commons.model.faction.SystemFactionImpl;
@@ -235,6 +237,17 @@ public interface FactionsHandler extends DataHandler<Faction> {
         Faction faction = event.getFaction();
         Set<FactionRole> roles = this.getRolesDAO().getAllRolesOfFaction(faction.getId());
         event.setRoles(roles);
+    }
+
+    @EventHandler(priority = EventPriority.HIGHEST)
+    default void handleClaim(ClaimEvent event) {
+        Faction faction = event.getFaction();
+        FPlayer player = event.getPlayer();
+        FChunk chunk = event.getChunk();
+
+        Logger.logInfo("Player " + player.getName() + " is claiming for faction: " + faction.getName() + " at: " + chunk.getId());
+        boolean claimed = this.getDao().claimForFaction(faction, chunk, player.getId());
+        event.setSuccess(claimed);
     }
 
 }

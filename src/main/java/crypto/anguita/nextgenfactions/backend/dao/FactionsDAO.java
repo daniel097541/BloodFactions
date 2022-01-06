@@ -56,7 +56,7 @@ public interface FactionsDAO extends DAO<Faction> {
         }
     }
 
-    default void claimForFaction(@NotNull Faction faction, @NotNull FChunk chunk, @NotNull UUID claimerId) {
+    default boolean claimForFaction(@NotNull Faction faction, @NotNull FChunk chunk, @NotNull UUID claimerId) {
 
         this.insertChunkIfNotExists(chunk);
 
@@ -65,14 +65,16 @@ public interface FactionsDAO extends DAO<Faction> {
         try (PreparedStatement statement = this.getPreparedStatement(sql)) {
 
             statement.setString(1, faction.getId().toString());
-            statement.setString(2, faction.getName());
+            statement.setString(2, chunk.getId());
             statement.setString(3, claimerId.toString());
 
             statement.executeUpdate();
+            return true;
         } catch (Exception e) {
             e.printStackTrace();
         }
 
+        return false;
     }
 
     default Faction getFactionAtChunk(@NotNull FChunk chunk) {
