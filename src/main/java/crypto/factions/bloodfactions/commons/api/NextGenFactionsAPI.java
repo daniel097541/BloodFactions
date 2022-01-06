@@ -1,6 +1,6 @@
 package crypto.factions.bloodfactions.commons.api;
 
-import crypto.anguita.nextgenfactions.commons.events.faction.callback.*;
+import crypto.factions.bloodfactions.commons.events.faction.callback.*;
 import crypto.factions.bloodfactions.commons.events.faction.unpermissioned.CreateFactionByNameEvent;
 import crypto.factions.bloodfactions.commons.events.land.callback.GetClaimsOfFactionEvent;
 import crypto.factions.bloodfactions.commons.events.land.callback.GetNumberOfClaimsEvent;
@@ -21,7 +21,6 @@ import crypto.factions.bloodfactions.commons.model.land.FLocation;
 import crypto.factions.bloodfactions.commons.model.permission.Action;
 import crypto.factions.bloodfactions.commons.model.player.FPlayer;
 import crypto.factions.bloodfactions.commons.model.role.FactionRole;
-import crypto.factions.bloodfactions.commons.events.faction.callback.*;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -32,16 +31,13 @@ import java.util.UUID;
 
 public class NextGenFactionsAPI {
 
-    private static boolean debug = true;
 
     private static void logAction(long start, long end, APIAction action) {
-        if (debug) {
-            String message = "Time to perform action {action}: {time} ms";
-            message = message
-                    .replace("{action}", action.name())
-                    .replace("{time}", String.valueOf(end - start));
-            Logger.logInfo("&aAPI", message);
-        }
+        String message = "Time to perform action {action}: {time} ms";
+        message = message
+                .replace("{action}", action.name())
+                .replace("{time}", String.valueOf(end - start));
+        Logger.logInfo("&aAPI", message);
     }
 
     /**

@@ -3,19 +3,27 @@ package crypto.factions.bloodfactions.commons.api;
 import crypto.factions.bloodfactions.commons.events.faction.permissioned.DisbandFactionEvent;
 import crypto.factions.bloodfactions.commons.events.faction.permissioned.InvitePlayerToFactionEvent;
 import crypto.factions.bloodfactions.commons.events.faction.permissioned.KickPlayerFromFactionEvent;
-import crypto.anguita.nextgenfactions.commons.events.land.permissioned.*;
+import crypto.factions.bloodfactions.commons.events.land.permissioned.*;
 import crypto.factions.bloodfactions.commons.events.role.ChangeRoleOfPlayerEvent;
+import crypto.factions.bloodfactions.commons.logger.Logger;
 import crypto.factions.bloodfactions.commons.model.faction.Faction;
 import crypto.factions.bloodfactions.commons.model.land.FChunk;
 import crypto.factions.bloodfactions.commons.model.player.FPlayer;
 import crypto.factions.bloodfactions.commons.model.role.FactionRole;
-import crypto.factions.bloodfactions.commons.events.land.permissioned.*;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Map;
 import java.util.Set;
 
 public class PermissionNextGenFactionsAPI {
+
+    private static void logAction(long start, long end, PermissionedAPIAction action) {
+        String message = "Time to perform permission action {action}: {time} ms";
+        message = message
+                .replace("{action}", action.name())
+                .replace("{time}", String.valueOf(end - start));
+        Logger.logInfo("&bPERMISSIONS API", message);
+    }
 
     /**
      * Un Claims a Set of chunks from a Faction.
@@ -26,8 +34,12 @@ public class PermissionNextGenFactionsAPI {
      * @return
      */
     public static Map<FChunk, Boolean> multiUnClaim(Faction faction, Set<FChunk> chunks, FPlayer player) {
+        long start = System.currentTimeMillis();
         MultiUnClaimEvent event = new MultiUnClaimEvent(faction, player, chunks);
-        return event.getResult();
+        Map<FChunk, Boolean> result = event.getResult();
+        long end = System.currentTimeMillis();
+        logAction(start, end, PermissionedAPIAction.MULTI_UN_CLAIM);
+        return result;
     }
 
     /**
@@ -39,8 +51,12 @@ public class PermissionNextGenFactionsAPI {
      * @return
      */
     public static boolean unClaim(Faction faction, FChunk chunk, FPlayer player) {
+        long start = System.currentTimeMillis();
         UnClaimEvent event = new UnClaimEvent(faction, player, chunk);
-        return event.isSuccess();
+        boolean result = event.isSuccess();
+        long end = System.currentTimeMillis();
+        logAction(start, end, PermissionedAPIAction.UN_CLAIM);
+        return result;
     }
 
     /**
@@ -52,8 +68,12 @@ public class PermissionNextGenFactionsAPI {
      * @return
      */
     public static Map<FChunk, Boolean> multiClaim(Faction faction, Set<FChunk> chunks, FPlayer player) {
+        long start = System.currentTimeMillis();
         MultiClaimEvent event = new MultiClaimEvent(faction, player, chunks);
-        return event.getResult();
+        Map<FChunk, Boolean> result = event.getResult();
+        long end = System.currentTimeMillis();
+        logAction(start, end, PermissionedAPIAction.MULTI_CLAIM);
+        return result;
     }
 
     /**
@@ -65,8 +85,12 @@ public class PermissionNextGenFactionsAPI {
      * @return
      */
     public static boolean claim(Faction faction, FChunk chunk, FPlayer player) {
+        long start = System.currentTimeMillis();
         ClaimEvent claimEvent = new ClaimEvent(faction, player, chunk);
-        return claimEvent.isSuccess();
+        boolean claimed = claimEvent.isSuccess();
+        long end = System.currentTimeMillis();
+        logAction(start, end, PermissionedAPIAction.CLAIM);
+        return claimed;
     }
 
     /**
@@ -76,8 +100,12 @@ public class PermissionNextGenFactionsAPI {
      * @param player
      */
     public static boolean disbandFaction(Faction faction, FPlayer player) {
+        long start = System.currentTimeMillis();
         DisbandFactionEvent event = new DisbandFactionEvent(player, faction);
-        return event.isDisbanded();
+        boolean disbanded = event.isDisbanded();
+        long end = System.currentTimeMillis();
+        logAction(start, end, PermissionedAPIAction.DISBAND);
+        return disbanded;
     }
 
     /**
@@ -89,8 +117,12 @@ public class PermissionNextGenFactionsAPI {
      * @return
      */
     public static boolean invitePlayerToFaction(FPlayer invitedPlayer, Faction faction, FPlayer memberThatInvites) {
+        long start = System.currentTimeMillis();
         InvitePlayerToFactionEvent event = new InvitePlayerToFactionEvent(faction, memberThatInvites, invitedPlayer);
-        return event.isInvited();
+        boolean invited = event.isInvited();
+        long end = System.currentTimeMillis();
+        logAction(start, end, PermissionedAPIAction.INVITE);
+        return invited;
     }
 
     /**
@@ -102,28 +134,40 @@ public class PermissionNextGenFactionsAPI {
      * @return
      */
     public static boolean kickPlayerFromFaction(FPlayer kickedPlayer, Faction faction, FPlayer playerThatKicks) {
+        long start = System.currentTimeMillis();
         KickPlayerFromFactionEvent event = new KickPlayerFromFactionEvent(faction, playerThatKicks, kickedPlayer);
-        return event.isKicked();
+        boolean kicked = event.isKicked();
+        long end = System.currentTimeMillis();
+        logAction(start, end, PermissionedAPIAction.KICK);
+        return kicked;
     }
 
     /**
      * Changes the role of a player.
+     *
      * @param player
      * @param newRole
      * @param playerChangingTheRole
      * @return
      */
-    public static boolean changeRoleOfPlayer(@NotNull FPlayer player, @NotNull FactionRole newRole, @NotNull FPlayer playerChangingTheRole){
+    public static boolean changeRoleOfPlayer(@NotNull FPlayer player, @NotNull FactionRole newRole, @NotNull FPlayer playerChangingTheRole) {
+        long start = System.currentTimeMillis();
         boolean changed = false;
-        if(player.hasFaction()){
+        if (player.hasFaction()) {
             ChangeRoleOfPlayerEvent event = new ChangeRoleOfPlayerEvent(player, newRole, playerChangingTheRole);
             changed = event.isChanged();
         }
+        long end = System.currentTimeMillis();
+        logAction(start, end, PermissionedAPIAction.CHANGE_ROLE);
         return changed;
     }
 
     public static boolean overClaim(Faction faction, FChunk chunk, FPlayer player) {
+        long start = System.currentTimeMillis();
         OverClaimEvent overClaimEvent = new OverClaimEvent(player.getFaction(), faction, player, chunk);
-        return overClaimEvent.isSuccess();
+        boolean overClaimed = overClaimEvent.isSuccess();
+        long end = System.currentTimeMillis();
+        logAction(start, end, PermissionedAPIAction.OVER_CLAIM);
+        return overClaimed;
     }
 }

@@ -29,6 +29,13 @@ public class LangConfigItems {
     public static ConfigItem COMMANDS_F_CLAIM_FAIL = new ConfigItemImpl("commands.f-claim.fail", "&cFailed to claim this chunk.");
 
 
+    // Un-Claim command
+    public static ConfigItem COMMANDS_F_UN_CLAIM_NOT_YOUR_LAND = new ConfigItemImpl("commands.f-unclaim.not-your-land", "&cThis chunk is not claimed by your faction.");
+    public static ConfigItem COMMANDS_F_UN_CLAIM_NO_FACTION = new ConfigItemImpl("commands.f-unclaim.no-faction", "&cYou are not in a faction.");
+    public static ConfigItem COMMANDS_F_UN_CLAIM_SUCCESS = new ConfigItemImpl("commands.f-unclaim.success", "&aYou successfully un-claimed this chunk from &7{faction_name}.");
+    public static ConfigItem COMMANDS_F_UN_CLAIM_FAIL = new ConfigItemImpl("commands.f-unclaim.fail", "&cFailed to un-claim this chunk.");
+
+
     public static Map<String, ConfigItem> asMap() {
         Map<String, ConfigItem> items = new HashMap<>();
         Arrays.asList(LangConfigItems.class.getDeclaredFields())

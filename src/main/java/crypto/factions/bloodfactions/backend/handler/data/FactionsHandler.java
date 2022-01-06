@@ -5,13 +5,14 @@ import crypto.factions.bloodfactions.backend.dao.FactionsDAO;
 import crypto.factions.bloodfactions.backend.dao.PlayerDAO;
 import crypto.factions.bloodfactions.backend.dao.RolesDAO;
 import crypto.factions.bloodfactions.commons.config.NGFConfig;
-import crypto.anguita.nextgenfactions.commons.events.faction.callback.*;
+import crypto.factions.bloodfactions.commons.events.faction.callback.*;
 import crypto.factions.bloodfactions.commons.events.faction.permissioned.DisbandFactionEvent;
 import crypto.factions.bloodfactions.commons.events.faction.unpermissioned.CreateFactionByNameEvent;
 import crypto.factions.bloodfactions.commons.events.faction.unpermissioned.CreateFactionEvent;
 import crypto.factions.bloodfactions.commons.events.land.callback.GetNumberOfClaimsEvent;
 import crypto.factions.bloodfactions.commons.events.land.permissioned.ClaimEvent;
 import crypto.factions.bloodfactions.commons.events.land.permissioned.OverClaimEvent;
+import crypto.factions.bloodfactions.commons.events.land.permissioned.UnClaimEvent;
 import crypto.factions.bloodfactions.commons.events.role.GetDefaultRoleOfFactionEvent;
 import crypto.factions.bloodfactions.commons.events.role.GetRolesOfFactionEvent;
 import crypto.factions.bloodfactions.commons.events.shared.callback.GetFactionOfPlayerEvent;
@@ -25,7 +26,6 @@ import crypto.factions.bloodfactions.commons.model.permission.PermissionType;
 import crypto.factions.bloodfactions.commons.model.player.FPlayer;
 import crypto.factions.bloodfactions.commons.model.role.FactionRole;
 import crypto.factions.bloodfactions.commons.model.role.FactionRoleImpl;
-import crypto.factions.bloodfactions.commons.events.faction.callback.*;
 import org.bukkit.Bukkit;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
@@ -217,7 +217,7 @@ public interface FactionsHandler extends DataHandler<Faction> {
     @EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
     default void handleGetFactionAtChunk(GetFactionAtChunkEvent event) {
         FChunk chunk = event.getChunk();
-        Faction faction = this.getDao().getFactionAtChunk(chunk);
+        Faction faction = this.getDao().getFactionAtChunk(chunk.getId());
 
         // If the faction is null, then return faction less.
         if (Objects.isNull(faction)) {
@@ -248,8 +248,19 @@ public interface FactionsHandler extends DataHandler<Faction> {
         FChunk chunk = event.getChunk();
 
         Logger.logInfo("Player &d" + player.getName() + " &7is claiming for faction: &d" + faction.getName() + " &7at: &d" + chunk.getId());
-        boolean claimed = this.getDao().claimForFaction(faction, chunk, player.getId());
+        boolean claimed = this.getDao().claimForFaction(faction.getId(), chunk, player.getId());
         event.setSuccess(claimed);
+    }
+
+    @EventHandler(priority = EventPriority.HIGHEST)
+    default void handleUnClaim(UnClaimEvent event) {
+        Faction faction = event.getFaction();
+        FPlayer player = event.getPlayer();
+        FChunk chunk = event.getChunk();
+
+        Logger.logInfo("Player &d" + player.getName() + " &7is un-claiming for faction: &d" + faction.getName() + " &7at: &d" + chunk.getId());
+        boolean unClaimed = this.getDao().removeClaim(faction.getId(), chunk.getId());
+        event.setSuccess(unClaimed);
     }
 
     @EventHandler(priority = EventPriority.HIGHEST)
@@ -259,14 +270,13 @@ public interface FactionsHandler extends DataHandler<Faction> {
         FPlayer player = event.getPlayer();
         FChunk chunk = event.getChunk();
 
-        boolean removed = this.getDao().removeClaim(overClaimedFaction, chunk);
+        boolean removed = this.getDao().removeClaim(overClaimedFaction.getId(), chunk.getId());
 
-        if(removed) {
+        if (removed) {
             Logger.logInfo("Player &a" + player.getName() + " &7is claiming for faction: &a" + faction.getName() + " &7at: &2" + chunk.getId());
-            boolean claimed = this.getDao().claimForFaction(faction, chunk, player.getId());
+            boolean claimed = this.getDao().claimForFaction(faction.getId(), chunk, player.getId());
             event.setSuccess(claimed);
-        }
-        else {
+        } else {
             Logger.logInfo("Failed to un-claim.");
             event.setSuccess(false);
         }

@@ -8,7 +8,7 @@ import java.sql.*;
 @Singleton
 public class DBManager {
 
-    private final String URL = "jdbc:sqlite:next_gen_factions.db";
+    private final String URL = "jdbc:sqlite:blood_factions.db";
     private final Connection connection;
 
     @SneakyThrows

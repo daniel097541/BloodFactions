@@ -3,6 +3,7 @@ package crypto.factions.bloodfactions.commons.command.impl;
 import crypto.factions.bloodfactions.commons.annotation.command.ClaimCommand;
 import crypto.factions.bloodfactions.commons.annotation.command.CreateCommand;
 import crypto.factions.bloodfactions.commons.annotation.command.DisbandCommand;
+import crypto.factions.bloodfactions.commons.annotation.command.UnClaimCommand;
 import crypto.factions.bloodfactions.commons.annotation.config.LangConfiguration;
 import crypto.factions.bloodfactions.commons.command.FCommand;
 import crypto.factions.bloodfactions.commons.command.FSubCommand;
@@ -30,7 +31,9 @@ public class FCommandImpl implements FCommand {
                         @LangConfiguration NGFConfig langConfig,
                         @CreateCommand FSubCommand createSubCommand,
                         @DisbandCommand FSubCommand disbandSubCommand,
-                        @ClaimCommand FSubCommand claimCommand) {
+                        @ClaimCommand FSubCommand claimCommand,
+                        @UnClaimCommand FSubCommand unClaimSubCommand
+                        ) {
 
         this.langConfig = langConfig;
         PluginCommand pluginCommand = plugin.getCommand("f");
@@ -45,6 +48,7 @@ public class FCommandImpl implements FCommand {
         this.addSubCommand(createSubCommand);
         this.addSubCommand(disbandSubCommand);
         this.addSubCommand(claimCommand);
+        this.addSubCommand(unClaimSubCommand);
 
     }
 }

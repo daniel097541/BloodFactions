@@ -9,5 +9,6 @@ import crypto.factions.bloodfactions.commons.model.player.FPlayer;
 public class UnClaimEvent extends SimpleLandEvent {
     public UnClaimEvent(Faction faction, FPlayer player, FChunk chunk) {
         super(faction, player, PermissionType.UN_CLAIM, chunk);
+        this.launch();
     }
 }

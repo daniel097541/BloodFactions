@@ -15,11 +15,11 @@ import javax.inject.Singleton;
 import java.util.Objects;
 
 @Singleton
-public class ClaimSubCommand extends FSubCommandImpl {
+public class UnClaimSubCommand extends FSubCommandImpl {
 
     @Inject
-    public ClaimSubCommand(@LangConfiguration NGFConfig langConfig) {
-        super(SubCommandType.CLAIM, langConfig);
+    public UnClaimSubCommand(@LangConfiguration NGFConfig langConfig) {
+        super(SubCommandType.UN_CLAIM, langConfig);
     }
 
     @Override
@@ -28,7 +28,7 @@ public class ClaimSubCommand extends FSubCommandImpl {
 
         // Player is not in a faction.
         if (!hasFaction) {
-            String successMessage = (String) this.getLangConfig().get(LangConfigItems.COMMANDS_F_CLAIM_NO_FACTION);
+            String successMessage = (String) this.getLangConfig().get(LangConfigItems.COMMANDS_F_UN_CLAIM_NO_FACTION);
             MessageContext messageContext = new MessageContextImpl(player, successMessage);
             player.sms(messageContext);
             return false;
@@ -39,43 +39,19 @@ public class ClaimSubCommand extends FSubCommandImpl {
         Faction factionAt = Objects.requireNonNull(chunk).getFactionAt();
 
         // Already claimed this land.
-        if (factionAt.equals(faction)) {
-            String successMessage = (String) this.getLangConfig().get(LangConfigItems.COMMANDS_F_CLAIM_ALREADY_OWNED);
+        if (!factionAt.equals(faction)) {
+            String successMessage = (String) this.getLangConfig().get(LangConfigItems.COMMANDS_F_UN_CLAIM_NOT_YOUR_LAND);
             MessageContext messageContext = new MessageContextImpl(player, successMessage);
             player.sms(messageContext);
             return false;
         }
 
-        // Need more pow
-        if (!faction.canClaim() && !player.isOp()) {
-            String successMessage = (String) this.getLangConfig().get(LangConfigItems.COMMANDS_F_CLAIM_NOT_ENOUGH_POWER);
-            MessageContext messageContext = new MessageContextImpl(player, successMessage);
-            player.sms(messageContext);
-            return false;
-        }
+        boolean unClaimed = faction.unClaim(chunk, player);
 
-        // Cannot over-claim faction
-        if (!factionAt.canBeOverClaimed() && !player.isOp()) {
-            String successMessage = (String) this.getLangConfig().get(LangConfigItems.COMMANDS_F_CLAIM_FACTION_IS_STRONG_TO_KEEP);
-            MessageContext messageContext = new MessageContextImpl(player, successMessage);
-            messageContext.setFaction(factionAt);
-            player.sms(messageContext);
-            return false;
-        }
-
-        boolean claimed = false;
-        // Over-Claim
-        if (!factionAt.isSystemFaction()) {
-            claimed = faction.overClaim(chunk, player, factionAt);
-        }
-        // Simple claim
-        else {
-            claimed = faction.claim(chunk, player);
-        }
 
         // Success
-        if (claimed) {
-            String successMessage = (String) this.getLangConfig().get(LangConfigItems.COMMANDS_F_CLAIM_SUCCESS);
+        if (unClaimed) {
+            String successMessage = (String) this.getLangConfig().get(LangConfigItems.COMMANDS_F_UN_CLAIM_SUCCESS);
             MessageContext messageContext = new MessageContextImpl(player, successMessage);
             messageContext.setFaction(factionAt);
             player.sms(messageContext);
@@ -83,7 +59,7 @@ public class ClaimSubCommand extends FSubCommandImpl {
         }
         // Failed
         else {
-            String successMessage = (String) this.getLangConfig().get(LangConfigItems.COMMANDS_F_CLAIM_FAIL);
+            String successMessage = (String) this.getLangConfig().get(LangConfigItems.COMMANDS_F_UN_CLAIM_FAIL);
             MessageContext messageContext = new MessageContextImpl(player, successMessage);
             player.sms(messageContext);
             return false;

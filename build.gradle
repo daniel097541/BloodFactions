@@ -2,8 +2,8 @@ plugins {
     id 'java'
 }
 
-group = 'crypto.anguita'
-version = '1.0-SNAPSHOT'
+group = 'crypto.factions'
+version = '0.0.1-ALPHA'
 
 repositories {
     mavenCentral()
@@ -55,7 +55,7 @@ processResources {
 }
 
 jar {
-
+    archiveName("BloodFactions_" + project.version + ".jar")
     from {
         configurations.runtimeClasspath.filter{ it.exists() }.collect { it.isDirectory() ? it : zipTree(it) }
     }

@@ -25,14 +25,12 @@ import crypto.factions.bloodfactions.backend.manager.DBMigrationManagerImpl;
 import crypto.factions.bloodfactions.commons.annotation.command.ClaimCommand;
 import crypto.factions.bloodfactions.commons.annotation.command.CreateCommand;
 import crypto.factions.bloodfactions.commons.annotation.command.DisbandCommand;
+import crypto.factions.bloodfactions.commons.annotation.command.UnClaimCommand;
 import crypto.factions.bloodfactions.commons.annotation.config.LangConfiguration;
 import crypto.factions.bloodfactions.commons.annotation.config.SystemConfiguration;
 import crypto.factions.bloodfactions.commons.command.FCommand;
 import crypto.factions.bloodfactions.commons.command.FSubCommand;
-import crypto.factions.bloodfactions.commons.command.impl.ClaimSubCommand;
-import crypto.factions.bloodfactions.commons.command.impl.CreateSubCommand;
-import crypto.factions.bloodfactions.commons.command.impl.DisbandSubCommand;
-import crypto.factions.bloodfactions.commons.command.impl.FCommandImpl;
+import crypto.factions.bloodfactions.commons.command.impl.*;
 import crypto.factions.bloodfactions.commons.config.NGFConfig;
 import crypto.factions.bloodfactions.frontend.listener.PlayerListener;
 import crypto.factions.bloodfactions.frontend.listener.PlayerListenerImpl;
@@ -64,6 +62,7 @@ public class NGFBinder extends AbstractModule {
         this.bind(FSubCommand.class).annotatedWith(CreateCommand.class).to(CreateSubCommand.class);
         this.bind(FSubCommand.class).annotatedWith(DisbandCommand.class).to(DisbandSubCommand.class);
         this.bind(FSubCommand.class).annotatedWith(ClaimCommand.class).to(ClaimSubCommand.class);
+        this.bind(FSubCommand.class).annotatedWith(UnClaimCommand.class).to(UnClaimSubCommand.class);
 
 
         // Bind db manager
