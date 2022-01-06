@@ -16,10 +16,46 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockBreakEvent;
+import org.bukkit.event.block.BlockPlaceEvent;
 
 public interface PlayerListener extends Listener {
 
     NGFConfig getLangConfig();
+
+    @EventHandler(priority = EventPriority.HIGHEST)
+    default void handleBlockPlace(BlockPlaceEvent event) {
+
+        Player bukkitPlayer = event.getPlayer();
+        Block bukkitBlock = event.getBlock();
+        Location bukkitLocation = bukkitBlock.getLocation();
+
+        FChunk chunk = FChunkImpl.fromChunk(bukkitLocation.getChunk());
+        FPlayer player = NextGenFactionsAPI.getPlayer(bukkitPlayer);
+        Faction playersFaction = player.getFaction();
+        Faction factionAt = chunk.getFactionAt();
+
+        // Not a system faction.
+        if (!factionAt.isSystemFaction()) {
+
+            // Not same faction.
+            if (!playersFaction.equals(factionAt)) {
+                event.setCancelled(true);
+                String message = (String) this.getLangConfig().read(LangConfigItems.ACTIONS_PLACE_NOT_YOUR_FACTION.getPath());
+                MessageContext messageContext = new MessageContextImpl(player, message);
+                messageContext.setFaction(factionAt);
+                player.sms(messageContext);
+            }
+        } else {
+            // Not wilderness.
+            if (!factionAt.isFactionLessFaction()) {
+                event.setCancelled(true);
+                String message = (String) this.getLangConfig().read(LangConfigItems.ACTIONS_PLACE_NOT_YOUR_FACTION.getPath());
+                MessageContext messageContext = new MessageContextImpl(player, message);
+                messageContext.setFaction(factionAt);
+                player.sms(messageContext);
+            }
+        }
+    }
 
     @EventHandler(priority = EventPriority.HIGHEST)
     default void handleBlockBreak(BlockBreakEvent event) {
