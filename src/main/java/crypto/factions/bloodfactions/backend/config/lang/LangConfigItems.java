@@ -9,11 +9,15 @@ import java.util.Map;
 
 public class LangConfigItems {
 
+    // Alerts broadcasting
+    public static ConfigItem ALERT_PREFIX = new ConfigItemImpl("alerts.prefix", "&dALERT &7>> ");
+    public static ConfigItem ALERT_OVER_CLAIMED = new ConfigItemImpl("alerts.over-claimed", "&c{faction_name} &eis over claiming you at: &7{chunk} &e!");
+
     // Actions messages
     public static ConfigItem ACTIONS_BREAK_NOT_YOUR_FACTION = new ConfigItemImpl("actions.block-break.not-your-faction", "&7This land is claimed by: &c{faction_name}&7, you cannot break blocks here!");
 
+    // No permission for commands.
     public static ConfigItem COMMANDS_NO_PERMISSION = new ConfigItemImpl("commands.messages.no-permission", "&cYou dont have permission to perform this command.");
-
 
     // Create command
     public static ConfigItem COMMANDS_F_CREATE_FACTION_ALREADY_EXISTS = new ConfigItemImpl("commands.f-create.faction-already-exists", "&cThere is already a faction with that name.");
@@ -40,7 +44,6 @@ public class LangConfigItems {
     public static ConfigItem COMMANDS_F_UN_CLAIM_NO_FACTION = new ConfigItemImpl("commands.f-unclaim.no-faction", "&cYou are not in a faction.");
     public static ConfigItem COMMANDS_F_UN_CLAIM_SUCCESS = new ConfigItemImpl("commands.f-unclaim.success", "&aYou successfully un-claimed this chunk from &7{faction_name}.");
     public static ConfigItem COMMANDS_F_UN_CLAIM_FAIL = new ConfigItemImpl("commands.f-unclaim.fail", "&cFailed to un-claim this chunk.");
-
 
 
     public static Map<String, ConfigItem> asMap() {

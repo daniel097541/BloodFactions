@@ -4,6 +4,7 @@ import lombok.Getter;
 
 public enum MessagePlaceholder {
 
+    CHUNK("{chunk}"),
     FACTION_NAME("{faction_name}"),
     PLAYER_NAME("{player_name}"),
     TARGET_FACTION_NAME("{target_faction_name}"),

@@ -1,5 +1,6 @@
 package crypto.factions.bloodfactions.commons.command;
 
+import crypto.factions.bloodfactions.backend.config.lang.LangConfigItems;
 import crypto.factions.bloodfactions.commons.config.NGFConfig;
 import crypto.factions.bloodfactions.commons.model.player.FPlayer;
 
@@ -14,7 +15,7 @@ public interface FSubCommand {
     }
 
     default String getNoPermissionMessage() {
-        return (String) this.getLangConfig().read("commands.messages.no-permission");
+        return (String) this.getLangConfig().read(LangConfigItems.COMMANDS_NO_PERMISSION.getPath());
     }
 
     default boolean run(String[] args, FPlayer player) {

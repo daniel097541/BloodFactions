@@ -1,6 +1,7 @@
 package crypto.factions.bloodfactions.commons.messages.model;
 
 import crypto.factions.bloodfactions.commons.model.faction.Faction;
+import crypto.factions.bloodfactions.commons.model.land.FChunk;
 import crypto.factions.bloodfactions.commons.model.player.FPlayer;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
@@ -9,15 +10,23 @@ import lombok.Setter;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.HashSet;
+import java.util.Set;
+
 @Getter
 @Setter
 @EqualsAndHashCode
 @RequiredArgsConstructor
 public class MessageContextImpl implements MessageContext {
 
+    public MessageContextImpl(@NotNull FPlayer player, @NotNull String message) {
+        this.players = new HashSet<>();
+        this.players.add(player);
+        this.message = message;
+    }
 
     @NotNull
-    private final FPlayer player;
+    private final Set<FPlayer> players;
 
     @NotNull
     private final String message;
@@ -33,5 +42,8 @@ public class MessageContextImpl implements MessageContext {
 
     @Nullable
     private FPlayer otherPlayer;
+
+    @Nullable
+    private FChunk chunk;
 
 }

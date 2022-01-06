@@ -17,6 +17,20 @@ public interface FChunk {
         return "FCHUNK_" + this.getWorldId().toString() + "_" + this.getX() + "_" + this.getZ();
     }
 
+    default @NotNull String chunkToString() {
+        Chunk bukkitChunk = this.getBukkitChunk();
+
+        if (Objects.nonNull(bukkitChunk)) {
+
+            World world = bukkitChunk.getWorld();
+            String name = world.getName();
+            int x = this.getX();
+            int z = this.getZ();
+            return "World: " + name + ", X: " + x + ", Z: " + z;
+        }
+        return "";
+    }
+
     UUID getWorldId();
 
     int getX();
