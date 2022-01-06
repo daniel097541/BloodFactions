@@ -51,6 +51,7 @@ public class LangConfigItems {
     public static ConfigItem COMMANDS_F_HOME_FAIL = new ConfigItemImpl("commands.f-home.fail", "&cFaction home failed.");
     public static ConfigItem COMMANDS_F_HOME_NOT_SET = new ConfigItemImpl("commands.f-home.home-is-not-set", "&cYour faction does not have a home, set it with: &7/f home set");
     public static ConfigItem COMMANDS_F_HOME_SET_SUCCESS= new ConfigItemImpl("commands.f-home.set-success", "&aYou successfully set the home of your faction!");
+    public static ConfigItem COMMANDS_F_HOME_NOT_YOUR_LAND= new ConfigItemImpl("commands.f-home.not-your-land", "&cThis chunk is not claimed by your faction.");
 
 
     public static Map<String, ConfigItem> asMap() {

@@ -254,6 +254,19 @@ public interface FactionsDAO extends DAO<Faction> {
         return null;
     }
 
+    default boolean removeCore(@NotNull UUID factionId) {
+        String sql = "DELETE FROM factions_tps WHERE faction_id = ? AND is_core = 1;";
+        try (PreparedStatement statement = this.getPreparedStatement(sql)) {
+            statement.setString(1, factionId.toString());
+            int deleted = statement.executeUpdate();
+            return deleted > 0;
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return false;
+    }
+
     default void setCore(@NotNull UUID factionId, @NotNull UUID playerId, @NotNull FLocation core) {
 
         String sql = "INSERT INTO factions_tps (faction_id, world_id, x, y, z, created_by, is_core) VALUES (?, ?, ?, ?, ?, ?, ?);";

@@ -265,6 +265,10 @@ public interface FactionsHandler extends DataHandler<Faction> {
         FLocation core = event.getCore();
         FPlayer player = event.getPlayer();
         Faction faction = event.getFaction();
+        // Remove previous core.
+        this.getDao().removeCore(faction.getId());
+
+        // Set new core.
         this.getDao().setCore(faction.getId(), player.getId(), core);
     }
 
