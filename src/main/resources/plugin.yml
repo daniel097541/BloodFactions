@@ -1,10 +1,10 @@
-name: NextGenFactions
+name: BloodFactions
 version: '${version}'
-main: crypto.anguita.nextgenfactions.NextGenFactionsPlugin
+main: crypto.factions.bloodfactions.BloodFactions
 commands:
   f:
     aliases:
       - "faction"
       - "factions"
-      - "ngf"
-      - "nextgenfactions"
+      - "blf"
+      - "bloodfactions"
