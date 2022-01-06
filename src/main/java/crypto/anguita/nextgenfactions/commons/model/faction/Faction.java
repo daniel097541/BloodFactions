@@ -90,6 +90,17 @@ public interface Faction extends NextGenFactionEntity {
     }
 
     /**
+     * Over-Claims a chunk.
+     *
+     * @param chunk
+     * @param player
+     * @return
+     */
+    default boolean overClaim(FChunk chunk, FPlayer player, Faction otherFaction) {
+        return PermissionNextGenFactionsAPI.overClaim(this, chunk, player);
+    }
+
+    /**
      * Gets all the members of a Faction.
      *
      * @return

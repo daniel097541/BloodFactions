@@ -1,5 +1,6 @@
 package crypto.anguita.nextgenfactions.backend.dao;
 
+import crypto.anguita.nextgenfactions.commons.logger.Logger;
 import crypto.anguita.nextgenfactions.commons.model.faction.Faction;
 import crypto.anguita.nextgenfactions.commons.model.faction.FactionImpl;
 import crypto.anguita.nextgenfactions.commons.model.faction.SystemFactionImpl;
@@ -169,5 +170,23 @@ public interface FactionsDAO extends DAO<Faction> {
             e.printStackTrace();
         }
         return count;
+    }
+
+    default boolean removeClaim(Faction overClaimedFaction, FChunk chunk){
+
+        String sql = "DELETE FROM as_faction_claims WHERE faction_id = ? AND claim_id = ?;";
+
+        try(PreparedStatement statement = this.getPreparedStatement(sql)) {
+            statement.setString(1, overClaimedFaction.getId().toString());
+            statement.setString(2, chunk.getId());
+
+            statement.executeUpdate();
+            return true;
+        }
+        catch (Exception e){
+            Logger.logError("Error removing claim.", e);
+        }
+
+        return false;
     }
 }

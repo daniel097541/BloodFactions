@@ -11,6 +11,7 @@ import crypto.anguita.nextgenfactions.commons.events.faction.unpermissioned.Crea
 import crypto.anguita.nextgenfactions.commons.events.faction.unpermissioned.CreateFactionEvent;
 import crypto.anguita.nextgenfactions.commons.events.land.callback.GetNumberOfClaimsEvent;
 import crypto.anguita.nextgenfactions.commons.events.land.permissioned.ClaimEvent;
+import crypto.anguita.nextgenfactions.commons.events.land.permissioned.OverClaimEvent;
 import crypto.anguita.nextgenfactions.commons.events.role.GetDefaultRoleOfFactionEvent;
 import crypto.anguita.nextgenfactions.commons.events.role.GetRolesOfFactionEvent;
 import crypto.anguita.nextgenfactions.commons.events.shared.callback.GetFactionOfPlayerEvent;
@@ -248,6 +249,26 @@ public interface FactionsHandler extends DataHandler<Faction> {
         Logger.logInfo("Player " + player.getName() + " is claiming for faction: " + faction.getName() + " at: " + chunk.getId());
         boolean claimed = this.getDao().claimForFaction(faction, chunk, player.getId());
         event.setSuccess(claimed);
+    }
+
+    @EventHandler(priority = EventPriority.HIGHEST)
+    default void handleOverClaim(OverClaimEvent event) {
+        Faction faction = event.getFaction();
+        Faction overClaimedFaction = event.getOverClaimedFaction();
+        FPlayer player = event.getPlayer();
+        FChunk chunk = event.getChunk();
+
+        boolean removed = this.getDao().removeClaim(overClaimedFaction, chunk);
+
+        if(removed) {
+            Logger.logInfo("Player " + player.getName() + " is claiming for faction: " + faction.getName() + " at: " + chunk.getId());
+            boolean claimed = this.getDao().claimForFaction(faction, chunk, player.getId());
+            event.setSuccess(claimed);
+        }
+        else {
+            Logger.logInfo("Failed to un-claim.");
+            event.setSuccess(false);
+        }
     }
 
 }

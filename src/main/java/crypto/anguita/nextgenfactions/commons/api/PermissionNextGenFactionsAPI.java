@@ -3,10 +3,7 @@ package crypto.anguita.nextgenfactions.commons.api;
 import crypto.anguita.nextgenfactions.commons.events.faction.permissioned.DisbandFactionEvent;
 import crypto.anguita.nextgenfactions.commons.events.faction.permissioned.InvitePlayerToFactionEvent;
 import crypto.anguita.nextgenfactions.commons.events.faction.permissioned.KickPlayerFromFactionEvent;
-import crypto.anguita.nextgenfactions.commons.events.land.permissioned.ClaimEvent;
-import crypto.anguita.nextgenfactions.commons.events.land.permissioned.MultiClaimEvent;
-import crypto.anguita.nextgenfactions.commons.events.land.permissioned.MultiUnClaimEvent;
-import crypto.anguita.nextgenfactions.commons.events.land.permissioned.UnClaimEvent;
+import crypto.anguita.nextgenfactions.commons.events.land.permissioned.*;
 import crypto.anguita.nextgenfactions.commons.events.role.ChangeRoleOfPlayerEvent;
 import crypto.anguita.nextgenfactions.commons.model.faction.Faction;
 import crypto.anguita.nextgenfactions.commons.model.land.FChunk;
@@ -124,4 +121,8 @@ public class PermissionNextGenFactionsAPI {
         return changed;
     }
 
+    public static boolean overClaim(Faction faction, FChunk chunk, FPlayer player) {
+        OverClaimEvent overClaimEvent = new OverClaimEvent(player.getFaction(), faction, player, chunk);
+        return overClaimEvent.isSuccess();
+    }
 }
