@@ -246,7 +246,7 @@ public interface FactionsHandler extends DataHandler<Faction> {
         FPlayer player = event.getPlayer();
         FChunk chunk = event.getChunk();
 
-        Logger.logInfo("Player " + player.getName() + " is claiming for faction: " + faction.getName() + " at: " + chunk.getId());
+        Logger.logInfo("Player &d" + player.getName() + " &7is claiming for faction: &d" + faction.getName() + " &7at: &d" + chunk.getId());
         boolean claimed = this.getDao().claimForFaction(faction, chunk, player.getId());
         event.setSuccess(claimed);
     }
@@ -261,7 +261,7 @@ public interface FactionsHandler extends DataHandler<Faction> {
         boolean removed = this.getDao().removeClaim(overClaimedFaction, chunk);
 
         if(removed) {
-            Logger.logInfo("Player " + player.getName() + " is claiming for faction: " + faction.getName() + " at: " + chunk.getId());
+            Logger.logInfo("Player &a" + player.getName() + " &7is claiming for faction: &a" + faction.getName() + " &7at: &2" + chunk.getId());
             boolean claimed = this.getDao().claimForFaction(faction, chunk, player.getId());
             event.setSuccess(claimed);
         }
