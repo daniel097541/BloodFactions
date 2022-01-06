@@ -6,6 +6,7 @@ import crypto.anguita.nextgenfactions.backend.handler.command.CommandHandler;
 import crypto.anguita.nextgenfactions.backend.handler.data.FactionsHandler;
 import crypto.anguita.nextgenfactions.backend.handler.data.PlayerHandler;
 import crypto.anguita.nextgenfactions.backend.handler.permissions.PermissionsHandler;
+import crypto.anguita.nextgenfactions.backend.manager.DBMigrationManager;
 import crypto.anguita.nextgenfactions.frontend.listener.PlayerListener;
 import crypto.anguita.nextgenfactions.injection.NGFBinder;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -15,6 +16,9 @@ public class NextGenFactionsPlugin extends JavaPlugin {
     private static NextGenFactionsPlugin instance;
 
     private final NGFBinder binder = new NGFBinder(this);
+
+    @Inject
+    private DBMigrationManager dbMigrationManager;
 
     @Inject
     private CommandHandler commandHandler;
