@@ -9,6 +9,7 @@ import crypto.factions.bloodfactions.commons.events.player.callback.CheckIfPlaye
 import crypto.factions.bloodfactions.commons.events.player.callback.GetPlayerByNameEvent;
 import crypto.factions.bloodfactions.commons.events.player.callback.GetPlayerEvent;
 import crypto.factions.bloodfactions.commons.events.player.callback.PlayerHasPermissionEvent;
+import crypto.factions.bloodfactions.commons.events.player.unpermissioned.PlayerChangedLandEvent;
 import crypto.factions.bloodfactions.commons.events.player.unpermissioned.SavePlayerEvent;
 import crypto.factions.bloodfactions.commons.events.role.GetDefaultRoleOfFactionEvent;
 import crypto.factions.bloodfactions.commons.events.role.GetRoleOfPlayerEvent;
@@ -323,5 +324,12 @@ public class NextGenFactionsAPI {
         new ShowFactionEvent(faction, player);
         long end = System.currentTimeMillis();
         logAction(start, end, APIAction.SHOW_FACTION);
+    }
+
+    public static void changedLand(FPlayer player, FLocation from, FLocation to) {
+        long start = System.currentTimeMillis();
+        new PlayerChangedLandEvent(player, from.getFactionAt(), to.getFactionAt());
+        long end = System.currentTimeMillis();
+        logAction(start, end, APIAction.CHANGED_LAND);
     }
 }

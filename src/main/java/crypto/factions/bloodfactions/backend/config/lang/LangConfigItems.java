@@ -66,6 +66,12 @@ public class LangConfigItems {
     public static ConfigItem COMMANDS_F_SHOW_SUCCESS = new ConfigItemImpl("commands.f-show.success", showBluePrint);
     public static ConfigItem COMMANDS_F_SHOW_FACTION_DOES_NOT_EXIST = new ConfigItemImpl("commands.f-show.fail", "&cThere is no faction with that name.");
 
+    // Fly
+    public static ConfigItem COMMANDS_F_FLY_NO_FACTION = new ConfigItemImpl("commands.f-fly.no-faction", "&cYou need a faction to do that.");
+    public static ConfigItem COMMANDS_F_FLY_SUCCESS = new ConfigItemImpl("commands.f-fly.success", "&aFlight mode activated.");
+    public static ConfigItem COMMANDS_F_FLY_FAIL = new ConfigItemImpl("commands.f-fly.fail", "&cError activating flight.");
+    public static ConfigItem COMMANDS_F_FLY_NOT_IN_YOUR_FACTION = new ConfigItemImpl("commands.f-fly.not-in-your-faction", "&cYou are not in your factions land.");
+
 
     public static Map<String, ConfigItem> asMap() {
         Map<String, ConfigItem> items = new HashMap<>();

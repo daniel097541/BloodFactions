@@ -14,7 +14,8 @@ public enum PermissionType {
     MULTI_CLAIM(7),
     MULTI_UN_CLAIM(8),
     CHANGE_ROLES(9),
-    SET_CORE(10);
+    SET_CORE(10),
+    FLY(11);
 
     @Getter
     private final int id;

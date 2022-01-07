@@ -28,6 +28,10 @@ public interface FPlayer extends NextGenFactionEntity {
 
     int getPower();
 
+    boolean isFlying();
+
+    void setFlying(boolean flying);
+
     default void sms(@NotNull MessageContext context) {
         new MessageContextHandler() {
         }.handle(context);
@@ -209,4 +213,12 @@ public interface FPlayer extends NextGenFactionEntity {
         NextGenFactionsAPI.showFactionToPlayer(this, faction);
     }
 
+    default void toggleFly(){
+        boolean flying = PermissionNextGenFactionsAPI.toggleFlightMode(this);
+        this.setFlying(flying);
+    }
+
+    default void changedLand(FLocation from, FLocation to){
+        NextGenFactionsAPI.changedLand(this, from, to);
+    }
 }

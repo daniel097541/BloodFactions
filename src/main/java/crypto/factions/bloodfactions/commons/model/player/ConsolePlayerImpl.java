@@ -3,6 +3,7 @@ package crypto.factions.bloodfactions.commons.model.player;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
+import lombok.Setter;
 import org.bukkit.command.CommandSender;
 
 import java.util.UUID;
@@ -13,6 +14,9 @@ import java.util.UUID;
 public class ConsolePlayerImpl implements FPlayer {
     private final UUID id = UUID.fromString("cd2dce3d-dcae-4800-b7a8-d1aa57a0b4ba");
     private final String name;
+
+    @Setter
+    private boolean flying = false;
 
     public static FPlayer fromSender(CommandSender sender) {
         return new ConsolePlayerImpl(sender.getName());

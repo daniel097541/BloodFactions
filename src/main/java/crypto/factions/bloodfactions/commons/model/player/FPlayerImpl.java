@@ -16,9 +16,12 @@ public class FPlayerImpl implements FPlayer {
     private final String name;
 
     @Setter
+    private boolean flying;
+
+    @Setter
     private int power;
 
     public static FPlayer fromPlayer(Player player) {
-        return new FPlayerImpl(player.getUniqueId(), player.getName(), 0);
+        return new FPlayerImpl(player.getUniqueId(), player.getName(), false, 0);
     }
 }

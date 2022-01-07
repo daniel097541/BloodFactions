@@ -7,7 +7,9 @@ import crypto.factions.bloodfactions.commons.messages.model.MessageContext;
 import crypto.factions.bloodfactions.commons.messages.model.MessageContextImpl;
 import crypto.factions.bloodfactions.commons.model.faction.Faction;
 import crypto.factions.bloodfactions.commons.model.land.FChunk;
+import crypto.factions.bloodfactions.commons.model.land.FLocation;
 import crypto.factions.bloodfactions.commons.model.land.impl.FChunkImpl;
+import crypto.factions.bloodfactions.commons.model.land.impl.FLocationImpl;
 import crypto.factions.bloodfactions.commons.model.player.FPlayer;
 import org.bukkit.Location;
 import org.bukkit.block.Block;
@@ -17,6 +19,9 @@ import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockPlaceEvent;
+import org.bukkit.event.player.PlayerMoveEvent;
+
+import java.util.Objects;
 
 public interface PlayerListener extends Listener {
 
@@ -88,6 +93,29 @@ public interface PlayerListener extends Listener {
                 MessageContext messageContext = new MessageContextImpl(player, message);
                 messageContext.setFaction(factionAt);
                 player.sms(messageContext);
+            }
+        }
+    }
+
+
+    @EventHandler(priority = EventPriority.HIGHEST)
+    default void handlePlayerMovement(PlayerMoveEvent event) {
+        Player bukkitPlayer = event.getPlayer();
+
+        FLocation from = FLocationImpl.fromLocation(event.getFrom());
+        FChunk chunkFrom = from.getChunk();
+
+        FLocation to = FLocationImpl.fromLocation(Objects.requireNonNull(event.getTo()));
+        FChunk chunkTo = to.getChunk();
+
+        if (!Objects.equals(chunkFrom, chunkTo)) {
+            FPlayer player = NextGenFactionsAPI.getPlayer(bukkitPlayer);
+            Faction factionFrom = from.getFactionAt();
+            Faction factionTo = to.getFactionAt();
+
+            // Changed faction
+            if (!Objects.equals(factionTo, factionFrom)) {
+                Objects.requireNonNull(player).changedLand(from, to);
             }
         }
     }

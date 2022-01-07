@@ -5,6 +5,8 @@ import crypto.factions.bloodfactions.backend.dao.RolesDAO;
 import crypto.factions.bloodfactions.commons.api.NextGenFactionsAPI;
 import crypto.factions.bloodfactions.commons.events.player.callback.CheckIfPlayerHasFactionEvent;
 import crypto.factions.bloodfactions.commons.events.player.callback.GetPlayerEvent;
+import crypto.factions.bloodfactions.commons.events.player.permissioned.PlayerFlightEvent;
+import crypto.factions.bloodfactions.commons.events.player.unpermissioned.PlayerChangedLandEvent;
 import crypto.factions.bloodfactions.commons.events.role.ChangeRoleOfPlayerEvent;
 import crypto.factions.bloodfactions.commons.events.role.GetRoleOfPlayerEvent;
 import crypto.factions.bloodfactions.commons.events.shared.callback.GetPlayersInFactionEvent;
@@ -14,6 +16,7 @@ import crypto.factions.bloodfactions.commons.model.player.FPlayerImpl;
 import crypto.factions.bloodfactions.commons.model.role.FactionRole;
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
+import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 
@@ -45,7 +48,7 @@ public interface PlayerHandler extends DataHandler<FPlayer> {
 
             // Create the player in DB.
             OfflinePlayer offlinePlayer = Bukkit.getOfflinePlayer(uuid);
-            player = new FPlayerImpl(offlinePlayer.getUniqueId(), offlinePlayer.getName(), 0);
+            player = new FPlayerImpl(offlinePlayer.getUniqueId(), offlinePlayer.getName(), false, 0);
             player = this.getDao().insert(player);
 
             if (Objects.nonNull(player)) {
@@ -79,6 +82,42 @@ public interface PlayerHandler extends DataHandler<FPlayer> {
 
         this.getRolesDAO().setPlayersRole(player, role);
         event.setChanged(true);
+    }
+
+    @EventHandler(priority = EventPriority.HIGHEST)
+    default void handlePlayerChangedLandEvent(PlayerChangedLandEvent event) {
+
+        FPlayer player = event.getPlayer();
+        Faction factionFrom = event.getFactionFrom();
+        Faction factionTo = event.getFactionTo();
+
+        // Cancel flight
+        if (player.isFlying() && factionFrom.equals(player.getFaction())) {
+            player.toggleFly();
+        }
+
+    }
+
+    @EventHandler(priority = EventPriority.HIGHEST)
+    default void handleToggleFlight(PlayerFlightEvent event){
+
+        FPlayer player = event.getPlayer();
+        Faction faction = event.getFaction();
+        Player bukkitPlayer = player.getBukkitPlayer();
+
+        boolean flying = false;
+        if(player.isFlying()){
+            Objects.requireNonNull(bukkitPlayer).setAllowFlight(false);
+            bukkitPlayer.setFlying(false);
+        }
+        else{
+            Objects.requireNonNull(bukkitPlayer).setAllowFlight(true);
+            bukkitPlayer.setFlying(true);
+            flying = true;
+        }
+
+        event.setSuccess(flying);
+        this.getDao().updatePlayersFlightMode(player.getId(), flying);
     }
 
 }

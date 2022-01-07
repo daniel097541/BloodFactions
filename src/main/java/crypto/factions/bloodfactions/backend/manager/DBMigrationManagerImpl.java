@@ -37,7 +37,8 @@ public class DBMigrationManagerImpl implements DBMigrationManager{
         String sql = "CREATE TABLE IF NOT EXISTS players ( " +
                 " id VARCHAR[36] PRIMARY KEY, " +
                 " name VARCHAR[50] NOT NULL, " +
-                " power SMALLINT NOT NULL DEFAULT 0 " +
+                " power SMALLINT NOT NULL DEFAULT 0, " +
+                " flying BOOLEAN NOT NULL DEFAULT 0" +
                 ");";
 
         this.dbManager.executeUpdate(sql);
