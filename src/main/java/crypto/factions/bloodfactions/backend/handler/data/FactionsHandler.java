@@ -1,5 +1,6 @@
 package crypto.factions.bloodfactions.backend.handler.data;
 
+import com.google.common.cache.LoadingCache;
 import crypto.factions.bloodfactions.backend.config.lang.LangConfigItems;
 import crypto.factions.bloodfactions.backend.config.system.SystemConfigItems;
 import crypto.factions.bloodfactions.backend.dao.FactionsDAO;
@@ -51,6 +52,10 @@ public interface FactionsHandler extends DataHandler<Faction> {
     NGFConfig getSystemConfig();
 
     NGFConfig getLangConfig();
+
+    LoadingCache<String, Faction> getChunkFactionsCache();
+
+    LoadingCache<String, Faction> getNameFactionsCache();
 
     @EventHandler(priority = EventPriority.HIGHEST)
     default void handleGetFactionLessFaction(GetFactionLessFactionEvent event) throws NoFactionForFactionLessException {
@@ -198,7 +203,12 @@ public interface FactionsHandler extends DataHandler<Faction> {
     @EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
     default void handleGetFactionByName(GetFactionByNameEvent getFactionEvent) {
         String name = getFactionEvent.getName();
-        Faction faction = this.getByName(name);
+        Faction faction;
+        try {
+            faction = this.getNameFactionsCache().get(name);
+        } catch (Exception e) {
+            faction = null;
+        }
         getFactionEvent.setFaction(faction);
     }
 
@@ -219,7 +229,13 @@ public interface FactionsHandler extends DataHandler<Faction> {
     @EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
     default void handleGetFactionAtChunk(GetFactionAtChunkEvent event) throws NoFactionForFactionLessException {
         FChunk chunk = event.getChunk();
-        Faction faction = this.getDao().getFactionAtChunk(chunk.getId());
+        Faction faction;
+
+        try {
+            faction = this.getChunkFactionsCache().get(chunk.getId());
+        } catch (Exception e) {
+            faction = null;
+        }
 
         // If the faction is null, then return faction less.
         if (Objects.isNull(faction)) {
