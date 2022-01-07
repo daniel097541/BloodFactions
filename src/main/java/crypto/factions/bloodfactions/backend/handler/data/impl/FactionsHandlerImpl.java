@@ -12,7 +12,6 @@ import crypto.factions.bloodfactions.commons.annotation.config.SystemConfigurati
 import crypto.factions.bloodfactions.commons.config.NGFConfig;
 import crypto.factions.bloodfactions.commons.model.faction.Faction;
 import lombok.Getter;
-import lombok.SneakyThrows;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import javax.inject.Inject;
@@ -34,6 +33,7 @@ public class FactionsHandlerImpl implements FactionsHandler {
     private final LoadingCache<String, Faction> chunkFactionsCache = CacheBuilder.newBuilder()
             .maximumSize(10000)
             .expireAfterAccess(1, TimeUnit.MINUTES)
+            .recordStats()
             .build(new CacheLoader<String, Faction>() {
                 @Override
                 public Faction load(String key) throws Exception {
