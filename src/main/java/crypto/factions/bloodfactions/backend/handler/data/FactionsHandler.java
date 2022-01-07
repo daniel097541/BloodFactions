@@ -17,6 +17,8 @@ import crypto.factions.bloodfactions.commons.events.land.callback.GetNumberOfCla
 import crypto.factions.bloodfactions.commons.events.land.permissioned.ClaimEvent;
 import crypto.factions.bloodfactions.commons.events.land.permissioned.OverClaimEvent;
 import crypto.factions.bloodfactions.commons.events.land.permissioned.UnClaimEvent;
+import crypto.factions.bloodfactions.commons.events.player.unpermissioned.FPlayerLogOutEvent;
+import crypto.factions.bloodfactions.commons.events.player.unpermissioned.FPlayerLoginEvent;
 import crypto.factions.bloodfactions.commons.events.role.GetDefaultRoleOfFactionEvent;
 import crypto.factions.bloodfactions.commons.events.role.GetRolesOfFactionEvent;
 import crypto.factions.bloodfactions.commons.events.shared.callback.GetFactionOfPlayerEvent;
@@ -31,6 +33,7 @@ import crypto.factions.bloodfactions.commons.model.permission.PermissionType;
 import crypto.factions.bloodfactions.commons.model.player.FPlayer;
 import crypto.factions.bloodfactions.commons.model.role.FactionRole;
 import crypto.factions.bloodfactions.commons.model.role.FactionRoleImpl;
+import crypto.factions.bloodfactions.commons.tasks.handler.TasksHandler;
 import crypto.factions.bloodfactions.commons.utils.StringUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.event.EventHandler;
@@ -48,6 +51,8 @@ public interface FactionsHandler extends DataHandler<Faction> {
     PlayerDAO getPlayerDAO();
 
     RolesDAO getRolesDAO();
+
+    TasksHandler getTasksHandler();
 
     NGFConfig getSystemConfig();
 
@@ -286,7 +291,7 @@ public interface FactionsHandler extends DataHandler<Faction> {
         boolean unClaimed = this.getDao().removeClaim(faction.getId(), chunk.getId());
 
         // If unclaimed, invalidate chunk in cache.
-        if(unClaimed){
+        if (unClaimed) {
             this.getChunkFactionsCache().invalidate(chunk.getId());
         }
 
@@ -324,6 +329,11 @@ public interface FactionsHandler extends DataHandler<Faction> {
 
         if (removed) {
             boolean claimed = this.getDao().claimForFaction(faction.getId(), chunk, player.getId());
+
+            if (claimed) {
+                this.getChunkFactionsCache().put(chunk.getId(), faction);
+            }
+
             event.setSuccess(claimed);
         } else {
             Logger.logInfo("Failed to un-claim.");
@@ -344,9 +354,22 @@ public interface FactionsHandler extends DataHandler<Faction> {
         placeHolders.put("{faction_name}", faction.getName());
         placeHolders.put("{faction_members}", members.stream().map(FPlayer::getName).collect(Collectors.joining(", ")));
         placeHolders.put("{faction_owner}", owner.getName());
+        placeHolders.put("{faction_claims}", String.valueOf(faction.getAmountOfClaims()));
 
         String message = (String) this.getLangConfig().get(LangConfigItems.COMMANDS_F_SHOW_SUCCESS);
         player.sms(StringUtils.replacePlaceHolders(message, placeHolders));
+    }
+
+    @EventHandler(priority = EventPriority.HIGHEST)
+    default void handlePlayerLogin(FPlayerLoginEvent event) {
+        FPlayer player = event.getPlayer();
+        this.getTasksHandler().addPowerTask(player);
+    }
+
+    @EventHandler(priority = EventPriority.HIGHEST)
+    default void handlePlayerLogOut(FPlayerLogOutEvent event) {
+        FPlayer player = event.getPlayer();
+        this.getTasksHandler().removePowerTask(player);
     }
 
 }

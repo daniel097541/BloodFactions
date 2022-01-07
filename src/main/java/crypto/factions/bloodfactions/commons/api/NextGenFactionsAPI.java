@@ -9,8 +9,7 @@ import crypto.factions.bloodfactions.commons.events.player.callback.CheckIfPlaye
 import crypto.factions.bloodfactions.commons.events.player.callback.GetPlayerByNameEvent;
 import crypto.factions.bloodfactions.commons.events.player.callback.GetPlayerEvent;
 import crypto.factions.bloodfactions.commons.events.player.callback.PlayerHasPermissionEvent;
-import crypto.factions.bloodfactions.commons.events.player.unpermissioned.PlayerChangedLandEvent;
-import crypto.factions.bloodfactions.commons.events.player.unpermissioned.SavePlayerEvent;
+import crypto.factions.bloodfactions.commons.events.player.unpermissioned.*;
 import crypto.factions.bloodfactions.commons.events.role.GetDefaultRoleOfFactionEvent;
 import crypto.factions.bloodfactions.commons.events.role.GetRoleOfPlayerEvent;
 import crypto.factions.bloodfactions.commons.events.role.GetRolesOfFactionEvent;
@@ -331,5 +330,27 @@ public class NextGenFactionsAPI {
         new PlayerChangedLandEvent(player, from.getFactionAt(), to.getFactionAt());
         long end = System.currentTimeMillis();
         logAction(start, end, APIAction.CHANGED_LAND);
+    }
+
+    public static int updatePlayersPower(FPlayer player, int increment) {
+        long start = System.currentTimeMillis();
+        new PlayerPowerChangeEvent(player, increment);
+        long end = System.currentTimeMillis();
+        logAction(start, end, APIAction.UPDATE_POWER);
+        return player.getPower();
+    }
+
+    public static void playerLoggedIn(FPlayer player) {
+        long start = System.currentTimeMillis();
+        new FPlayerLoginEvent(player);
+        long end = System.currentTimeMillis();
+        logAction(start, end, APIAction.LOGGED_IN);
+    }
+
+    public static void playerLoggedOut(FPlayer player) {
+        long start = System.currentTimeMillis();
+        new FPlayerLogOutEvent(player);
+        long end = System.currentTimeMillis();
+        logAction(start, end, APIAction.LOGGED_OUT);
     }
 }

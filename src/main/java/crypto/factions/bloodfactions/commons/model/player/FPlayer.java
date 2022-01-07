@@ -221,4 +221,23 @@ public interface FPlayer extends NextGenFactionEntity {
     default void changedLand(FLocation from, FLocation to){
         NextGenFactionsAPI.changedLand(this, from, to);
     }
+
+    void setPower(int power);
+
+    default int updatePower(int increment){
+        return NextGenFactionsAPI.updatePlayersPower(this, increment);
+    }
+
+    default boolean isOnline(){
+        return this.getBukkitOfflinePlayer().isOnline();
+    }
+
+    default void logIn(){
+        NextGenFactionsAPI.playerLoggedIn(this);
+    }
+
+    default void logOut(){
+        NextGenFactionsAPI.playerLoggedOut(this);
+    }
+
 }

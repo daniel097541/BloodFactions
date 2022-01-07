@@ -110,6 +110,7 @@ public interface PlayerDAO extends DAO<FPlayer> {
 
     /**
      * Checks whether a player has Faction.
+     *
      * @param playerId
      * @return
      */
@@ -140,6 +141,7 @@ public interface PlayerDAO extends DAO<FPlayer> {
 
     /**
      * Kicks all players from the Faction.
+     *
      * @param faction
      */
     default void removeAllPlayersFromFaction(Faction faction) {
@@ -157,6 +159,7 @@ public interface PlayerDAO extends DAO<FPlayer> {
 
     /**
      * Checks if the player has permissions to perform the action.
+     *
      * @param player
      * @param permissionType
      * @return
@@ -166,40 +169,54 @@ public interface PlayerDAO extends DAO<FPlayer> {
         String sql = "SELECT count(*) AS count FROM as_player_permissions AS rel " +
                 " WHERE rel.player_id = ? AND permission_id = ?;";
 
-        try(PreparedStatement statement = this.getPreparedStatement(sql)){
+        try (PreparedStatement statement = this.getPreparedStatement(sql)) {
 
             statement.setString(1, player.getId().toString());
             statement.setInt(1, permissionType.getId());
 
-            try(ResultSet rs = statement.executeQuery()){
-                if(rs.next()){
+            try (ResultSet rs = statement.executeQuery()) {
+                if (rs.next()) {
                     int count = rs.getInt("count");
                     return count > 0;
                 }
             }
 
-        }
-        catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
         }
 
         return false;
     }
 
-    default void updatePlayersFlightMode(UUID playerId, boolean flying){
+    default void updatePlayersFlightMode(UUID playerId, boolean flying) {
 
         String sql = "UPDATE players SET flying = ? WHERE id = ?;";
 
-        try(PreparedStatement statement = this.getPreparedStatement(sql)){
+        try (PreparedStatement statement = this.getPreparedStatement(sql)) {
 
             statement.setBoolean(1, flying);
             statement.setString(2, playerId.toString());
 
             statement.executeUpdate();
-        }
-        catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
         }
 
+    }
+
+    default boolean updatePlayersPower(UUID id, int power) {
+
+        String sql = "UPDATE players SET power = ? WHERE id = ?;";
+
+        try (PreparedStatement statement = this.getPreparedStatement(sql)) {
+            statement.setInt(1, power);
+            statement.setString(2, id.toString());
+
+            return statement.executeUpdate() > 0;
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return false;
     }
 }

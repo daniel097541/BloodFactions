@@ -8,6 +8,7 @@ import crypto.factions.bloodfactions.commons.config.NGFConfig;
 import crypto.factions.bloodfactions.commons.events.player.callback.CheckIfPlayerHasFactionEvent;
 import crypto.factions.bloodfactions.commons.events.player.callback.GetPlayerEvent;
 import crypto.factions.bloodfactions.commons.events.player.permissioned.PlayerFlightEvent;
+import crypto.factions.bloodfactions.commons.events.player.unpermissioned.PlayerPowerChangeEvent;
 import crypto.factions.bloodfactions.commons.events.player.unpermissioned.PlayerChangedLandEvent;
 import crypto.factions.bloodfactions.commons.events.role.ChangeRoleOfPlayerEvent;
 import crypto.factions.bloodfactions.commons.events.role.GetRoleOfPlayerEvent;
@@ -130,6 +131,17 @@ public interface PlayerHandler extends DataHandler<FPlayer> {
 
         event.setSuccess(flying);
         this.getDao().updatePlayersFlightMode(player.getId(), flying);
+    }
+
+    @EventHandler(priority = EventPriority.HIGHEST)
+    default void handleIncrementPower(PlayerPowerChangeEvent event){
+
+        FPlayer player = event.getPlayer();
+        int increment = event.getChange();
+        player.setPower(player.getPower() + increment);
+
+        // Update power in db.
+        this.getDao().updatePlayersPower(player.getId(), player.getPower());
     }
 
 }

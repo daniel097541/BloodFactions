@@ -32,4 +32,9 @@ public class ConsolePlayerImpl implements FPlayer {
         // Console has all permissions.
         return true;
     }
+
+    @Override
+    public void setPower(int power) {
+
+    }
 }

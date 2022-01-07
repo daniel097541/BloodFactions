@@ -59,6 +59,7 @@ public class LangConfigItems {
     public static String showBluePrint = "&7----------- &e{faction_name} &7-----------\n" +
             "\n" +
             "   &d- &7Faction power: &e{faction_power} \n" +
+            "   &d- &7Faction claims: &e{faction_claims} \n" +
             "   &d- &7Faction members: &e{faction_members} \n" +
             "   &d- &7Owner: &e{faction_owner} \n";
 

@@ -13,5 +13,6 @@ public class GetNumberOfClaimsEvent extends FactionEvent {
 
     public GetNumberOfClaimsEvent(@NotNull Faction faction) {
         super(faction);
+        this.launch();
     }
 }

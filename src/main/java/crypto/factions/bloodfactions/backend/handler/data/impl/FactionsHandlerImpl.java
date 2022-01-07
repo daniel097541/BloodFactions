@@ -11,6 +11,7 @@ import crypto.factions.bloodfactions.commons.annotation.config.LangConfiguration
 import crypto.factions.bloodfactions.commons.annotation.config.SystemConfiguration;
 import crypto.factions.bloodfactions.commons.config.NGFConfig;
 import crypto.factions.bloodfactions.commons.model.faction.Faction;
+import crypto.factions.bloodfactions.commons.tasks.handler.TasksHandler;
 import lombok.Getter;
 import org.bukkit.plugin.java.JavaPlugin;
 
@@ -29,6 +30,7 @@ public class FactionsHandlerImpl implements FactionsHandler {
     private final JavaPlugin plugin;
     private final NGFConfig systemConfig;
     private final NGFConfig langConfig;
+    private final TasksHandler tasksHandler;
 
     private final LoadingCache<String, Faction> chunkFactionsCache = CacheBuilder.newBuilder()
             .maximumSize(10000)
@@ -61,13 +63,15 @@ public class FactionsHandlerImpl implements FactionsHandler {
                                PlayerDAO playerDAO,
                                RolesDAO rolesDAO,
                                @SystemConfiguration NGFConfig systemConfig,
-                               @LangConfiguration NGFConfig langConfig) {
+                               @LangConfiguration NGFConfig langConfig,
+                               TasksHandler tasksHandler) {
         this.dao = factionsDAO;
         this.plugin = plugin;
         this.playerDAO = playerDAO;
         this.rolesDAO = rolesDAO;
         this.systemConfig = systemConfig;
         this.langConfig = langConfig;
+        this.tasksHandler = tasksHandler;
         this.autoRegister();
         this.onLoad();
     }

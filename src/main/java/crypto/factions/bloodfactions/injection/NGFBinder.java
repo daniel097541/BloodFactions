@@ -31,6 +31,10 @@ import crypto.factions.bloodfactions.commons.command.FCommand;
 import crypto.factions.bloodfactions.commons.command.FSubCommand;
 import crypto.factions.bloodfactions.commons.command.impl.*;
 import crypto.factions.bloodfactions.commons.config.NGFConfig;
+import crypto.factions.bloodfactions.commons.tasks.handler.TasksHandler;
+import crypto.factions.bloodfactions.commons.tasks.handler.TasksHandlerImpl;
+import crypto.factions.bloodfactions.commons.tasks.manager.TaskManager;
+import crypto.factions.bloodfactions.commons.tasks.manager.TaskManagerImpl;
 import crypto.factions.bloodfactions.frontend.listener.PlayerListener;
 import crypto.factions.bloodfactions.frontend.listener.PlayerListenerImpl;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -75,6 +79,9 @@ public class NGFBinder extends AbstractModule {
         this.bind(PlayerDAO.class).to(PlayerDAOImpl.class);
         this.bind(RolesDAO.class).to(RolesDAOImpl.class);
 
+        // Tasks
+        this.bind(TaskManager.class).to(TaskManagerImpl.class);
+        this.bind(TasksHandler.class).to(TasksHandlerImpl.class);
 
         // Bind frontend listeners
         this.bind(PlayerListener.class).to(PlayerListenerImpl.class);
