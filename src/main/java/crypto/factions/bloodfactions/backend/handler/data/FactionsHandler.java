@@ -1,6 +1,5 @@
 package crypto.factions.bloodfactions.backend.handler.data;
 
-import com.google.common.cache.CacheStats;
 import com.google.common.cache.LoadingCache;
 import crypto.factions.bloodfactions.backend.config.lang.LangConfigItems;
 import crypto.factions.bloodfactions.backend.config.system.SystemConfigItems;
@@ -268,6 +267,12 @@ public interface FactionsHandler extends DataHandler<Faction> {
 
         Logger.logInfo("Player &d" + player.getName() + " &7is claiming for faction: &d" + faction.getName() + " &7at: &d" + chunk.getId());
         boolean claimed = this.getDao().claimForFaction(faction.getId(), chunk, player.getId());
+
+        // If claimed update cache.
+        if (claimed) {
+            this.getChunkFactionsCache().put(chunk.getId(), faction);
+        }
+
         event.setSuccess(claimed);
     }
 
@@ -279,6 +284,12 @@ public interface FactionsHandler extends DataHandler<Faction> {
 
         Logger.logInfo("Player &d" + player.getName() + " &7is un-claiming for faction: &d" + faction.getName() + " &7at: &d" + chunk.getId());
         boolean unClaimed = this.getDao().removeClaim(faction.getId(), chunk.getId());
+
+        // If unclaimed, invalidate chunk in cache.
+        if(unClaimed){
+            this.getChunkFactionsCache().invalidate(chunk.getId());
+        }
+
         event.setSuccess(unClaimed);
     }
 

@@ -69,6 +69,7 @@ public class LangConfigItems {
     // Fly
     public static ConfigItem COMMANDS_F_FLY_NO_FACTION = new ConfigItemImpl("commands.f-fly.no-faction", "&cYou need a faction to do that.");
     public static ConfigItem COMMANDS_F_FLY_SUCCESS = new ConfigItemImpl("commands.f-fly.success", "&aFlight mode activated.");
+    public static ConfigItem COMMANDS_F_FLY_OFF = new ConfigItemImpl("commands.f-fly.disabled", "&cFlight mode disabled.");
     public static ConfigItem COMMANDS_F_FLY_FAIL = new ConfigItemImpl("commands.f-fly.fail", "&cError activating flight.");
     public static ConfigItem COMMANDS_F_FLY_NOT_IN_YOUR_FACTION = new ConfigItemImpl("commands.f-fly.not-in-your-faction", "&cYou are not in your factions land.");
 

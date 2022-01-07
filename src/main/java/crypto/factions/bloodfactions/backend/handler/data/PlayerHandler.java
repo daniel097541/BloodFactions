@@ -1,8 +1,10 @@
 package crypto.factions.bloodfactions.backend.handler.data;
 
+import crypto.factions.bloodfactions.backend.config.lang.LangConfigItems;
 import crypto.factions.bloodfactions.backend.dao.PlayerDAO;
 import crypto.factions.bloodfactions.backend.dao.RolesDAO;
 import crypto.factions.bloodfactions.commons.api.NextGenFactionsAPI;
+import crypto.factions.bloodfactions.commons.config.NGFConfig;
 import crypto.factions.bloodfactions.commons.events.player.callback.CheckIfPlayerHasFactionEvent;
 import crypto.factions.bloodfactions.commons.events.player.callback.GetPlayerEvent;
 import crypto.factions.bloodfactions.commons.events.player.permissioned.PlayerFlightEvent;
@@ -10,6 +12,8 @@ import crypto.factions.bloodfactions.commons.events.player.unpermissioned.Player
 import crypto.factions.bloodfactions.commons.events.role.ChangeRoleOfPlayerEvent;
 import crypto.factions.bloodfactions.commons.events.role.GetRoleOfPlayerEvent;
 import crypto.factions.bloodfactions.commons.events.shared.callback.GetPlayersInFactionEvent;
+import crypto.factions.bloodfactions.commons.messages.model.MessageContext;
+import crypto.factions.bloodfactions.commons.messages.model.MessageContextImpl;
 import crypto.factions.bloodfactions.commons.model.faction.Faction;
 import crypto.factions.bloodfactions.commons.model.player.FPlayer;
 import crypto.factions.bloodfactions.commons.model.player.FPlayerImpl;
@@ -30,6 +34,8 @@ public interface PlayerHandler extends DataHandler<FPlayer> {
     PlayerDAO getDao();
 
     RolesDAO getRolesDAO();
+
+    NGFConfig getLangConfig();
 
 
     @EventHandler(priority = EventPriority.HIGHEST)
@@ -109,11 +115,17 @@ public interface PlayerHandler extends DataHandler<FPlayer> {
         if(player.isFlying()){
             Objects.requireNonNull(bukkitPlayer).setAllowFlight(false);
             bukkitPlayer.setFlying(false);
+            String successMessage = (String) this.getLangConfig().get(LangConfigItems.COMMANDS_F_FLY_OFF);
+            MessageContext messageContext = new MessageContextImpl(player, successMessage);
+            player.sms(messageContext);
         }
         else{
             Objects.requireNonNull(bukkitPlayer).setAllowFlight(true);
             bukkitPlayer.setFlying(true);
             flying = true;
+            String successMessage = (String) this.getLangConfig().get(LangConfigItems.COMMANDS_F_FLY_SUCCESS);
+            MessageContext messageContext = new MessageContextImpl(player, successMessage);
+            player.sms(messageContext);
         }
 
         event.setSuccess(flying);

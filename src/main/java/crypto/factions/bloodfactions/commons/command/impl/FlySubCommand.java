@@ -47,9 +47,6 @@ public class FlySubCommand extends FSubCommandImpl {
         }
 
         player.toggleFly();
-        String successMessage = (String) this.getLangConfig().get(LangConfigItems.COMMANDS_F_FLY_SUCCESS);
-        MessageContext messageContext = new MessageContextImpl(player, successMessage);
-        player.sms(messageContext);
         return true;
     }
 }
