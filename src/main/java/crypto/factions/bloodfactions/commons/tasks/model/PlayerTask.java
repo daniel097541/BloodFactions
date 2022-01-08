@@ -17,8 +17,9 @@ public interface PlayerTask extends Runnable {
 
     void setTask(BukkitTask task);
 
-    default void schedule(){
-        BukkitTask task = Bukkit.getScheduler().runTaskTimerAsynchronously(this.getPlugin(), this, this.getTime(), this.getTime());
+    default void schedule() {
+        long time = (this.getTime() * 1000) / 20;
+        BukkitTask task = Bukkit.getScheduler().runTaskTimerAsynchronously(this.getPlugin(), this, time, time);
         this.setTask(task);
     }
 

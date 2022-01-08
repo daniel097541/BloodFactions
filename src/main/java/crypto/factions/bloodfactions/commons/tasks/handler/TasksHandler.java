@@ -14,7 +14,7 @@ public interface TasksHandler {
 
     default void addPowerTask(FPlayer player){
         Logger.logInfo("New player power task for: " + player.getName());
-        this.getTaskManager().addPowerTask(new PlayerPowerTask(player, 60000, this.getPlugin()));
+        this.getTaskManager().addPowerTask(new PlayerPowerTask(player, 60, this.getPlugin()));
     }
 
     default void removePowerTask(FPlayer player){

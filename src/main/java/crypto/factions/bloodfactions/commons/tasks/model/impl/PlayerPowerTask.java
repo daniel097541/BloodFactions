@@ -19,13 +19,13 @@ public class PlayerPowerTask extends PlayerTaskImpl {
 
     @Override
     public void run() {
-        Logger.logInfo("Incrementing power of: " + this.getPlayer().getName());
         if(!this.getPlayer().isOnline()){
+            Logger.logInfo("Player power task cancelled for: " + this.getPlayer().getName());
             this.task.cancel();
         }
         else{
+            Logger.logInfo("Incrementing power of: " + this.getPlayer().getName());
             this.getPlayer().updatePower(1);
-            Logger.logInfo("Incremented power of: " + this.getPlayer().getName());
         }
     }
 }
