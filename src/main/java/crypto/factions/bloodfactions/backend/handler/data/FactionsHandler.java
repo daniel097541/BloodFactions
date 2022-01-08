@@ -1,7 +1,6 @@
 package crypto.factions.bloodfactions.backend.handler.data;
 
 import com.google.common.cache.LoadingCache;
-import crypto.factions.bloodfactions.backend.config.lang.LangConfigItems;
 import crypto.factions.bloodfactions.backend.config.system.SystemConfigItems;
 import crypto.factions.bloodfactions.backend.dao.FactionsDAO;
 import crypto.factions.bloodfactions.backend.dao.PlayerDAO;
@@ -12,13 +11,10 @@ import crypto.factions.bloodfactions.commons.events.faction.callback.*;
 import crypto.factions.bloodfactions.commons.events.faction.permissioned.DisbandFactionEvent;
 import crypto.factions.bloodfactions.commons.events.faction.unpermissioned.CreateFactionByNameEvent;
 import crypto.factions.bloodfactions.commons.events.faction.unpermissioned.CreateFactionEvent;
-import crypto.factions.bloodfactions.commons.events.faction.unpermissioned.ShowFactionEvent;
 import crypto.factions.bloodfactions.commons.events.land.callback.GetNumberOfClaimsEvent;
 import crypto.factions.bloodfactions.commons.events.land.permissioned.ClaimEvent;
 import crypto.factions.bloodfactions.commons.events.land.permissioned.OverClaimEvent;
 import crypto.factions.bloodfactions.commons.events.land.permissioned.UnClaimEvent;
-import crypto.factions.bloodfactions.commons.events.player.unpermissioned.FPlayerLogOutEvent;
-import crypto.factions.bloodfactions.commons.events.player.unpermissioned.FPlayerLoginEvent;
 import crypto.factions.bloodfactions.commons.events.role.GetDefaultRoleOfFactionEvent;
 import crypto.factions.bloodfactions.commons.events.role.GetRolesOfFactionEvent;
 import crypto.factions.bloodfactions.commons.events.shared.callback.GetFactionOfPlayerEvent;
@@ -34,7 +30,6 @@ import crypto.factions.bloodfactions.commons.model.player.FPlayer;
 import crypto.factions.bloodfactions.commons.model.role.FactionRole;
 import crypto.factions.bloodfactions.commons.model.role.FactionRoleImpl;
 import crypto.factions.bloodfactions.commons.tasks.handler.TasksHandler;
-import crypto.factions.bloodfactions.commons.utils.StringUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
@@ -307,6 +302,7 @@ public interface FactionsHandler extends DataHandler<Faction> {
         FLocation core = event.getCore();
         FPlayer player = event.getPlayer();
         Faction faction = event.getFaction();
+
         // Remove previous core.
         this.getDao().removeCore(faction.getId());
 
@@ -344,7 +340,6 @@ public interface FactionsHandler extends DataHandler<Faction> {
             event.setSuccess(false);
         }
     }
-
 
 
 }

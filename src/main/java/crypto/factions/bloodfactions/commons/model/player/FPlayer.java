@@ -181,6 +181,7 @@ public interface FPlayer extends NextGenFactionEntity {
 
     /**
      * Gets the chunk where the player is.
+     *
      * @return
      */
     default @Nullable FChunk getChunk() {
@@ -207,6 +208,7 @@ public interface FPlayer extends NextGenFactionEntity {
 
     /**
      * Teleports player.
+     *
      * @param location
      */
     default void teleport(@NotNull FLocation location) {
@@ -218,6 +220,7 @@ public interface FPlayer extends NextGenFactionEntity {
 
     /**
      * Gets player location.
+     *
      * @return
      */
     default @Nullable FLocation getLocation() {
@@ -230,6 +233,7 @@ public interface FPlayer extends NextGenFactionEntity {
 
     /**
      * Shows the faction to the player.
+     *
      * @param faction
      */
     default void showFaction(Faction faction) {
@@ -244,17 +248,23 @@ public interface FPlayer extends NextGenFactionEntity {
         this.setFlying(flying);
     }
 
-    default void enableBukkitFlight(){
+    /**
+     * Enables bukkit flight.
+     */
+    default void enableBukkitFlight() {
         Player bukkitPlayer = this.getBukkitPlayer();
-        if(Objects.nonNull(bukkitPlayer)){
+        if (Objects.nonNull(bukkitPlayer)) {
             bukkitPlayer.setAllowFlight(true);
             bukkitPlayer.setFlying(true);
         }
     }
 
-    default void disableBukkitFlight(){
+    /**
+     * Disables bukkit flight.
+     */
+    default void disableBukkitFlight() {
         Player bukkitPlayer = this.getBukkitPlayer();
-        if(Objects.nonNull(bukkitPlayer)){
+        if (Objects.nonNull(bukkitPlayer)) {
             bukkitPlayer.setAllowFlight(false);
             bukkitPlayer.setFlying(false);
         }
@@ -263,13 +273,14 @@ public interface FPlayer extends NextGenFactionEntity {
     /**
      * Toggles auto fly.
      */
-    default void toggleAutoFly(){
+    default void toggleAutoFly() {
         boolean autoFlying = PermissionNextGenFactionsAPI.toggleAutoFly(this);
         this.setAutoFlying(autoFlying);
     }
 
     /**
      * Player changed land.
+     *
      * @param from
      * @param to
      */
@@ -281,15 +292,17 @@ public interface FPlayer extends NextGenFactionEntity {
 
     /**
      * Updates the power with increment.
+     *
      * @param increment
      * @return
      */
-    default int updatePower(int increment) {
-        return NextGenFactionsAPI.updatePlayersPower(this, increment);
+    default void updatePower(int increment) {
+        NextGenFactionsAPI.updatePlayersPower(this, increment);
     }
 
     /**
      * Checks if the player is online.
+     *
      * @return
      */
     default boolean isOnline() {
@@ -310,18 +323,29 @@ public interface FPlayer extends NextGenFactionEntity {
         NextGenFactionsAPI.playerLoggedOut(this);
     }
 
-    default boolean isInHisLand(){
+    /**
+     * Checks if a player is in his land.
+     * @return
+     */
+    default boolean isInHisLand() {
         Faction factionAt = this.getFactionAt();
         Faction faction = this.getFaction();
         return faction.equals(factionAt);
     }
 
-    default Faction getFactionAt(){
+    /**
+     * Gets the faction at location.
+     * @return
+     */
+    default Faction getFactionAt() {
         return Objects.requireNonNull(this.getLocation()).getFactionAt();
     }
 
-
-    default boolean handleFallDamage(){
+    /**
+     * Handles fall damage.
+     * @return
+     */
+    default boolean handleFallDamage() {
         return NextGenFactionsAPI.handlePlayerFallDamage(this);
     }
 
