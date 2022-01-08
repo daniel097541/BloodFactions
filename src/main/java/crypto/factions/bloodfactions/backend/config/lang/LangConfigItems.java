@@ -88,20 +88,27 @@ public class LangConfigItems {
     public static String rolesListHeaderBlueprint = "\n&7----------------- &a{faction_name}'s &dRanks &7-----------------\n";
     public static String rolesListBlueprint =
             "&7-------------------------------------------- \n" +
-            "&7|   &d- &7Rank name: &e{rank_name} \n" +
-            "&7|   &d- &7Rank permissions: &c{permission_list} \n" +
-            "&7-------------------------------------------- \n";
+                    "&7|   &d- &7Rank name: &e{rank_name} \n" +
+                    "&7|   &d- &7Rank permissions: &c{permission_list} \n" +
+                    "&7-------------------------------------------- \n";
     public static ConfigItem COMMANDS_F_RANKS_NO_FACTION = new ConfigItemImpl("commands.f-ranks.no-faction", "&cYou need a faction to do that.");
     public static ConfigItem COMMANDS_F_RANKS_CREATE = new ConfigItemImpl("commands.f-ranks.create", "&aRank successfully created.");
     public static ConfigItem COMMANDS_F_RANKS_DELETE = new ConfigItemImpl("commands.f-ranks.delete", "&aRank successfully deleted.");
-    public static ConfigItem COMMANDS_F_RANKS_NOT_EXISTS= new ConfigItemImpl("commands.f-ranks.not-exists", "&cThere is no rank with that name.");
+    public static ConfigItem COMMANDS_F_RANKS_NOT_EXISTS = new ConfigItemImpl("commands.f-ranks.not-exists", "&cThere is no rank with that name.");
     public static ConfigItem COMMANDS_F_RANKS_ALREADY_EXISTS = new ConfigItemImpl("commands.f-ranks.already-exists", "&cThere is already a rank with that name.");
     public static ConfigItem COMMANDS_F_RANKS_LIST_HEADER = new ConfigItemImpl("commands.f-ranks.list-header", rolesListHeaderBlueprint);
     public static ConfigItem COMMANDS_F_RANKS_LIST_BODY = new ConfigItemImpl("commands.f-ranks.list-body", rolesListBlueprint);
-    public static ConfigItem COMMANDS_F_RANKS_PLAYER_NOT_EXISTS= new ConfigItemImpl("commands.f-ranks.player-not-exists", "&cThere is no player with that name.");
-    public static ConfigItem COMMANDS_F_RANKS_PLAYER_ALREADY_IS_RANK= new ConfigItemImpl("commands.f-ranks.player-already-has-that-rank", "&cThe player already has that rank.");
-    public static ConfigItem COMMANDS_F_RANKS_PLAYER_CHANGED_RANK= new ConfigItemImpl("commands.f-ranks.players-rank-changed", "&eYou successfully set the rank of &a{target_player_name} &eto &d{rank_name}");
-    public static ConfigItem COMMANDS_F_RANKS_YOUR_RANK_CHANGED= new ConfigItemImpl("commands.f-ranks.your-rank-changed", "&a{target_player_name} &ehas changed your rank to: &d{rank_name}");
+    public static ConfigItem COMMANDS_F_RANKS_PLAYER_NOT_EXISTS = new ConfigItemImpl("commands.f-ranks.player-not-exists", "&cThere is no player with that name.");
+    public static ConfigItem COMMANDS_F_RANKS_PLAYER_ALREADY_IS_RANK = new ConfigItemImpl("commands.f-ranks.player-already-has-that-rank", "&cThe player already has that rank.");
+    public static ConfigItem COMMANDS_F_RANKS_PLAYER_CHANGED_RANK = new ConfigItemImpl("commands.f-ranks.players-rank-changed", "&eYou successfully set the rank of &a{target_player_name} &eto &d{rank_name}");
+    public static ConfigItem COMMANDS_F_RANKS_YOUR_RANK_CHANGED = new ConfigItemImpl("commands.f-ranks.your-rank-changed", "&a{target_player_name} &ehas changed your rank to: &d{rank_name}");
+    public static ConfigItem COMMANDS_F_RANKS_SET_FORMAT = new ConfigItemImpl("commands.f-ranks.set-format", "&7Command usage: &e/f ranks set <player_name> <rank_name>");
+    public static ConfigItem COMMANDS_F_RANKS_CREATE_FORMAT = new ConfigItemImpl("commands.f-ranks.create-format", "&7Rank creation command: \n" +
+            "\n&7-----------------------------------------------" +
+            "\n&7|    &7Ussage: &e/f ranks create &7<rank_name> &d<rank_permissions>" +
+            "\n&7|" +
+            "\n&7|    &7Example: &e/f ranks create &7Moderator &dINVITE,KICK" +
+            "\n&7-----------------------------------------------");
 
 
     public static Map<String, ConfigItem> asMap() {

@@ -81,11 +81,11 @@ public class RanksSubCommand extends FSubCommandImpl {
                     return false;
                 }
 
-                // Send formats
-                else {
-
-                }
-
+                // Send formats.
+                String successMessage = (String) this.getLangConfig().get(LangConfigItems.COMMANDS_F_RANKS_SET_FORMAT);
+                MessageContext messageContext = new MessageContextImpl(player, successMessage);
+                player.sms(messageContext);
+                return false;
             }
 
             // Create role
@@ -112,12 +112,11 @@ public class RanksSubCommand extends FSubCommandImpl {
                     return Objects.nonNull(rank);
                 }
 
-                // Send role creation formats.
-                else {
-
-                    return false;
-                }
-
+                // Send creation format.
+                String successMessage = (String) this.getLangConfig().get(LangConfigItems.COMMANDS_F_RANKS_CREATE_FORMAT);
+                MessageContext messageContext = new MessageContextImpl(player, successMessage);
+                player.sms(messageContext);
+                return false;
             }
 
             if (action.equalsIgnoreCase("list")) {

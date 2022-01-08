@@ -99,13 +99,16 @@ public interface PlayerHandler extends DataHandler<FPlayer> {
         FPlayer playerChangingTheRank = event.getPlayerChangingTheRole();
 
         FactionRank currentRank = player.getRole();
-        if(rank.equals(currentRank)){
+
+        // Same rank
+        if (rank.equals(currentRank)) {
             String message = (String) this.getLangConfig().get(LangConfigItems.COMMANDS_F_RANKS_PLAYER_ALREADY_IS_RANK);
             MessageContext messageContext = new MessageContextImpl(player, message);
             player.sms(messageContext);
             event.setChanged(false);
         }
 
+        // Not same rank, change it.
         else {
             // Send rank changed to player changing the rank.
             String message = (String) this.getLangConfig().get(LangConfigItems.COMMANDS_F_RANKS_PLAYER_CHANGED_RANK);
@@ -180,6 +183,8 @@ public interface PlayerHandler extends DataHandler<FPlayer> {
         FPlayer player = event.getPlayer();
 
         boolean flying = false;
+
+        // Disable flight.
         if (player.isFlying()) {
             // No fall damage
             this.addNoFallPlayer(player);
@@ -191,7 +196,10 @@ public interface PlayerHandler extends DataHandler<FPlayer> {
             String successMessage = (String) this.getLangConfig().get(LangConfigItems.COMMANDS_F_FLY_OFF);
             MessageContext messageContext = new MessageContextImpl(player, successMessage);
             player.sms(messageContext);
-        } else {
+        }
+
+        // Enable flight.
+        else {
             player.enableBukkitFlight();
             flying = true;
             String successMessage = (String) this.getLangConfig().get(LangConfigItems.COMMANDS_F_FLY_SUCCESS);
@@ -213,13 +221,16 @@ public interface PlayerHandler extends DataHandler<FPlayer> {
         int maxPower = (int) this.getSysConfig().get(SystemConfigItems.SETTINGS_MAX_POWER);
         int minPower = (int) this.getSysConfig().get(SystemConfigItems.SETTINGS_MIN_POWER);
 
-        if(total > 0) {
+        // Upper bounds. Can't handle more power.
+        if (total > 0) {
             if (total > maxPower) {
                 total = maxPower;
             }
         }
-        else{
-            if(total < minPower){
+
+        // Lower bounds. Can't handle less power.
+        else {
+            if (total < minPower) {
                 total = minPower;
             }
         }
@@ -254,6 +265,7 @@ public interface PlayerHandler extends DataHandler<FPlayer> {
         FPlayer player = event.getPlayer();
         this.getTasksHandler().addPowerTask(player);
 
+        // If player was flying, and he remains in his land, enable flight.
         if (player.isFlying() && player.isInHisLand()) {
             player.enableBukkitFlight();
         }
@@ -268,10 +280,12 @@ public interface PlayerHandler extends DataHandler<FPlayer> {
 
 
     @EventHandler(priority = EventPriority.HIGHEST)
-    default void handleFallDamage(FPlayerFallDamageEvent event){
+    default void handleFallDamage(FPlayerFallDamageEvent event) {
         FPlayer player = event.getPlayer();
         Logger.logInfo("Fall damage check for: " + player.getName());
-        if(this.getNoFallDamagePlayers().containsKey(player.getId())){
+
+        // No fall damage.
+        if (this.getNoFallDamagePlayers().containsKey(player.getId())) {
             Logger.logInfo("Player is fall damage protected: " + player.getName());
             event.setCancelled(true);
         }
@@ -284,14 +298,14 @@ public interface PlayerHandler extends DataHandler<FPlayer> {
     }
 
     @EventHandler(priority = EventPriority.HIGHEST)
-    default void handlePlayerDied(FPlayerDiedEvent event){
+    default void handlePlayerDied(FPlayerDiedEvent event) {
         FPlayer player = event.getPlayer();
         int deathPowerDecrement = (int) this.getSysConfig().get(SystemConfigItems.DEATH_POWER_DECREMENT);
         player.updatePower(-deathPowerDecrement);
     }
 
     @EventHandler(priority = EventPriority.HIGHEST)
-    default void handleGetPlayerByName(GetPlayerByNameEvent event){
+    default void handleGetPlayerByName(GetPlayerByNameEvent event) {
         String playerName = event.getName();
         FPlayer player = this.getDao().findByName(playerName);
         event.setPlayer(player);
