@@ -6,6 +6,7 @@ import crypto.factions.bloodfactions.backend.handler.data.PlayerHandler;
 import crypto.factions.bloodfactions.commons.annotation.config.LangConfiguration;
 import crypto.factions.bloodfactions.commons.annotation.config.SystemConfiguration;
 import crypto.factions.bloodfactions.commons.config.NGFConfig;
+import crypto.factions.bloodfactions.commons.tasks.handler.TasksHandler;
 import lombok.Getter;
 import org.bukkit.plugin.java.JavaPlugin;
 
@@ -21,18 +22,21 @@ public class PlayerHandlerImpl implements PlayerHandler {
     private final RolesDAO rolesDAO;
     private final NGFConfig langConfig;
     private final NGFConfig sysConfig;
+    private final TasksHandler tasksHandler;
 
     @Inject
     public PlayerHandlerImpl(PlayerDAO playerDAO,
                              JavaPlugin plugin,
                              RolesDAO rolesDAO,
                              @LangConfiguration NGFConfig langConfig,
-                             @SystemConfiguration NGFConfig systemConfig) {
+                             @SystemConfiguration NGFConfig systemConfig,
+                             TasksHandler tasksHandler) {
         this.dao = playerDAO;
         this.plugin = plugin;
         this.rolesDAO = rolesDAO;
         this.langConfig = langConfig;
         this.sysConfig = systemConfig;
+        this.tasksHandler = tasksHandler;
         this.autoRegister();
     }
 }

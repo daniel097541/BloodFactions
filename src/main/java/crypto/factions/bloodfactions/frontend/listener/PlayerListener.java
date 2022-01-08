@@ -19,6 +19,7 @@ import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockPlaceEvent;
+import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerLoginEvent;
 import org.bukkit.event.player.PlayerMoveEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
@@ -123,7 +124,7 @@ public interface PlayerListener extends Listener {
     }
 
     @EventHandler(priority = EventPriority.HIGHEST)
-    default void handleLogin(PlayerLoginEvent event){
+    default void handleLogin(PlayerJoinEvent event){
         Player player = event.getPlayer();
         FPlayer fPlayer = NextGenFactionsAPI.getPlayer(player);
         Objects.requireNonNull(fPlayer).logIn();

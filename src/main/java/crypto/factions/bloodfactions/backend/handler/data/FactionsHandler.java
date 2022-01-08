@@ -341,35 +341,6 @@ public interface FactionsHandler extends DataHandler<Faction> {
         }
     }
 
-    @EventHandler(priority = EventPriority.HIGHEST)
-    default void handleShowFaction(ShowFactionEvent event) {
-        Faction faction = event.getFaction();
-        FPlayer player = event.getPlayer();
-        int power = faction.getPower();
-        Set<FPlayer> members = faction.getMembers();
-        FPlayer owner = faction.getOwner();
 
-        Map<String, String> placeHolders = new HashMap<>();
-        placeHolders.put("{faction_power}", String.valueOf(power));
-        placeHolders.put("{faction_name}", faction.getName());
-        placeHolders.put("{faction_members}", members.stream().map(FPlayer::getName).collect(Collectors.joining(", ")));
-        placeHolders.put("{faction_owner}", owner.getName());
-        placeHolders.put("{faction_claims}", String.valueOf(faction.getAmountOfClaims()));
-
-        String message = (String) this.getLangConfig().get(LangConfigItems.COMMANDS_F_SHOW_SUCCESS);
-        player.sms(StringUtils.replacePlaceHolders(message, placeHolders));
-    }
-
-    @EventHandler(priority = EventPriority.HIGHEST)
-    default void handlePlayerLogin(FPlayerLoginEvent event) {
-        FPlayer player = event.getPlayer();
-        this.getTasksHandler().addPowerTask(player);
-    }
-
-    @EventHandler(priority = EventPriority.HIGHEST)
-    default void handlePlayerLogOut(FPlayerLogOutEvent event) {
-        FPlayer player = event.getPlayer();
-        this.getTasksHandler().removePowerTask(player);
-    }
 
 }

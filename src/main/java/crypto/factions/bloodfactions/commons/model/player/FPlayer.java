@@ -179,6 +179,10 @@ public interface FPlayer extends NextGenFactionEntity {
         return otherPlayer.changeRole(role, this);
     }
 
+    /**
+     * Gets the chunk where the player is.
+     * @return
+     */
     default @Nullable FChunk getChunk() {
         Player bukkitPlayer = this.getBukkitPlayer();
 
@@ -201,13 +205,21 @@ public interface FPlayer extends NextGenFactionEntity {
         return offlinePlayer.isOp();
     }
 
-    default void teleport(@NotNull FLocation home) {
+    /**
+     * Teleports player.
+     * @param location
+     */
+    default void teleport(@NotNull FLocation location) {
         Player bukkitPlayer = this.getBukkitPlayer();
         if (Objects.nonNull(bukkitPlayer)) {
-            bukkitPlayer.teleport(Objects.requireNonNull(home.getBukkitLocation()));
+            bukkitPlayer.teleport(Objects.requireNonNull(location.getBukkitLocation()));
         }
     }
 
+    /**
+     * Gets player location.
+     * @return
+     */
     default @Nullable FLocation getLocation() {
         Player bukkitPlayer = this.getBukkitPlayer();
         if (Objects.nonNull(bukkitPlayer)) {
@@ -216,39 +228,97 @@ public interface FPlayer extends NextGenFactionEntity {
         return null;
     }
 
+    /**
+     * Shows the faction to the player.
+     * @param faction
+     */
     default void showFaction(Faction faction) {
         NextGenFactionsAPI.showFactionToPlayer(this, faction);
     }
 
+    /**
+     * Toggles flight mode.
+     */
     default void toggleFly() {
         boolean flying = PermissionNextGenFactionsAPI.toggleFlightMode(this);
         this.setFlying(flying);
     }
 
-    default void toggleAutoFly(){
-        boolean autoFlying = PermissionNextGenFactionsAPI.toggleAutoFly(this);
+    default void enableBukkitFlight(){
+        Player bukkitPlayer = this.getBukkitPlayer();
+        if(Objects.nonNull(bukkitPlayer)){
+            bukkitPlayer.setAllowFlight(true);
+            bukkitPlayer.setFlying(true);
+        }
     }
 
+    default void disableBukkitFlight(){
+        Player bukkitPlayer = this.getBukkitPlayer();
+        if(Objects.nonNull(bukkitPlayer)){
+            bukkitPlayer.setAllowFlight(false);
+            bukkitPlayer.setFlying(false);
+        }
+    }
+
+    /**
+     * Toggles auto fly.
+     */
+    default void toggleAutoFly(){
+        boolean autoFlying = PermissionNextGenFactionsAPI.toggleAutoFly(this);
+        this.setAutoFlying(autoFlying);
+    }
+
+    /**
+     * Player changed land.
+     * @param from
+     * @param to
+     */
     default void changedLand(FLocation from, FLocation to) {
         NextGenFactionsAPI.changedLand(this, from, to);
     }
 
     void setPower(int power);
 
+    /**
+     * Updates the power with increment.
+     * @param increment
+     * @return
+     */
     default int updatePower(int increment) {
         return NextGenFactionsAPI.updatePlayersPower(this, increment);
     }
 
+    /**
+     * Checks if the player is online.
+     * @return
+     */
     default boolean isOnline() {
         return this.getBukkitOfflinePlayer().isOnline();
     }
 
+    /**
+     * Player logged in.
+     */
     default void logIn() {
         NextGenFactionsAPI.playerLoggedIn(this);
     }
 
+    /**
+     * Player logged out.
+     */
     default void logOut() {
         NextGenFactionsAPI.playerLoggedOut(this);
     }
+
+    default boolean isInHisLand(){
+        Faction factionAt = this.getFactionAt();
+        Faction faction = this.getFaction();
+        return faction.equals(factionAt);
+    }
+
+    default Faction getFactionAt(){
+        return Objects.requireNonNull(this.getLocation()).getFactionAt();
+    }
+
 
 }

@@ -6,31 +6,34 @@ import crypto.factions.bloodfactions.backend.dao.PlayerDAO;
 import crypto.factions.bloodfactions.backend.dao.RolesDAO;
 import crypto.factions.bloodfactions.commons.api.NextGenFactionsAPI;
 import crypto.factions.bloodfactions.commons.config.NGFConfig;
+import crypto.factions.bloodfactions.commons.events.faction.unpermissioned.ShowFactionEvent;
 import crypto.factions.bloodfactions.commons.events.player.callback.CheckIfPlayerHasFactionEvent;
 import crypto.factions.bloodfactions.commons.events.player.callback.GetPlayerEvent;
 import crypto.factions.bloodfactions.commons.events.player.permissioned.PlayerAutoFlyEvent;
 import crypto.factions.bloodfactions.commons.events.player.permissioned.PlayerFlightEvent;
+import crypto.factions.bloodfactions.commons.events.player.unpermissioned.FPlayerLogOutEvent;
+import crypto.factions.bloodfactions.commons.events.player.unpermissioned.FPlayerLoginEvent;
 import crypto.factions.bloodfactions.commons.events.player.unpermissioned.PlayerChangedLandEvent;
 import crypto.factions.bloodfactions.commons.events.player.unpermissioned.PlayerPowerChangeEvent;
 import crypto.factions.bloodfactions.commons.events.role.ChangeRoleOfPlayerEvent;
 import crypto.factions.bloodfactions.commons.events.role.GetRoleOfPlayerEvent;
 import crypto.factions.bloodfactions.commons.events.shared.callback.GetPlayersInFactionEvent;
-import crypto.factions.bloodfactions.commons.logger.Logger;
 import crypto.factions.bloodfactions.commons.messages.model.MessageContext;
 import crypto.factions.bloodfactions.commons.messages.model.MessageContextImpl;
 import crypto.factions.bloodfactions.commons.model.faction.Faction;
 import crypto.factions.bloodfactions.commons.model.player.FPlayer;
 import crypto.factions.bloodfactions.commons.model.player.FPlayerImpl;
 import crypto.factions.bloodfactions.commons.model.role.FactionRole;
+import crypto.factions.bloodfactions.commons.tasks.handler.TasksHandler;
+import crypto.factions.bloodfactions.commons.utils.StringUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 
-import java.util.Objects;
-import java.util.Set;
-import java.util.UUID;
+import java.util.*;
+import java.util.stream.Collectors;
 
 public interface PlayerHandler extends DataHandler<FPlayer> {
 
@@ -42,6 +45,9 @@ public interface PlayerHandler extends DataHandler<FPlayer> {
     NGFConfig getLangConfig();
 
     NGFConfig getSysConfig();
+
+    TasksHandler getTasksHandler();
+
 
 
     @EventHandler(priority = EventPriority.HIGHEST)
@@ -139,7 +145,6 @@ public interface PlayerHandler extends DataHandler<FPlayer> {
         }
 
         // Update auto-fly
-        player.setAutoFlying(autoFly);
         this.getDao().updatePlayersAutoFly(player.getId(), autoFly);
     }
 
@@ -151,14 +156,12 @@ public interface PlayerHandler extends DataHandler<FPlayer> {
 
         boolean flying = false;
         if (player.isFlying()) {
-            Objects.requireNonNull(bukkitPlayer).setAllowFlight(false);
-            bukkitPlayer.setFlying(false);
+            player.disableBukkitFlight();
             String successMessage = (String) this.getLangConfig().get(LangConfigItems.COMMANDS_F_FLY_OFF);
             MessageContext messageContext = new MessageContextImpl(player, successMessage);
             player.sms(messageContext);
         } else {
-            Objects.requireNonNull(bukkitPlayer).setAllowFlight(true);
-            bukkitPlayer.setFlying(true);
+            player.enableBukkitFlight();
             flying = true;
             String successMessage = (String) this.getLangConfig().get(LangConfigItems.COMMANDS_F_FLY_SUCCESS);
             MessageContext messageContext = new MessageContextImpl(player, successMessage);
@@ -183,6 +186,42 @@ public interface PlayerHandler extends DataHandler<FPlayer> {
             // Update power in db.
             this.getDao().updatePlayersPower(player.getId(), player.getPower());
         }
+    }
+
+    @EventHandler(priority = EventPriority.HIGHEST)
+    default void handleShowFaction(ShowFactionEvent event) {
+        Faction faction = event.getFaction();
+        FPlayer player = event.getPlayer();
+        int power = faction.getPower();
+        Set<FPlayer> members = faction.getMembers();
+        FPlayer owner = faction.getOwner();
+
+        Map<String, String> placeHolders = new HashMap<>();
+        placeHolders.put("{faction_power}", String.valueOf(power));
+        placeHolders.put("{faction_name}", faction.getName());
+        placeHolders.put("{faction_members}", members.stream().map(FPlayer::getName).collect(Collectors.joining(", ")));
+        placeHolders.put("{faction_owner}", owner.getName());
+        placeHolders.put("{faction_claims}", String.valueOf(faction.getAmountOfClaims()));
+
+        String message = (String) this.getLangConfig().get(LangConfigItems.COMMANDS_F_SHOW_SUCCESS);
+        player.sms(StringUtils.replacePlaceHolders(message, placeHolders));
+    }
+
+    @EventHandler(priority = EventPriority.HIGHEST)
+    default void handlePlayerLogin(FPlayerLoginEvent event) {
+        FPlayer player = event.getPlayer();
+        this.getTasksHandler().addPowerTask(player);
+
+        if(player.isFlying() && player.isInHisLand()){
+            player.enableBukkitFlight();
+        }
+
+    }
+
+    @EventHandler(priority = EventPriority.HIGHEST)
+    default void handlePlayerLogOut(FPlayerLogOutEvent event) {
+        FPlayer player = event.getPlayer();
+        this.getTasksHandler().removePowerTask(player);
     }
 
 }
