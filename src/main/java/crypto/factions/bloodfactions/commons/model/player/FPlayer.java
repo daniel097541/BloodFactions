@@ -273,7 +273,7 @@ public interface FPlayer extends NextGenFactionEntity {
      * @param from
      * @param to
      */
-    default void changedLand(FLocation from, FLocation to) {
+    default void changedLand(Faction from, Faction to) {
         NextGenFactionsAPI.changedLand(this, from, to);
     }
 
@@ -320,5 +320,9 @@ public interface FPlayer extends NextGenFactionEntity {
         return Objects.requireNonNull(this.getLocation()).getFactionAt();
     }
 
+
+    default boolean handleFallDamage(){
+        return NextGenFactionsAPI.handlePlayerFallDamage(this);
+    }
 
 }

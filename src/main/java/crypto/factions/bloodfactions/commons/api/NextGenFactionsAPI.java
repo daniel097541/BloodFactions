@@ -325,9 +325,9 @@ public class NextGenFactionsAPI {
         logAction(start, end, APIAction.SHOW_FACTION);
     }
 
-    public static void changedLand(FPlayer player, FLocation from, FLocation to) {
+    public static void changedLand(FPlayer player, Faction from, Faction to) {
         long start = System.currentTimeMillis();
-        new PlayerChangedLandEvent(player, from.getFactionAt(), to.getFactionAt());
+        new PlayerChangedLandEvent(player, from, to);
         long end = System.currentTimeMillis();
         logAction(start, end, APIAction.CHANGED_LAND);
     }
@@ -352,5 +352,13 @@ public class NextGenFactionsAPI {
         new FPlayerLogOutEvent(player);
         long end = System.currentTimeMillis();
         logAction(start, end, APIAction.LOGGED_OUT);
+    }
+
+    public static boolean handlePlayerFallDamage(FPlayer player) {
+        long start = System.currentTimeMillis();
+        FPlayerFallDamageEvent event = new FPlayerFallDamageEvent(player);
+        long end = System.currentTimeMillis();
+        logAction(start, end, APIAction.HANDLE_FALL_DAMAGE);
+        return !event.isCancelled();
     }
 }

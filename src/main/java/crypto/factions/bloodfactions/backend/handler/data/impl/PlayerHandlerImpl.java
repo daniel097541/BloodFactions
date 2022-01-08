@@ -6,12 +6,16 @@ import crypto.factions.bloodfactions.backend.handler.data.PlayerHandler;
 import crypto.factions.bloodfactions.commons.annotation.config.LangConfiguration;
 import crypto.factions.bloodfactions.commons.annotation.config.SystemConfiguration;
 import crypto.factions.bloodfactions.commons.config.NGFConfig;
+import crypto.factions.bloodfactions.commons.model.player.FPlayer;
 import crypto.factions.bloodfactions.commons.tasks.handler.TasksHandler;
 import lombok.Getter;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import javax.inject.Inject;
 import javax.inject.Singleton;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.UUID;
 
 @Singleton
 @Getter
@@ -23,6 +27,7 @@ public class PlayerHandlerImpl implements PlayerHandler {
     private final NGFConfig langConfig;
     private final NGFConfig sysConfig;
     private final TasksHandler tasksHandler;
+    private final Map<UUID, FPlayer> noFallDamagePlayers = new HashMap<>();
 
     @Inject
     public PlayerHandlerImpl(PlayerDAO playerDAO,

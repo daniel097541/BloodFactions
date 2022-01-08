@@ -3,6 +3,7 @@ package crypto.factions.bloodfactions.frontend.listener;
 import crypto.factions.bloodfactions.backend.config.lang.LangConfigItems;
 import crypto.factions.bloodfactions.commons.api.NextGenFactionsAPI;
 import crypto.factions.bloodfactions.commons.config.NGFConfig;
+import crypto.factions.bloodfactions.commons.logger.Logger;
 import crypto.factions.bloodfactions.commons.messages.model.MessageContext;
 import crypto.factions.bloodfactions.commons.messages.model.MessageContextImpl;
 import crypto.factions.bloodfactions.commons.model.faction.Faction;
@@ -19,8 +20,8 @@ import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockPlaceEvent;
+import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
-import org.bukkit.event.player.PlayerLoginEvent;
 import org.bukkit.event.player.PlayerMoveEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 
@@ -118,22 +119,43 @@ public interface PlayerListener extends Listener {
 
             // Changed faction
             if (!Objects.equals(factionTo, factionFrom)) {
-                Objects.requireNonNull(player).changedLand(from, to);
+                Objects.requireNonNull(player).changedLand(factionFrom, factionTo);
             }
         }
     }
 
     @EventHandler(priority = EventPriority.HIGHEST)
-    default void handleLogin(PlayerJoinEvent event){
+    default void handleLogin(PlayerJoinEvent event) {
         Player player = event.getPlayer();
         FPlayer fPlayer = NextGenFactionsAPI.getPlayer(player);
         Objects.requireNonNull(fPlayer).logIn();
     }
 
     @EventHandler(priority = EventPriority.HIGHEST)
-    default void handleLogin(PlayerQuitEvent event){
+    default void handleLogin(PlayerQuitEvent event) {
         Player player = event.getPlayer();
         FPlayer fPlayer = NextGenFactionsAPI.getPlayer(player);
         Objects.requireNonNull(fPlayer).logOut();
     }
+
+
+    @EventHandler(priority = EventPriority.HIGHEST)
+    default void handleDamage(EntityDamageEvent event) {
+        if (event.getEntity() instanceof Player) {
+            Player bukkitPlayer = (Player) event.getEntity();
+            FPlayer player = NextGenFactionsAPI.getPlayer(bukkitPlayer.getUniqueId());
+            EntityDamageEvent.DamageCause cause = event.getCause();
+            Logger.logInfo(cause.name());
+            if (cause.equals(EntityDamageEvent.DamageCause.FALL)) {
+
+                boolean getDamage = player.handleFallDamage();
+
+                // Cancel event
+                if (!getDamage) {
+                    event.setCancelled(true);
+                }
+            }
+        }
+    }
+
 }

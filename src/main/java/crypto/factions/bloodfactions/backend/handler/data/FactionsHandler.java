@@ -269,6 +269,7 @@ public interface FactionsHandler extends DataHandler<Faction> {
         Faction faction = event.getFaction();
         FPlayer player = event.getPlayer();
         FChunk chunk = event.getChunk();
+        Faction factionAt = chunk.getFactionAt();
 
         Logger.logInfo("Player &d" + player.getName() + " &7is claiming for faction: &d" + faction.getName() + " &7at: &d" + chunk.getId());
         boolean claimed = this.getDao().claimForFaction(faction.getId(), chunk, player.getId());
@@ -276,6 +277,7 @@ public interface FactionsHandler extends DataHandler<Faction> {
         // If claimed update cache.
         if (claimed) {
             this.getChunkFactionsCache().put(chunk.getId(), faction);
+            player.changedLand(factionAt, faction);
         }
 
         event.setSuccess(claimed);
@@ -286,6 +288,7 @@ public interface FactionsHandler extends DataHandler<Faction> {
         Faction faction = event.getFaction();
         FPlayer player = event.getPlayer();
         FChunk chunk = event.getChunk();
+        Faction factionAt = chunk.getFactionAt();
 
         Logger.logInfo("Player &d" + player.getName() + " &7is un-claiming for faction: &d" + faction.getName() + " &7at: &d" + chunk.getId());
         boolean unClaimed = this.getDao().removeClaim(faction.getId(), chunk.getId());
@@ -293,6 +296,7 @@ public interface FactionsHandler extends DataHandler<Faction> {
         // If unclaimed, invalidate chunk in cache.
         if (unClaimed) {
             this.getChunkFactionsCache().invalidate(chunk.getId());
+            player.changedLand(factionAt, Objects.requireNonNull(player.getLocation()).getFactionAt());
         }
 
         event.setSuccess(unClaimed);

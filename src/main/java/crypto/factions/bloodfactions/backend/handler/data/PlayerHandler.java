@@ -11,13 +11,11 @@ import crypto.factions.bloodfactions.commons.events.player.callback.CheckIfPlaye
 import crypto.factions.bloodfactions.commons.events.player.callback.GetPlayerEvent;
 import crypto.factions.bloodfactions.commons.events.player.permissioned.PlayerAutoFlyEvent;
 import crypto.factions.bloodfactions.commons.events.player.permissioned.PlayerFlightEvent;
-import crypto.factions.bloodfactions.commons.events.player.unpermissioned.FPlayerLogOutEvent;
-import crypto.factions.bloodfactions.commons.events.player.unpermissioned.FPlayerLoginEvent;
-import crypto.factions.bloodfactions.commons.events.player.unpermissioned.PlayerChangedLandEvent;
-import crypto.factions.bloodfactions.commons.events.player.unpermissioned.PlayerPowerChangeEvent;
+import crypto.factions.bloodfactions.commons.events.player.unpermissioned.*;
 import crypto.factions.bloodfactions.commons.events.role.ChangeRoleOfPlayerEvent;
 import crypto.factions.bloodfactions.commons.events.role.GetRoleOfPlayerEvent;
 import crypto.factions.bloodfactions.commons.events.shared.callback.GetPlayersInFactionEvent;
+import crypto.factions.bloodfactions.commons.logger.Logger;
 import crypto.factions.bloodfactions.commons.messages.model.MessageContext;
 import crypto.factions.bloodfactions.commons.messages.model.MessageContextImpl;
 import crypto.factions.bloodfactions.commons.model.faction.Faction;
@@ -31,6 +29,7 @@ import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
+import org.bukkit.event.entity.EntityDamageEvent;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -48,6 +47,7 @@ public interface PlayerHandler extends DataHandler<FPlayer> {
 
     TasksHandler getTasksHandler();
 
+    Map<UUID, FPlayer> getNoFallDamagePlayers();
 
 
     @EventHandler(priority = EventPriority.HIGHEST)
@@ -152,11 +152,16 @@ public interface PlayerHandler extends DataHandler<FPlayer> {
     default void handleToggleFlight(PlayerFlightEvent event) {
 
         FPlayer player = event.getPlayer();
-        Player bukkitPlayer = player.getBukkitPlayer();
 
         boolean flying = false;
         if (player.isFlying()) {
+            // No fall damage
+            this.addNoFallPlayer(player);
+
+            // Disable flight
             player.disableBukkitFlight();
+
+            // Send message
             String successMessage = (String) this.getLangConfig().get(LangConfigItems.COMMANDS_F_FLY_OFF);
             MessageContext messageContext = new MessageContextImpl(player, successMessage);
             player.sms(messageContext);
@@ -212,7 +217,7 @@ public interface PlayerHandler extends DataHandler<FPlayer> {
         FPlayer player = event.getPlayer();
         this.getTasksHandler().addPowerTask(player);
 
-        if(player.isFlying() && player.isInHisLand()){
+        if (player.isFlying() && player.isInHisLand()) {
             player.enableBukkitFlight();
         }
 
@@ -222,6 +227,23 @@ public interface PlayerHandler extends DataHandler<FPlayer> {
     default void handlePlayerLogOut(FPlayerLogOutEvent event) {
         FPlayer player = event.getPlayer();
         this.getTasksHandler().removePowerTask(player);
+    }
+
+
+    @EventHandler(priority = EventPriority.HIGHEST)
+    default void handleFallDamage(FPlayerFallDamageEvent event){
+        FPlayer player = event.getPlayer();
+        Logger.logInfo("Fall damage check for: " + player.getName());
+        if(this.getNoFallDamagePlayers().containsKey(player.getId())){
+            Logger.logInfo("Player is fall damage protected: " + player.getName());
+            event.setCancelled(true);
+        }
+    }
+
+    default void addNoFallPlayer(FPlayer player) {
+        long noFallDamageTime = 10;
+        this.getNoFallDamagePlayers().put(player.getId(), player);
+        Bukkit.getScheduler().runTaskLaterAsynchronously(this.getPlugin(), () -> getNoFallDamagePlayers().remove(player.getId()), (noFallDamageTime * 1000) / 20);
     }
 
 }

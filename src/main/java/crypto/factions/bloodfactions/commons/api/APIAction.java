@@ -25,6 +25,7 @@ public enum APIAction {
     CHANGED_LAND,
     UPDATE_POWER,
     LOGGED_IN,
-    LOGGED_OUT
+    LOGGED_OUT,
+    HANDLE_FALL_DAMAGE
 
 }
