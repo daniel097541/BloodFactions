@@ -23,7 +23,9 @@ public interface PlayerDAO extends DAO<FPlayer> {
                 String name = rs.getString("name");
                 int power = rs.getInt("power");
                 boolean isFlying = rs.getBoolean("flying");
-                return new FPlayerImpl(id, name, isFlying, power);
+                boolean isAutoFlying = rs.getBoolean("auto_flying");
+
+                return new FPlayerImpl(id, name, isFlying, isAutoFlying, power);
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -40,7 +42,8 @@ public interface PlayerDAO extends DAO<FPlayer> {
                 String name = rs.getString("name");
                 int power = rs.getInt("power");
                 boolean isFlying = rs.getBoolean("flying");
-                FPlayer player = new FPlayerImpl(id, name, isFlying, power);
+                boolean isAutoFlying = rs.getBoolean("auto_flying");
+                FPlayer player = new FPlayerImpl(id, name, isFlying, isAutoFlying, power);
                 players.add(player);
             }
         } catch (Exception e) {
@@ -218,5 +221,19 @@ public interface PlayerDAO extends DAO<FPlayer> {
         }
 
         return false;
+    }
+
+    default void updatePlayersAutoFly(UUID playerId, boolean autoFly) {
+
+        String sql = "UPDATE players SET auto_flying = ? WHERE id = ?;";
+
+        try (PreparedStatement statement = this.getPreparedStatement(sql)) {
+            statement.setBoolean(1, autoFly);
+            statement.setString(2, playerId.toString());
+
+            statement.executeUpdate();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 }

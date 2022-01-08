@@ -18,6 +18,10 @@ public class ConsolePlayerImpl implements FPlayer {
     @Setter
     private boolean flying = false;
 
+    @Setter
+    private boolean autoFlying = false;
+
+
     public static FPlayer fromSender(CommandSender sender) {
         return new ConsolePlayerImpl(sender.getName());
     }

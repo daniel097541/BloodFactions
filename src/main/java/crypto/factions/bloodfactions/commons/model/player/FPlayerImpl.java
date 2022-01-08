@@ -1,5 +1,6 @@
 package crypto.factions.bloodfactions.commons.model.player;
 
+import crypto.factions.bloodfactions.commons.annotation.db.ColumnName;
 import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
@@ -19,9 +20,13 @@ public class FPlayerImpl implements FPlayer {
     private boolean flying;
 
     @Setter
+    @ColumnName("auto_flying")
+    private boolean autoFlying;
+
+    @Setter
     private int power;
 
     public static FPlayer fromPlayer(Player player) {
-        return new FPlayerImpl(player.getUniqueId(), player.getName(), false, 0);
+        return new FPlayerImpl(player.getUniqueId(), player.getName(), false, false, 0);
     }
 }

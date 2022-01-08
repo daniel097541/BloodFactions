@@ -38,7 +38,8 @@ public class DBMigrationManagerImpl implements DBMigrationManager{
                 " id VARCHAR[36] PRIMARY KEY, " +
                 " name VARCHAR[50] NOT NULL, " +
                 " power SMALLINT NOT NULL DEFAULT 0, " +
-                " flying BOOLEAN NOT NULL DEFAULT 0" +
+                " flying BOOLEAN NOT NULL DEFAULT 0, " +
+                " auto_flying BOOLEAN NOT NULL DEFAULT 0" +
                 ");";
 
         this.dbManager.executeUpdate(sql);

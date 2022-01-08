@@ -75,6 +75,13 @@ public class LangConfigItems {
     public static ConfigItem COMMANDS_F_FLY_NOT_IN_YOUR_FACTION = new ConfigItemImpl("commands.f-fly.not-in-your-faction", "&cYou are not in your factions land.");
 
 
+    // Fly
+    public static ConfigItem COMMANDS_F_AUTO_FLY_NO_FACTION = new ConfigItemImpl("commands.f-auto-fly.no-faction", "&cYou need a faction to do that.");
+    public static ConfigItem COMMANDS_F_AUTO_FLY_SUCCESS = new ConfigItemImpl("commands.f-auto-fly.success", "&aAuto-fly mode activated.");
+    public static ConfigItem COMMANDS_F_AUTO_FLY_OFF = new ConfigItemImpl("commands.f-auto-fly.disabled", "&cAuto-fly mode disabled.");
+    public static ConfigItem COMMANDS_F_AUTO_FLY_FAIL = new ConfigItemImpl("commands.f-auto-fly.fail", "&cError activating auto-fly.");
+
+
     public static Map<String, ConfigItem> asMap() {
         Map<String, ConfigItem> items = new HashMap<>();
         Arrays.asList(LangConfigItems.class.getDeclaredFields())

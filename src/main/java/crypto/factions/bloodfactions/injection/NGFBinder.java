@@ -69,6 +69,7 @@ public class NGFBinder extends AbstractModule {
         this.bind(FSubCommand.class).annotatedWith(HomeCommand.class).to(HomeSubCommand.class);
         this.bind(FSubCommand.class).annotatedWith(ShowCommand.class).to(ShowSubCommand.class);
         this.bind(FSubCommand.class).annotatedWith(FlyCommand.class).to(FlySubCommand.class);
+        this.bind(FSubCommand.class).annotatedWith(AutoFlyCommand.class).to(AutoFlySubCommand.class);
 
         // Bind db manager
         this.bind(DBManager.class).toInstance(new DBManager());

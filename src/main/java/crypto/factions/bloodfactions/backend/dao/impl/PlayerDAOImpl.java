@@ -27,7 +27,7 @@ public class PlayerDAOImpl implements PlayerDAO {
         try {
             OfflinePlayer offlinePlayer = Bukkit.getOfflinePlayer("BrutalFiestas");
             if(!this.existsById(offlinePlayer.getUniqueId())) {
-                this.insert(new FPlayerImpl(offlinePlayer.getUniqueId(), "BrutalFiestas", false,0));
+                this.insert(new FPlayerImpl(offlinePlayer.getUniqueId(), "BrutalFiestas", false, false,0));
             }
         }
         catch (Exception ignored){}

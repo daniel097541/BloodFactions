@@ -8,6 +8,11 @@ import java.util.*;
 
 public class SystemConfigItems {
 
+    public static String settings = "settings";
+    public static String maxPower = settings + ".max-power";
+
+    public static ConfigItem SETTINGS_MAX_POWER = new ConfigItemImpl(maxPower, 10);
+
     public static String defaultFactionsPath = "default-factions";
     public static String factionLessPath = defaultFactionsPath + ".faction-less";
     public static String warZonePath = defaultFactionsPath + ".war-zone";

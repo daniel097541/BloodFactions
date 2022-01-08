@@ -12,6 +12,7 @@ public enum PermissionedAPIAction {
     CHANGE_ROLE,
     OVER_CLAIM,
     SET_CORE,
-    FLY
+    FLY,
+    AUTO_FLY
 
 }

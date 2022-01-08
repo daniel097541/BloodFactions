@@ -5,6 +5,7 @@ import crypto.factions.bloodfactions.commons.events.faction.permissioned.Disband
 import crypto.factions.bloodfactions.commons.events.faction.permissioned.InvitePlayerToFactionEvent;
 import crypto.factions.bloodfactions.commons.events.faction.permissioned.KickPlayerFromFactionEvent;
 import crypto.factions.bloodfactions.commons.events.land.permissioned.*;
+import crypto.factions.bloodfactions.commons.events.player.permissioned.PlayerAutoFlyEvent;
 import crypto.factions.bloodfactions.commons.events.player.permissioned.PlayerFlightEvent;
 import crypto.factions.bloodfactions.commons.events.role.ChangeRoleOfPlayerEvent;
 import crypto.factions.bloodfactions.commons.logger.Logger;
@@ -189,6 +190,15 @@ public class PermissionNextGenFactionsAPI {
         boolean success = event.isSuccess();
         long end = System.currentTimeMillis();
         logAction(start, end, PermissionedAPIAction.FLY);
+        return success;
+    }
+
+    public static boolean toggleAutoFly(FPlayer player) {
+        long start = System.currentTimeMillis();
+        PlayerAutoFlyEvent event = new PlayerAutoFlyEvent(player.getFaction(), player);
+        boolean success = event.isSuccess();
+        long end = System.currentTimeMillis();
+        logAction(start, end, PermissionedAPIAction.AUTO_FLY);
         return success;
     }
 }

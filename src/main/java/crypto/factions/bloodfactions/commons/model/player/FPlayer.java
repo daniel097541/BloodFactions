@@ -21,7 +21,6 @@ import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.Map;
 import java.util.Objects;
 
 public interface FPlayer extends NextGenFactionEntity {
@@ -30,7 +29,11 @@ public interface FPlayer extends NextGenFactionEntity {
 
     boolean isFlying();
 
+    boolean isAutoFlying();
+
     void setFlying(boolean flying);
+
+    void setAutoFlying(boolean autoFlying);
 
     default void sms(@NotNull MessageContext context) {
         new MessageContextHandler() {
@@ -147,36 +150,39 @@ public interface FPlayer extends NextGenFactionEntity {
 
     /**
      * Gets the role of the player.
+     *
      * @return
      */
-    default @Nullable FactionRole getRole(){
+    default @Nullable FactionRole getRole() {
         return NextGenFactionsAPI.getRoleOfPlayer(this);
     }
 
     /**
      * Changes the role of a player.
+     *
      * @param role
      * @param playerChangingTheRole
      * @return
      */
-    default boolean changeRole(FactionRole role, FPlayer playerChangingTheRole){
+    default boolean changeRole(FactionRole role, FPlayer playerChangingTheRole) {
         return PermissionNextGenFactionsAPI.changeRoleOfPlayer(this, role, playerChangingTheRole);
     }
 
     /**
      * Changes the role of other player.
+     *
      * @param otherPlayer
      * @param role
      * @return
      */
-    default boolean changeRoleOfPlayer(FPlayer otherPlayer, FactionRole role){
+    default boolean changeRoleOfPlayer(FPlayer otherPlayer, FactionRole role) {
         return otherPlayer.changeRole(role, this);
     }
 
-    default @Nullable FChunk getChunk(){
+    default @Nullable FChunk getChunk() {
         Player bukkitPlayer = this.getBukkitPlayer();
 
-        if(Objects.nonNull(bukkitPlayer)) {
+        if (Objects.nonNull(bukkitPlayer)) {
             Location location = bukkitPlayer.getLocation();
             Chunk chunk = location.getChunk();
             return FChunkImpl.fromChunk(chunk);
@@ -187,56 +193,61 @@ public interface FPlayer extends NextGenFactionEntity {
 
     /**
      * Checks if the player is an operator.
+     *
      * @return
      */
-    default boolean isOp(){
+    default boolean isOp() {
         OfflinePlayer offlinePlayer = this.getBukkitOfflinePlayer();
         return offlinePlayer.isOp();
     }
 
-    default void teleport(@NotNull FLocation home){
+    default void teleport(@NotNull FLocation home) {
         Player bukkitPlayer = this.getBukkitPlayer();
-        if(Objects.nonNull(bukkitPlayer)){
+        if (Objects.nonNull(bukkitPlayer)) {
             bukkitPlayer.teleport(Objects.requireNonNull(home.getBukkitLocation()));
         }
     }
 
-    default @Nullable FLocation getLocation(){
+    default @Nullable FLocation getLocation() {
         Player bukkitPlayer = this.getBukkitPlayer();
-        if(Objects.nonNull(bukkitPlayer)){
+        if (Objects.nonNull(bukkitPlayer)) {
             return FLocationImpl.fromLocation(bukkitPlayer.getLocation());
         }
         return null;
     }
 
-    default void showFaction(Faction faction){
+    default void showFaction(Faction faction) {
         NextGenFactionsAPI.showFactionToPlayer(this, faction);
     }
 
-    default void toggleFly(){
+    default void toggleFly() {
         boolean flying = PermissionNextGenFactionsAPI.toggleFlightMode(this);
         this.setFlying(flying);
     }
 
-    default void changedLand(FLocation from, FLocation to){
+    default void toggleAutoFly(){
+        boolean autoFlying = PermissionNextGenFactionsAPI.toggleAutoFly(this);
+    }
+
+    default void changedLand(FLocation from, FLocation to) {
         NextGenFactionsAPI.changedLand(this, from, to);
     }
 
     void setPower(int power);
 
-    default int updatePower(int increment){
+    default int updatePower(int increment) {
         return NextGenFactionsAPI.updatePlayersPower(this, increment);
     }
 
-    default boolean isOnline(){
+    default boolean isOnline() {
         return this.getBukkitOfflinePlayer().isOnline();
     }
 
-    default void logIn(){
+    default void logIn() {
         NextGenFactionsAPI.playerLoggedIn(this);
     }
 
-    default void logOut(){
+    default void logOut() {
         NextGenFactionsAPI.playerLoggedOut(this);
     }
 
