@@ -15,10 +15,10 @@ import javax.inject.Singleton;
 import java.util.Objects;
 
 @Singleton
-public class RolesSubCommand extends FSubCommandImpl {
+public class RanksSubCommand extends FSubCommandImpl {
 
     @Inject
-    public RolesSubCommand(@LangConfiguration NGFConfig langConfig) {
+    public RanksSubCommand(@LangConfiguration NGFConfig langConfig) {
         super(SubCommandType.RANK, langConfig);
     }
 
@@ -38,7 +38,8 @@ public class RolesSubCommand extends FSubCommandImpl {
 
         // List roles
         if (args.length == 1) {
-
+            player.listRoles(faction);
+            return true;
         } else {
 
             String action = args[1];
