@@ -25,6 +25,10 @@ public interface MessageContext {
 
     @Nullable FChunk getChunk();
 
+    @Nullable FactionRank getRank();
+
+    void setRank(FactionRank rank);
+
     void setFaction(@NotNull Faction faction);
 
     void setTargetFaction(@NotNull Faction targetFaction);

@@ -2,8 +2,10 @@ package crypto.factions.bloodfactions.commons.command.impl;
 
 import crypto.factions.bloodfactions.backend.config.lang.LangConfigItems;
 import crypto.factions.bloodfactions.commons.annotation.config.LangConfiguration;
+import crypto.factions.bloodfactions.commons.api.NextGenFactionsAPI;
 import crypto.factions.bloodfactions.commons.command.SubCommandType;
 import crypto.factions.bloodfactions.commons.config.NGFConfig;
+import crypto.factions.bloodfactions.commons.logger.Logger;
 import crypto.factions.bloodfactions.commons.messages.model.MessageContext;
 import crypto.factions.bloodfactions.commons.messages.model.MessageContextImpl;
 import crypto.factions.bloodfactions.commons.model.faction.Faction;
@@ -47,6 +49,45 @@ public class RanksSubCommand extends FSubCommandImpl {
 
             String action = args[1];
 
+            if (action.equalsIgnoreCase("set")) {
+
+                if (args.length >= 4) {
+
+                    String playerName = args[2];
+                    String rankName = args[3];
+
+                    FPlayer targetPlayer = NextGenFactionsAPI.getPlayerByName(playerName);
+
+                    if (Objects.nonNull(targetPlayer)) {
+                        FactionRank targetRank = faction.getRankByName(rankName);
+
+                        // Set the rank of the player.
+                        if (Objects.nonNull(targetRank)) {
+                            Logger.logInfo("Setting rank of " + playerName + " to " + rankName);
+                            return targetPlayer.setRank(targetRank, player);
+                        }
+
+                        // Set rank does not exist command.
+                        String successMessage = (String) this.getLangConfig().get(LangConfigItems.COMMANDS_F_RANKS_NOT_EXISTS);
+                        MessageContext messageContext = new MessageContextImpl(player, successMessage);
+                        player.sms(messageContext);
+                        return false;
+                    }
+
+                    // Send does not exist command.
+                    String successMessage = (String) this.getLangConfig().get(LangConfigItems.COMMANDS_F_RANKS_PLAYER_NOT_EXISTS);
+                    MessageContext messageContext = new MessageContextImpl(player, successMessage);
+                    player.sms(messageContext);
+                    return false;
+                }
+
+                // Send formats
+                else {
+
+                }
+
+            }
+
             // Create role
             if (action.equalsIgnoreCase("create")) {
 
@@ -55,13 +96,13 @@ public class RanksSubCommand extends FSubCommandImpl {
                     String roleName = args[2];
                     Set<PermissionType> permissions = new HashSet<>();
 
-                    if(args.length == 4){
+                    if (args.length == 4) {
                         String permissionsStr = args[3];
                         String[] permissionsNames = permissionsStr.split(",");
 
-                        for(String permName : permissionsNames){
+                        for (String permName : permissionsNames) {
                             PermissionType type = PermissionType.fromName(permName);
-                            if(Objects.nonNull(type)){
+                            if (Objects.nonNull(type)) {
                                 permissions.add(type);
                             }
                         }

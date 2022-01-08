@@ -165,7 +165,7 @@ public interface FPlayer extends NextGenFactionEntity {
      * @return
      */
     default boolean changeRole(FactionRank role, FPlayer playerChangingTheRole) {
-        return PermissionNextGenFactionsAPI.changeRoleOfPlayer(this, role, playerChangingTheRole);
+        return PermissionNextGenFactionsAPI.changeRankOfPlayer(this, role, playerChangingTheRole);
     }
 
     /**
@@ -355,5 +355,9 @@ public interface FPlayer extends NextGenFactionEntity {
 
     default void died(){
         NextGenFactionsAPI.playerDied(this);
+    }
+
+    default boolean setRank(@NotNull FactionRank targetRank, @NotNull FPlayer playerSettingTheRank){
+        return PermissionNextGenFactionsAPI.changeRankOfPlayer(this, targetRank, playerSettingTheRank);
     }
 }

@@ -98,6 +98,10 @@ public class LangConfigItems {
     public static ConfigItem COMMANDS_F_RANKS_ALREADY_EXISTS = new ConfigItemImpl("commands.f-ranks.already-exists", "&cThere is already a rank with that name.");
     public static ConfigItem COMMANDS_F_RANKS_LIST_HEADER = new ConfigItemImpl("commands.f-ranks.list-header", rolesListHeaderBlueprint);
     public static ConfigItem COMMANDS_F_RANKS_LIST_BODY = new ConfigItemImpl("commands.f-ranks.list-body", rolesListBlueprint);
+    public static ConfigItem COMMANDS_F_RANKS_PLAYER_NOT_EXISTS= new ConfigItemImpl("commands.f-ranks.player-not-exists", "&cThere is no player with that name.");
+    public static ConfigItem COMMANDS_F_RANKS_PLAYER_ALREADY_IS_RANK= new ConfigItemImpl("commands.f-ranks.player-already-has-that-rank", "&cThe player already has that rank.");
+    public static ConfigItem COMMANDS_F_RANKS_PLAYER_CHANGED_RANK= new ConfigItemImpl("commands.f-ranks.players-rank-changed", "&eYou successfully set the rank of &a{target_player_name} &eto &d{rank_name}");
+    public static ConfigItem COMMANDS_F_RANKS_YOUR_RANK_CHANGED= new ConfigItemImpl("commands.f-ranks.your-rank-changed", "&a{target_player_name} &ehas changed your rank to: &d{rank_name}");
 
 
     public static Map<String, ConfigItem> asMap() {

@@ -8,6 +8,8 @@ import crypto.factions.bloodfactions.commons.model.land.FLocation;
 import crypto.factions.bloodfactions.commons.model.permission.PermissionType;
 import crypto.factions.bloodfactions.commons.model.player.FPlayer;
 import crypto.factions.bloodfactions.commons.model.role.FactionRank;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.Map;
 import java.util.Set;
@@ -222,4 +224,13 @@ public interface Faction extends NextGenFactionEntity {
     default boolean deleteRank(String roleName, FPlayer player) {
         return PermissionNextGenFactionsAPI.deleteRank(roleName, player, this);
     }
+
+    default @Nullable FactionRank getRankByName(@NotNull String rankName) {
+        return this.getRoles()
+                .stream()
+                .filter(role -> role.getName().equals(rankName))
+                .findFirst()
+                .orElse(null);
+    }
+
 }

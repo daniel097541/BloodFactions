@@ -10,10 +10,7 @@ import crypto.factions.bloodfactions.commons.events.player.callback.GetPlayerByN
 import crypto.factions.bloodfactions.commons.events.player.callback.GetPlayerEvent;
 import crypto.factions.bloodfactions.commons.events.player.callback.PlayerHasPermissionEvent;
 import crypto.factions.bloodfactions.commons.events.player.unpermissioned.*;
-import crypto.factions.bloodfactions.commons.events.role.GetDefaultRoleOfFactionEvent;
-import crypto.factions.bloodfactions.commons.events.role.GetRoleOfPlayerEvent;
-import crypto.factions.bloodfactions.commons.events.role.GetRolesOfFactionEvent;
-import crypto.factions.bloodfactions.commons.events.role.ListRolesEvent;
+import crypto.factions.bloodfactions.commons.events.role.*;
 import crypto.factions.bloodfactions.commons.events.shared.callback.GetFactionOfPlayerEvent;
 import crypto.factions.bloodfactions.commons.events.shared.callback.GetPlayersInFactionEvent;
 import crypto.factions.bloodfactions.commons.logger.Logger;

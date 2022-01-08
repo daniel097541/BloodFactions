@@ -8,6 +8,7 @@ import crypto.factions.bloodfactions.commons.messages.util.MessageUtils;
 import crypto.factions.bloodfactions.commons.model.faction.Faction;
 import crypto.factions.bloodfactions.commons.model.land.FChunk;
 import crypto.factions.bloodfactions.commons.model.player.FPlayer;
+import crypto.factions.bloodfactions.commons.model.role.FactionRank;
 import org.bukkit.entity.Player;
 
 import java.util.HashMap;
@@ -24,6 +25,7 @@ public interface MessageContextHandler {
         Faction faction = messageContext.getFaction();
         FPlayer targetPlayer = messageContext.getTargetPlayer();
         Faction targetFaction = messageContext.getTargetFaction();
+        FactionRank rank = messageContext.getRank();
         FChunk chunk = messageContext.getChunk();
 
         Map<String, String> placeHolders = new HashMap<>();
@@ -40,7 +42,9 @@ public interface MessageContextHandler {
         if (message.contains(MessagePlaceholder.CHUNK.getPlaceholder()) && Objects.nonNull(chunk)) {
             placeHolders.put(MessagePlaceholder.CHUNK.getPlaceholder(), chunk.chunkToString());
         }
-
+        if (message.contains(MessagePlaceholder.RANK.getPlaceholder()) && Objects.nonNull(rank)) {
+            placeHolders.put(MessagePlaceholder.RANK.getPlaceholder(), rank.getName());
+        }
 
         for (FPlayer player : players) {
             Player bukkitPlayer = player.getBukkitPlayer();

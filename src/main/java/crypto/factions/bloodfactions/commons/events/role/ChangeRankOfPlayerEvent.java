@@ -9,14 +9,14 @@ import lombok.Setter;
 
 @Getter
 @Setter
-public class ChangeRoleOfPlayerEvent extends PermissionEvent {
+public class ChangeRankOfPlayerEvent extends PermissionEvent {
 
     private final FactionRank role;
     private boolean changed;
     private final FPlayer playerChangingTheRole;
     private final FPlayer playerToBeChanged;
 
-    public ChangeRoleOfPlayerEvent(FPlayer player, FactionRank role, FPlayer playerChangingTheRole) {
+    public ChangeRankOfPlayerEvent(FPlayer player, FactionRank role, FPlayer playerChangingTheRole) {
         super(player.getFaction(), playerChangingTheRole, PermissionType.CHANGE_ROLES);
         this.playerToBeChanged = player;
         this.role = role;

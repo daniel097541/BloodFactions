@@ -8,11 +8,12 @@ import crypto.factions.bloodfactions.commons.api.NextGenFactionsAPI;
 import crypto.factions.bloodfactions.commons.config.NGFConfig;
 import crypto.factions.bloodfactions.commons.events.faction.unpermissioned.ShowFactionEvent;
 import crypto.factions.bloodfactions.commons.events.player.callback.CheckIfPlayerHasFactionEvent;
+import crypto.factions.bloodfactions.commons.events.player.callback.GetPlayerByNameEvent;
 import crypto.factions.bloodfactions.commons.events.player.callback.GetPlayerEvent;
 import crypto.factions.bloodfactions.commons.events.player.permissioned.PlayerAutoFlyEvent;
 import crypto.factions.bloodfactions.commons.events.player.permissioned.PlayerFlightEvent;
 import crypto.factions.bloodfactions.commons.events.player.unpermissioned.*;
-import crypto.factions.bloodfactions.commons.events.role.ChangeRoleOfPlayerEvent;
+import crypto.factions.bloodfactions.commons.events.role.ChangeRankOfPlayerEvent;
 import crypto.factions.bloodfactions.commons.events.role.GetRoleOfPlayerEvent;
 import crypto.factions.bloodfactions.commons.events.shared.callback.GetPlayersInFactionEvent;
 import crypto.factions.bloodfactions.commons.logger.Logger;
@@ -92,12 +93,39 @@ public interface PlayerHandler extends DataHandler<FPlayer> {
     }
 
     @EventHandler(priority = EventPriority.HIGHEST)
-    default void handleChangeRoleOfPlayer(ChangeRoleOfPlayerEvent event) {
+    default void handleChangeRoleOfPlayer(ChangeRankOfPlayerEvent event) {
         FPlayer player = event.getPlayerToBeChanged();
-        FactionRank role = event.getRole();
+        FactionRank rank = event.getRole();
+        FPlayer playerChangingTheRank = event.getPlayerChangingTheRole();
 
-        this.getRolesDAO().setPlayersRole(player, role);
-        event.setChanged(true);
+        FactionRank currentRank = player.getRole();
+        if(rank.equals(currentRank)){
+            String message = (String) this.getLangConfig().get(LangConfigItems.COMMANDS_F_RANKS_PLAYER_ALREADY_IS_RANK);
+            MessageContext messageContext = new MessageContextImpl(player, message);
+            player.sms(messageContext);
+            event.setChanged(false);
+        }
+
+        else {
+            // Send rank changed to player changing the rank.
+            String message = (String) this.getLangConfig().get(LangConfigItems.COMMANDS_F_RANKS_PLAYER_CHANGED_RANK);
+            MessageContext messageContext = new MessageContextImpl(player, message);
+            messageContext.setTargetPlayer(player);
+            messageContext.setRank(rank);
+            player.sms(messageContext);
+
+            // Send rank changed to target player
+            String targetMessage = (String) this.getLangConfig().get(LangConfigItems.COMMANDS_F_RANKS_YOUR_RANK_CHANGED);
+            MessageContext targetMessageContext = new MessageContextImpl(player, targetMessage);
+            targetMessageContext.setTargetPlayer(playerChangingTheRank);
+            targetMessageContext.setRank(rank);
+            player.sms(targetMessageContext);
+
+            // Change event
+            event.setChanged(false);
+            boolean changed = this.getRolesDAO().setPlayersRole(player, rank);
+            event.setChanged(changed);
+        }
     }
 
     @EventHandler(priority = EventPriority.HIGHEST)
@@ -262,4 +290,10 @@ public interface PlayerHandler extends DataHandler<FPlayer> {
         player.updatePower(-deathPowerDecrement);
     }
 
+    @EventHandler(priority = EventPriority.HIGHEST)
+    default void handleGetPlayerByName(GetPlayerByNameEvent event){
+        String playerName = event.getName();
+        FPlayer player = this.getDao().findByName(playerName);
+        event.setPlayer(player);
+    }
 }

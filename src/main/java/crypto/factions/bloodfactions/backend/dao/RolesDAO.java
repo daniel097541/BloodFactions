@@ -1,5 +1,6 @@
 package crypto.factions.bloodfactions.backend.dao;
 
+import crypto.factions.bloodfactions.commons.logger.Logger;
 import crypto.factions.bloodfactions.commons.model.permission.PermissionType;
 import crypto.factions.bloodfactions.commons.model.player.FPlayer;
 import crypto.factions.bloodfactions.commons.model.role.FactionRank;
@@ -226,21 +227,30 @@ public interface RolesDAO extends DAO<FactionRank> {
      * @return
      */
     default boolean setPlayersRole(@NotNull FPlayer player, @NotNull FactionRank role){
-        UUID playerId = player.getId();
-        UUID roleId = role.getId();
 
-        final String sql = "INSERT INTO as_player_role (player_id, role_id) VALUES (?,?);";
+        boolean removed = this.removePlayersRole(player);
 
-        try(final PreparedStatement statement = this.getPreparedStatement(sql)){
-            statement.setString(1, playerId.toString());
-            statement.setString(2, roleId.toString());
-            statement.executeUpdate();
-            return true;
+        // Removed, keep working.
+        if (removed) {
+            UUID playerId = player.getId();
+            UUID roleId = role.getId();
+
+            final String sql = "INSERT INTO as_player_role (player_id, role_id) VALUES (?,?);";
+
+            try (final PreparedStatement statement = this.getPreparedStatement(sql)) {
+                statement.setString(1, playerId.toString());
+                statement.setString(2, roleId.toString());
+                statement.executeUpdate();
+                return true;
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+            return false;
         }
-        catch (Exception e){
-            e.printStackTrace();
+        else{
+            Logger.logInfo("Could not remove player's role: " + player.getName());
+            return false;
         }
-        return false;
     }
 
 
@@ -285,4 +295,18 @@ public interface RolesDAO extends DAO<FactionRank> {
         return false;
     }
 
+    default boolean removePlayersRole(FPlayer player){
+
+        String sql = "DELETE FROM as_player_role WHERE player_id = ?";
+
+        try(PreparedStatement statement = this.getPreparedStatement(sql)){
+
+            statement.setString(1, player.getId().toString());
+            return statement.executeUpdate() > 0;
+        }
+        catch (Exception e){
+            e.printStackTrace();
+        }
+        return false;
+    }
 }

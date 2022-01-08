@@ -7,7 +7,7 @@ import crypto.factions.bloodfactions.commons.events.faction.permissioned.KickPla
 import crypto.factions.bloodfactions.commons.events.land.permissioned.*;
 import crypto.factions.bloodfactions.commons.events.player.permissioned.PlayerAutoFlyEvent;
 import crypto.factions.bloodfactions.commons.events.player.permissioned.PlayerFlightEvent;
-import crypto.factions.bloodfactions.commons.events.role.ChangeRoleOfPlayerEvent;
+import crypto.factions.bloodfactions.commons.events.role.ChangeRankOfPlayerEvent;
 import crypto.factions.bloodfactions.commons.events.role.CreateRankEvent;
 import crypto.factions.bloodfactions.commons.events.role.DeleteRankEvent;
 import crypto.factions.bloodfactions.commons.logger.Logger;
@@ -157,11 +157,11 @@ public class PermissionNextGenFactionsAPI {
      * @param playerChangingTheRole
      * @return
      */
-    public static boolean changeRoleOfPlayer(@NotNull FPlayer player, @NotNull FactionRank newRole, @NotNull FPlayer playerChangingTheRole) {
+    public static boolean changeRankOfPlayer(@NotNull FPlayer player, @NotNull FactionRank newRole, @NotNull FPlayer playerChangingTheRole) {
         long start = System.currentTimeMillis();
         boolean changed = false;
         if (player.hasFaction()) {
-            ChangeRoleOfPlayerEvent event = new ChangeRoleOfPlayerEvent(player, newRole, playerChangingTheRole);
+            ChangeRankOfPlayerEvent event = new ChangeRankOfPlayerEvent(player, newRole, playerChangingTheRole);
             changed = event.isChanged();
         }
         long end = System.currentTimeMillis();

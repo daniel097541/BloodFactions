@@ -3,6 +3,7 @@ package crypto.factions.bloodfactions.commons.messages.model;
 import crypto.factions.bloodfactions.commons.model.faction.Faction;
 import crypto.factions.bloodfactions.commons.model.land.FChunk;
 import crypto.factions.bloodfactions.commons.model.player.FPlayer;
+import crypto.factions.bloodfactions.commons.model.role.FactionRank;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
@@ -45,5 +46,8 @@ public class MessageContextImpl implements MessageContext {
 
     @Nullable
     private FChunk chunk;
+
+    @Nullable
+    private FactionRank rank;
 
 }
