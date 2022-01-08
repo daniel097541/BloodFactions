@@ -1,5 +1,7 @@
 package crypto.factions.bloodfactions.commons.messages.handler;
 
+import crypto.factions.bloodfactions.backend.config.lang.LangConfig;
+import crypto.factions.bloodfactions.backend.config.lang.LangConfigItems;
 import crypto.factions.bloodfactions.commons.messages.model.MessageContext;
 import crypto.factions.bloodfactions.commons.messages.model.MessagePlaceholder;
 import crypto.factions.bloodfactions.commons.messages.util.MessageUtils;
@@ -35,7 +37,7 @@ public interface MessageContextHandler {
         if (message.contains(MessagePlaceholder.TARGET_PLAYER_NAME.getPlaceholder()) && Objects.nonNull(targetPlayer)) {
             placeHolders.put(MessagePlaceholder.TARGET_PLAYER_NAME.getPlaceholder(), targetPlayer.getName());
         }
-        if(message.contains(MessagePlaceholder.CHUNK.getPlaceholder()) && Objects.nonNull(chunk)){
+        if (message.contains(MessagePlaceholder.CHUNK.getPlaceholder()) && Objects.nonNull(chunk)) {
             placeHolders.put(MessagePlaceholder.CHUNK.getPlaceholder(), chunk.chunkToString());
         }
 
@@ -44,7 +46,8 @@ public interface MessageContextHandler {
             Player bukkitPlayer = player.getBukkitPlayer();
             // Send the message.
             if (Objects.nonNull(bukkitPlayer)) {
-                MessageUtils.sendMessage(message, bukkitPlayer, placeHolders);
+                String prefix = (String) LangConfig.getInstance().get(LangConfigItems.GLOBAL_PREFIX);
+                MessageUtils.sendMessage(prefix + message, bukkitPlayer, placeHolders);
             }
         }
     }

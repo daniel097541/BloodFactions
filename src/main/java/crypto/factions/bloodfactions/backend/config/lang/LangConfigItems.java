@@ -9,6 +9,8 @@ import java.util.Map;
 
 public class LangConfigItems {
 
+    public static ConfigItem GLOBAL_PREFIX = new ConfigItemImpl("settings.messages-prefix", "&cBlood&7Factions &d>> &7");
+
     // Alerts broadcasting
     public static ConfigItem ALERT_PREFIX = new ConfigItemImpl("alerts.prefix", "&dALERT &7>> ");
     public static ConfigItem ALERT_OVER_CLAIMED = new ConfigItemImpl("alerts.over-claimed", "&c{faction_name} &eis over claiming you at: &7{chunk} &e!");
@@ -56,7 +58,7 @@ public class LangConfigItems {
 
 
     // Show
-    public static String showBluePrint = "&7----------- &e{faction_name} &7-----------\n" +
+    public static String showBluePrint = "\n&7----------- &e{faction_name} &7-----------\n" +
             "\n" +
             "   &d- &7Faction power: &e{faction_power} \n" +
             "   &d- &7Faction claims: &e{faction_claims} \n" +
