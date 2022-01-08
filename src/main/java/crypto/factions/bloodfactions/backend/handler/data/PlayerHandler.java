@@ -183,12 +183,22 @@ public interface PlayerHandler extends DataHandler<FPlayer> {
 
         int total = player.getPower() + increment;
         int maxPower = (int) this.getSysConfig().get(SystemConfigItems.SETTINGS_MAX_POWER);
+        int minPower = (int) this.getSysConfig().get(SystemConfigItems.SETTINGS_MIN_POWER);
 
-        if (total < maxPower) {
-            player.setPower(total);
-            // Update power in db.
-            this.getDao().updatePlayersPower(player.getId(), player.getPower());
+        if(total > 0) {
+            if (total > maxPower) {
+                total = maxPower;
+            }
         }
+        else{
+            if(total < minPower){
+                total = minPower;
+            }
+        }
+
+        player.setPower(total);
+        // Update power in db.
+        this.getDao().updatePlayersPower(player.getId(), player.getPower());
     }
 
     @EventHandler(priority = EventPriority.HIGHEST)
@@ -205,6 +215,7 @@ public interface PlayerHandler extends DataHandler<FPlayer> {
         placeHolders.put("{faction_members}", members.stream().map(FPlayer::getName).collect(Collectors.joining(", ")));
         placeHolders.put("{faction_owner}", owner.getName());
         placeHolders.put("{faction_claims}", String.valueOf(faction.getAmountOfClaims()));
+        placeHolders.put("{can_be_over_claimed}", String.valueOf(faction.canBeOverClaimed()).toUpperCase(Locale.ROOT));
 
         String message = (String) this.getLangConfig().get(LangConfigItems.COMMANDS_F_SHOW_SUCCESS);
         player.sms(StringUtils.replacePlaceHolders(message, placeHolders));
@@ -242,6 +253,13 @@ public interface PlayerHandler extends DataHandler<FPlayer> {
         long noFallDamageTime = 10;
         this.getNoFallDamagePlayers().put(player.getId(), player);
         Bukkit.getScheduler().runTaskLaterAsynchronously(this.getPlugin(), () -> getNoFallDamagePlayers().remove(player.getId()), (noFallDamageTime * 1000) / 20);
+    }
+
+    @EventHandler(priority = EventPriority.HIGHEST)
+    default void handlePlayerDied(FPlayerDiedEvent event){
+        FPlayer player = event.getPlayer();
+        int deathPowerDecrement = (int) this.getSysConfig().get(SystemConfigItems.DEATH_POWER_DECREMENT);
+        player.updatePower(-deathPowerDecrement);
     }
 
 }

@@ -353,4 +353,7 @@ public interface FPlayer extends NextGenFactionEntity {
         NextGenFactionsAPI.listRoles(faction, this);
     }
 
+    default void died(){
+        NextGenFactionsAPI.playerDied(this);
+    }
 }

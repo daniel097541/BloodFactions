@@ -60,6 +60,7 @@ public class LangConfigItems {
     // Show
     public static String showBluePrint = "\n&7----------- &e{faction_name} &7-----------\n" +
             "\n" +
+            "   &d- &7Faction can be over-claimed: &d{can_be_over_claimed} \n" +
             "   &d- &7Faction power: &e{faction_power} \n" +
             "   &d- &7Faction claims: &e{faction_claims} \n" +
             "   &d- &7Faction members: &e{faction_members} \n" +
@@ -88,7 +89,7 @@ public class LangConfigItems {
     public static String rolesListBlueprint =
             "&7-------------------------------------------- \n" +
             "&7|   &d- &7Rank name: &e{rank_name} \n" +
-            "&7|   &d- &7Rank permissions: &b{permission_list} \n" +
+            "&7|   &d- &7Rank permissions: &c{permission_list} \n" +
             "&7-------------------------------------------- \n";
     public static ConfigItem COMMANDS_F_RANKS_NO_FACTION = new ConfigItemImpl("commands.f-ranks.no-faction", "&cYou need a faction to do that.");
     public static ConfigItem COMMANDS_F_RANKS_CREATE = new ConfigItemImpl("commands.f-ranks.create", "&aRank successfully created.");

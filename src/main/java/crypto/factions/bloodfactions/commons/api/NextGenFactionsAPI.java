@@ -441,4 +441,11 @@ public class NextGenFactionsAPI {
         long end = System.currentTimeMillis();
         logAction(start, end, APIAction.LIST_ROLES);
     }
+
+    public static void playerDied(FPlayer player) {
+        long start = System.currentTimeMillis();
+        new FPlayerDiedEvent(player);
+        long end = System.currentTimeMillis();
+        logAction(start, end, APIAction.PLAYER_DIED);
+    }
 }

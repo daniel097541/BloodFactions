@@ -10,8 +10,12 @@ public class SystemConfigItems {
 
     public static String settings = "settings";
     public static String maxPower = settings + ".max-power";
+    public static String minPower = settings + ".min-power";
+    public static String powerDecrementOnDeath = settings + ".power-decrement";
 
     public static ConfigItem SETTINGS_MAX_POWER = new ConfigItemImpl(maxPower, 10);
+    public static ConfigItem SETTINGS_MIN_POWER = new ConfigItemImpl(minPower, -10);
+    public static ConfigItem DEATH_POWER_DECREMENT = new ConfigItemImpl(powerDecrementOnDeath, 5);
 
     public static String defaultFactionsPath = "default-factions";
     public static String factionLessPath = defaultFactionsPath + ".faction-less";

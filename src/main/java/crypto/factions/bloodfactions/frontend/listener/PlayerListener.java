@@ -21,6 +21,7 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.entity.EntityDamageEvent;
+import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerMoveEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
@@ -157,6 +158,15 @@ public interface PlayerListener extends Listener {
                 }
             }
         }
+    }
+
+    @EventHandler(priority = EventPriority.HIGHEST)
+    default void handlePlayerDeath(PlayerDeathEvent event){
+
+        Player bukkitPlayer = event.getEntity();
+        FPlayer player = NextGenFactionsAPI.getPlayer(bukkitPlayer.getUniqueId());
+
+        player.died();
     }
 
     @EventHandler
