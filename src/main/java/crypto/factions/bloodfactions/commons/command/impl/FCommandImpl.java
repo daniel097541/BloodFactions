@@ -33,7 +33,8 @@ public class FCommandImpl implements FCommand {
                         @HomeCommand FSubCommand homeSubCommand,
                         @ShowCommand FSubCommand showSubCommand,
                         @FlyCommand FSubCommand flySubCommand,
-                        @AutoFlyCommand FSubCommand autoFlySubCommand
+                        @AutoFlyCommand FSubCommand autoFlySubCommand,
+                        @RolesCommand FSubCommand rolesSubCommand
                         ) {
 
         this.langConfig = langConfig;
@@ -54,5 +55,6 @@ public class FCommandImpl implements FCommand {
         this.addSubCommand(showSubCommand);
         this.addSubCommand(flySubCommand);
         this.addSubCommand(autoFlySubCommand);
+        this.addSubCommand(rolesSubCommand);
     }
 }

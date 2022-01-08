@@ -8,12 +8,14 @@ import crypto.factions.bloodfactions.commons.events.land.permissioned.*;
 import crypto.factions.bloodfactions.commons.events.player.permissioned.PlayerAutoFlyEvent;
 import crypto.factions.bloodfactions.commons.events.player.permissioned.PlayerFlightEvent;
 import crypto.factions.bloodfactions.commons.events.role.ChangeRoleOfPlayerEvent;
+import crypto.factions.bloodfactions.commons.events.role.CreateRankEvent;
+import crypto.factions.bloodfactions.commons.events.role.DeleteRankEvent;
 import crypto.factions.bloodfactions.commons.logger.Logger;
 import crypto.factions.bloodfactions.commons.model.faction.Faction;
 import crypto.factions.bloodfactions.commons.model.land.FChunk;
 import crypto.factions.bloodfactions.commons.model.land.FLocation;
 import crypto.factions.bloodfactions.commons.model.player.FPlayer;
-import crypto.factions.bloodfactions.commons.model.role.FactionRole;
+import crypto.factions.bloodfactions.commons.model.role.FactionRank;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Map;
@@ -154,7 +156,7 @@ public class PermissionNextGenFactionsAPI {
      * @param playerChangingTheRole
      * @return
      */
-    public static boolean changeRoleOfPlayer(@NotNull FPlayer player, @NotNull FactionRole newRole, @NotNull FPlayer playerChangingTheRole) {
+    public static boolean changeRoleOfPlayer(@NotNull FPlayer player, @NotNull FactionRank newRole, @NotNull FPlayer playerChangingTheRole) {
         long start = System.currentTimeMillis();
         boolean changed = false;
         if (player.hasFaction()) {
@@ -200,5 +202,21 @@ public class PermissionNextGenFactionsAPI {
         long end = System.currentTimeMillis();
         logAction(start, end, PermissionedAPIAction.AUTO_FLY);
         return success;
+    }
+
+    public static FactionRank createRank(String rankName, FPlayer player, Faction faction) {
+        long start = System.currentTimeMillis();
+        CreateRankEvent event = new CreateRankEvent(faction, player, rankName);
+        long end = System.currentTimeMillis();
+        logAction(start, end, PermissionedAPIAction.CREATE_ROLE);
+        return event.getRole();
+    }
+
+    public static boolean deleteRank(String rankName, FPlayer player, Faction faction) {
+        long start = System.currentTimeMillis();
+        DeleteRankEvent event = new DeleteRankEvent(faction, player, rankName);
+        long end = System.currentTimeMillis();
+        logAction(start, end, PermissionedAPIAction.DELETE_ROLE);
+        return event.isSuccess();
     }
 }

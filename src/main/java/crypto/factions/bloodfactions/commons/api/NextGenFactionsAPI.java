@@ -13,6 +13,7 @@ import crypto.factions.bloodfactions.commons.events.player.unpermissioned.*;
 import crypto.factions.bloodfactions.commons.events.role.GetDefaultRoleOfFactionEvent;
 import crypto.factions.bloodfactions.commons.events.role.GetRoleOfPlayerEvent;
 import crypto.factions.bloodfactions.commons.events.role.GetRolesOfFactionEvent;
+import crypto.factions.bloodfactions.commons.events.role.ListRolesEvent;
 import crypto.factions.bloodfactions.commons.events.shared.callback.GetFactionOfPlayerEvent;
 import crypto.factions.bloodfactions.commons.events.shared.callback.GetPlayersInFactionEvent;
 import crypto.factions.bloodfactions.commons.logger.Logger;
@@ -21,7 +22,7 @@ import crypto.factions.bloodfactions.commons.model.land.FChunk;
 import crypto.factions.bloodfactions.commons.model.land.FLocation;
 import crypto.factions.bloodfactions.commons.model.permission.Action;
 import crypto.factions.bloodfactions.commons.model.player.FPlayer;
-import crypto.factions.bloodfactions.commons.model.role.FactionRole;
+import crypto.factions.bloodfactions.commons.model.role.FactionRank;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -261,6 +262,12 @@ public class NextGenFactionsAPI {
         return faction;
     }
 
+    /**
+     * Gets all claims from faction.
+     *
+     * @param faction
+     * @return
+     */
     public static @NotNull Set<FChunk> getAllClaims(@NotNull Faction faction) {
         long start = System.currentTimeMillis();
         GetClaimsOfFactionEvent event = new GetClaimsOfFactionEvent(faction);
@@ -270,9 +277,15 @@ public class NextGenFactionsAPI {
         return chunks;
     }
 
-    public static @Nullable FactionRole getRoleOfPlayer(@NotNull FPlayer player) {
+    /**
+     * Gets the role of a player.
+     *
+     * @param player
+     * @return
+     */
+    public static @Nullable FactionRank getRoleOfPlayer(@NotNull FPlayer player) {
         long start = System.currentTimeMillis();
-        FactionRole role = null;
+        FactionRank role = null;
         if (player.hasFaction()) {
             GetRoleOfPlayerEvent event = new GetRoleOfPlayerEvent(player);
             role = event.getRole();
@@ -282,24 +295,42 @@ public class NextGenFactionsAPI {
         return role;
     }
 
-    public static @Nullable FactionRole getDefaultRoleOfFaction(@NotNull Faction faction) {
+    /**
+     * Gets the default role.
+     *
+     * @param faction
+     * @return
+     */
+    public static @Nullable FactionRank getDefaultRoleOfFaction(@NotNull Faction faction) {
         long start = System.currentTimeMillis();
         GetDefaultRoleOfFactionEvent event = new GetDefaultRoleOfFactionEvent(faction);
-        FactionRole role = event.getDefaultRole();
+        FactionRank role = event.getDefaultRole();
         long end = System.currentTimeMillis();
         logAction(start, end, APIAction.GET_DEFAULT_ROLE_OF_FACTION);
         return role;
     }
 
-    public static @NotNull Set<FactionRole> getRolesOfFaction(@NotNull Faction faction) {
+    /**
+     * Gets all the roles of a faction.
+     *
+     * @param faction
+     * @return
+     */
+    public static @NotNull Set<FactionRank> getRolesOfFaction(@NotNull Faction faction) {
         long start = System.currentTimeMillis();
         GetRolesOfFactionEvent event = new GetRolesOfFactionEvent(faction);
-        Set<FactionRole> roles = event.getRoles();
+        Set<FactionRank> roles = event.getRoles();
         long end = System.currentTimeMillis();
         logAction(start, end, APIAction.GET_ROLES_OF_FACTION);
         return roles;
     }
 
+    /**
+     * Gets the number of claims of a faction.
+     *
+     * @param faction
+     * @return
+     */
     public static int getNumberOfClaimsOfFaction(@NotNull Faction faction) {
         long start = System.currentTimeMillis();
         GetNumberOfClaimsEvent event = new GetNumberOfClaimsEvent(faction);
@@ -309,6 +340,12 @@ public class NextGenFactionsAPI {
         return count;
     }
 
+    /**
+     * Gets the home of a faction.
+     *
+     * @param faction
+     * @return
+     */
     public static FLocation getCoreOfFaction(Faction faction) {
         long start = System.currentTimeMillis();
         GetCoreEvent event = new GetCoreEvent(faction);
@@ -318,6 +355,12 @@ public class NextGenFactionsAPI {
         return core;
     }
 
+    /**
+     * Shows the faction info to the player.
+     *
+     * @param player
+     * @param faction
+     */
     public static void showFactionToPlayer(FPlayer player, Faction faction) {
         long start = System.currentTimeMillis();
         new ShowFactionEvent(faction, player);
@@ -325,6 +368,13 @@ public class NextGenFactionsAPI {
         logAction(start, end, APIAction.SHOW_FACTION);
     }
 
+    /**
+     * Player changed land.
+     *
+     * @param player
+     * @param from
+     * @param to
+     */
     public static void changedLand(FPlayer player, Faction from, Faction to) {
         long start = System.currentTimeMillis();
         new PlayerChangedLandEvent(player, from, to);
@@ -332,6 +382,13 @@ public class NextGenFactionsAPI {
         logAction(start, end, APIAction.CHANGED_LAND);
     }
 
+    /**
+     * Updates the power of the player.
+     *
+     * @param player
+     * @param increment
+     * @return
+     */
     public static int updatePlayersPower(FPlayer player, int increment) {
         long start = System.currentTimeMillis();
         new PlayerPowerChangeEvent(player, increment);
@@ -340,6 +397,11 @@ public class NextGenFactionsAPI {
         return player.getPower();
     }
 
+    /**
+     * Player logged in.
+     *
+     * @param player
+     */
     public static void playerLoggedIn(FPlayer player) {
         long start = System.currentTimeMillis();
         new FPlayerLoginEvent(player);
@@ -347,6 +409,11 @@ public class NextGenFactionsAPI {
         logAction(start, end, APIAction.LOGGED_IN);
     }
 
+    /**
+     * Player logged out.
+     *
+     * @param player
+     */
     public static void playerLoggedOut(FPlayer player) {
         long start = System.currentTimeMillis();
         new FPlayerLogOutEvent(player);
@@ -354,11 +421,24 @@ public class NextGenFactionsAPI {
         logAction(start, end, APIAction.LOGGED_OUT);
     }
 
+    /**
+     * Handles fall damage of player.
+     *
+     * @param player
+     * @return
+     */
     public static boolean handlePlayerFallDamage(FPlayer player) {
         long start = System.currentTimeMillis();
         FPlayerFallDamageEvent event = new FPlayerFallDamageEvent(player);
         long end = System.currentTimeMillis();
         logAction(start, end, APIAction.HANDLE_FALL_DAMAGE);
         return !event.isCancelled();
+    }
+
+    public static void listRoles(Faction faction, FPlayer player) {
+        long start = System.currentTimeMillis();
+        new ListRolesEvent(faction, player);
+        long end = System.currentTimeMillis();
+        logAction(start, end, APIAction.LIST_ROLES);
     }
 }

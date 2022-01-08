@@ -6,6 +6,7 @@ import org.jetbrains.annotations.Nullable;
 @Getter
 public enum SubCommandType {
 
+    RANK(new String[]{"role", "roles", "ranks", "rank"}, "ngf.command.ranks", "commands.f-ranks", false, 2),
     AUTO_FLY(new String[]{"autofly", "autoflight"}, "ngf.command.autofly", "commands.f-auto-fly", false, 2),
     FLY(new String[]{"fly", "flight"}, "ngf.command.fly", "commands.f-fly", false, 2),
     SHOW(new String[]{"show", "info"}, "ngf.command.show", "commands.f-show", false, 2),

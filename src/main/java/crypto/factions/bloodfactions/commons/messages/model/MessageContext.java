@@ -3,6 +3,7 @@ package crypto.factions.bloodfactions.commons.messages.model;
 import crypto.factions.bloodfactions.commons.model.faction.Faction;
 import crypto.factions.bloodfactions.commons.model.land.FChunk;
 import crypto.factions.bloodfactions.commons.model.player.FPlayer;
+import crypto.factions.bloodfactions.commons.model.role.FactionRank;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 

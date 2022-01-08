@@ -2,7 +2,7 @@ package crypto.factions.bloodfactions.backend.dao;
 
 import crypto.factions.bloodfactions.commons.model.permission.PermissionType;
 import crypto.factions.bloodfactions.commons.model.player.FPlayer;
-import crypto.factions.bloodfactions.commons.model.role.FactionRole;
+import crypto.factions.bloodfactions.commons.model.role.FactionRank;
 import crypto.factions.bloodfactions.commons.model.role.FactionRoleImpl;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -13,11 +13,11 @@ import java.util.HashSet;
 import java.util.Set;
 import java.util.UUID;
 
-public interface RolesDAO extends DAO<FactionRole> {
+public interface RolesDAO extends DAO<FactionRank> {
 
 
     @Override
-    default @Nullable FactionRole fromResultSet(@NotNull ResultSet rs) {
+    default @Nullable FactionRank fromResultSet(@NotNull ResultSet rs) {
         try {
             if (rs.next()) {
                 UUID id = UUID.fromString(rs.getString("id"));
@@ -33,15 +33,15 @@ public interface RolesDAO extends DAO<FactionRole> {
     }
 
     @Override
-    default @NotNull Set<FactionRole> getSetFromResultSet(@NotNull ResultSet rs) {
-        final Set<FactionRole> roles = new HashSet<>();
+    default @NotNull Set<FactionRank> getSetFromResultSet(@NotNull ResultSet rs) {
+        final Set<FactionRank> roles = new HashSet<>();
         try {
             while (rs.next()) {
                 UUID id = UUID.fromString(rs.getString("id"));
                 String name = rs.getString("name");
                 boolean isDefaultRole = rs.getBoolean("default_role");
                 UUID factionId = UUID.fromString(rs.getString("faction_id"));
-                FactionRole role = new FactionRoleImpl(id, factionId, name, isDefaultRole);
+                FactionRank role = new FactionRoleImpl(id, factionId, name, isDefaultRole);
                 roles.add(role);
             }
         } catch (Exception e) {
@@ -56,12 +56,10 @@ public interface RolesDAO extends DAO<FactionRole> {
      * @param factionId
      * @return
      */
-    default @NotNull Set<FactionRole> getAllRolesOfFaction(@NotNull UUID factionId) {
-        final Set<FactionRole> roles = new HashSet<>();
+    default @NotNull Set<FactionRank> getAllRolesOfFaction(@NotNull UUID factionId) {
+        final Set<FactionRank> roles = new HashSet<>();
 
-        String sql = "SELECT * FROM as_faction_roles AS rel " +
-                " JOIN roles AS r ON r.id = rel.role_id " +
-                " WHERE rel.faction_id = ?;";
+        String sql = "SELECT * FROM roles AS r WHERE r.faction_id = ?;";
 
         try (PreparedStatement statement = this.getPreparedStatement(sql)) {
 
@@ -117,7 +115,7 @@ public interface RolesDAO extends DAO<FactionRole> {
      * @param role
      * @param permissionType
      */
-    default void addPermissionToRole(@NotNull FactionRole role, @NotNull PermissionType permissionType) {
+    default void addPermissionToRole(@NotNull FactionRank role, @NotNull PermissionType permissionType) {
         final String sql = "INSERT INTO as_role_permissions (role_id, permission_id) VALUES (?, ?);";
         try (PreparedStatement preparedStatement = this.getPreparedStatement(sql)) {
             preparedStatement.setString(1, role.getId().toString());
@@ -135,7 +133,7 @@ public interface RolesDAO extends DAO<FactionRole> {
      * @param role
      * @param permissionType
      */
-    default void removePermissionFromRole(@NotNull FactionRole role, @NotNull PermissionType permissionType) {
+    default void removePermissionFromRole(@NotNull FactionRank role, @NotNull PermissionType permissionType) {
         final String sql = "DELETE FROM as_role_permissions WHERE role_id = ? AND permission_id = ?;";
         try (final PreparedStatement preparedStatement = this.getPreparedStatement(sql)) {
             preparedStatement.setString(1, role.getId().toString());
@@ -154,7 +152,7 @@ public interface RolesDAO extends DAO<FactionRole> {
      * @param permissionType
      * @return
      */
-    default boolean roleHasPermission(@NotNull FactionRole role, @NotNull PermissionType permissionType) {
+    default boolean roleHasPermission(@NotNull FactionRank role, @NotNull PermissionType permissionType) {
 
         final String sql = "SELECT count(*) AS count FROM as_role_permissions AS rel " +
                 " WHERE rel.role_id = ? AND permission_id = ?;";
@@ -185,7 +183,7 @@ public interface RolesDAO extends DAO<FactionRole> {
      * @param playerId
      * @return
      */
-    default @Nullable FactionRole getRoleOFPlayer(@NotNull UUID playerId) {
+    default @Nullable FactionRank getRoleOFPlayer(@NotNull UUID playerId) {
         final String sql = "SELECT * FROM as_player_role AS rel " +
                 " JOIN roles AS r ON r.id = rel.role_id " +
                 " WHERE rel.player_id = ?;";
@@ -206,7 +204,7 @@ public interface RolesDAO extends DAO<FactionRole> {
      * @param factionId
      * @return
      */
-    default @Nullable FactionRole getDefaultRole(@NotNull UUID factionId){
+    default @Nullable FactionRank getDefaultRole(@NotNull UUID factionId){
         final String sql = "SELECT * FROM roles AS r " +
                 " WHERE r.faction_id = ? AND default_role = true;";
         try(final PreparedStatement statement = this.getPreparedStatement(sql)){
@@ -227,7 +225,7 @@ public interface RolesDAO extends DAO<FactionRole> {
      * @param role
      * @return
      */
-    default boolean setPlayersRole(@NotNull FPlayer player, @NotNull FactionRole role){
+    default boolean setPlayersRole(@NotNull FPlayer player, @NotNull FactionRank role){
         UUID playerId = player.getId();
         UUID roleId = role.getId();
 
@@ -242,6 +240,48 @@ public interface RolesDAO extends DAO<FactionRole> {
         catch (Exception e){
             e.printStackTrace();
         }
+        return false;
+    }
+
+
+    default boolean deleteRoleByName(String name, UUID factionId){
+
+        String sql = "DELETE FROM roles WHERE name = ? AND faction_id = ?;";
+
+        try(PreparedStatement statement = this.getPreparedStatement(sql)){
+
+            statement.setString(1, name);
+            statement.setString(2, factionId.toString());
+
+            int deleted = statement.executeUpdate();
+            return deleted > 0;
+        }
+        catch (Exception e){
+            e.printStackTrace();
+        }
+        return false;
+    }
+
+    default boolean roleExistsByName(String name, UUID factionId){
+
+        String sql = "SELECT count(*) AS count FROM roles AS r WHERE r.name = ? AND r.faction_id = ?;";
+
+        try(PreparedStatement statement = this.getPreparedStatement(sql)){
+
+            statement.setString(1, name);
+            statement.setString(2, factionId.toString());
+
+            try(ResultSet rs = statement.executeQuery()){
+                if(rs.next()){
+                    int count = rs.getInt("count");
+                    return count > 0;
+                }
+            }
+        }
+        catch (Exception e){
+            e.printStackTrace();
+        }
+
         return false;
     }
 

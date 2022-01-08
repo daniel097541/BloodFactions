@@ -21,15 +21,13 @@ import crypto.factions.bloodfactions.commons.messages.model.MessageContextImpl;
 import crypto.factions.bloodfactions.commons.model.faction.Faction;
 import crypto.factions.bloodfactions.commons.model.player.FPlayer;
 import crypto.factions.bloodfactions.commons.model.player.FPlayerImpl;
-import crypto.factions.bloodfactions.commons.model.role.FactionRole;
+import crypto.factions.bloodfactions.commons.model.role.FactionRank;
 import crypto.factions.bloodfactions.commons.tasks.handler.TasksHandler;
 import crypto.factions.bloodfactions.commons.utils.StringUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
-import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
-import org.bukkit.event.entity.EntityDamageEvent;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -89,14 +87,14 @@ public interface PlayerHandler extends DataHandler<FPlayer> {
     @EventHandler(priority = EventPriority.HIGHEST)
     default void handleGetRoleOfPlayer(GetRoleOfPlayerEvent event) {
         FPlayer player = event.getPlayer();
-        FactionRole role = this.getRolesDAO().getRoleOFPlayer(player.getId());
+        FactionRank role = this.getRolesDAO().getRoleOFPlayer(player.getId());
         event.setRole(role);
     }
 
     @EventHandler(priority = EventPriority.HIGHEST)
     default void handleChangeRoleOfPlayer(ChangeRoleOfPlayerEvent event) {
         FPlayer player = event.getPlayerToBeChanged();
-        FactionRole role = event.getRole();
+        FactionRank role = event.getRole();
 
         this.getRolesDAO().setPlayersRole(player, role);
         event.setChanged(true);

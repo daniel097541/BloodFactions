@@ -10,7 +10,7 @@ import java.util.UUID;
 @Getter
 @Setter
 @AllArgsConstructor
-public class FactionRoleImpl implements FactionRole {
+public class FactionRoleImpl implements FactionRank {
     private final UUID id;
 
     @ColumnName("faction_id")

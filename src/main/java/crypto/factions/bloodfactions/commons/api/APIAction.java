@@ -26,6 +26,7 @@ public enum APIAction {
     UPDATE_POWER,
     LOGGED_IN,
     LOGGED_OUT,
-    HANDLE_FALL_DAMAGE
+    HANDLE_FALL_DAMAGE,
+    LIST_ROLES
 
 }

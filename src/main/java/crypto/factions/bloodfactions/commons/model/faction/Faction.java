@@ -6,7 +6,7 @@ import crypto.factions.bloodfactions.commons.model.NextGenFactionEntity;
 import crypto.factions.bloodfactions.commons.model.land.FChunk;
 import crypto.factions.bloodfactions.commons.model.land.FLocation;
 import crypto.factions.bloodfactions.commons.model.player.FPlayer;
-import crypto.factions.bloodfactions.commons.model.role.FactionRole;
+import crypto.factions.bloodfactions.commons.model.role.FactionRank;
 
 import java.util.Map;
 import java.util.Set;
@@ -22,7 +22,7 @@ public interface Faction extends NextGenFactionEntity {
         return PermissionNextGenFactionsAPI.setCore(player, this, location);
     }
 
-    default FLocation getCore(){
+    default FLocation getCore() {
         return NextGenFactionsAPI.getCoreOfFaction(this);
     }
 
@@ -160,7 +160,7 @@ public interface Faction extends NextGenFactionEntity {
      *
      * @return
      */
-    default FactionRole getDefaultRole() {
+    default FactionRank getDefaultRole() {
         return NextGenFactionsAPI.getDefaultRoleOfFaction(this);
     }
 
@@ -169,7 +169,7 @@ public interface Faction extends NextGenFactionEntity {
      *
      * @return
      */
-    default Set<FactionRole> getRoles() {
+    default Set<FactionRank> getRoles() {
         return NextGenFactionsAPI.getRolesOfFaction(this);
     }
 
@@ -210,8 +210,15 @@ public interface Faction extends NextGenFactionEntity {
     }
 
 
-    default FPlayer getOwner(){
+    default FPlayer getOwner() {
         return NextGenFactionsAPI.getPlayer(this.getOwnerId());
     }
 
+    default FactionRank createRank(String roleName, FPlayer player) {
+        return PermissionNextGenFactionsAPI.createRank(roleName, player, this);
+    }
+
+    default boolean deleteRank(String roleName, FPlayer player) {
+        return PermissionNextGenFactionsAPI.deleteRank(roleName, player, this);
+    }
 }

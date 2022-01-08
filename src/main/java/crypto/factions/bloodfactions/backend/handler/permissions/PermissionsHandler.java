@@ -6,7 +6,7 @@ import crypto.factions.bloodfactions.commons.events.PermissionEvent;
 import crypto.factions.bloodfactions.commons.logger.Logger;
 import crypto.factions.bloodfactions.commons.model.permission.PermissionType;
 import crypto.factions.bloodfactions.commons.model.player.FPlayer;
-import crypto.factions.bloodfactions.commons.model.role.FactionRole;
+import crypto.factions.bloodfactions.commons.model.role.FactionRank;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
@@ -35,7 +35,7 @@ public interface PermissionsHandler extends Listener {
     }
 
     default boolean checkPlayersRolePermissions(FPlayer player, PermissionType permissionType) {
-        FactionRole role = this.getRolesDAO().getRoleOFPlayer(player.getId());
+        FactionRank role = this.getRolesDAO().getRoleOFPlayer(player.getId());
         if (Objects.nonNull(role)) {
             return this.getRolesDAO().roleHasPermission(role, permissionType);
         }

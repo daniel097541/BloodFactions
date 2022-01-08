@@ -12,7 +12,7 @@ import crypto.factions.bloodfactions.commons.model.land.FLocation;
 import crypto.factions.bloodfactions.commons.model.land.impl.FChunkImpl;
 import crypto.factions.bloodfactions.commons.model.land.impl.FLocationImpl;
 import crypto.factions.bloodfactions.commons.model.permission.Action;
-import crypto.factions.bloodfactions.commons.model.role.FactionRole;
+import crypto.factions.bloodfactions.commons.model.role.FactionRank;
 import org.bukkit.Bukkit;
 import org.bukkit.Chunk;
 import org.bukkit.Location;
@@ -153,7 +153,7 @@ public interface FPlayer extends NextGenFactionEntity {
      *
      * @return
      */
-    default @Nullable FactionRole getRole() {
+    default @Nullable FactionRank getRole() {
         return NextGenFactionsAPI.getRoleOfPlayer(this);
     }
 
@@ -164,7 +164,7 @@ public interface FPlayer extends NextGenFactionEntity {
      * @param playerChangingTheRole
      * @return
      */
-    default boolean changeRole(FactionRole role, FPlayer playerChangingTheRole) {
+    default boolean changeRole(FactionRank role, FPlayer playerChangingTheRole) {
         return PermissionNextGenFactionsAPI.changeRoleOfPlayer(this, role, playerChangingTheRole);
     }
 
@@ -175,7 +175,7 @@ public interface FPlayer extends NextGenFactionEntity {
      * @param role
      * @return
      */
-    default boolean changeRoleOfPlayer(FPlayer otherPlayer, FactionRole role) {
+    default boolean changeRoleOfPlayer(FPlayer otherPlayer, FactionRank role) {
         return otherPlayer.changeRole(role, this);
     }
 
@@ -347,6 +347,10 @@ public interface FPlayer extends NextGenFactionEntity {
      */
     default boolean handleFallDamage() {
         return NextGenFactionsAPI.handlePlayerFallDamage(this);
+    }
+
+    default void listRoles(Faction faction){
+        NextGenFactionsAPI.listRoles(faction, this);
     }
 
 }

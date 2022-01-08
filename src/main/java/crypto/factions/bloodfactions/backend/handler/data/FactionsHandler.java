@@ -1,6 +1,7 @@
 package crypto.factions.bloodfactions.backend.handler.data;
 
 import com.google.common.cache.LoadingCache;
+import crypto.factions.bloodfactions.backend.config.lang.LangConfigItems;
 import crypto.factions.bloodfactions.backend.config.system.SystemConfigItems;
 import crypto.factions.bloodfactions.backend.dao.FactionsDAO;
 import crypto.factions.bloodfactions.backend.dao.PlayerDAO;
@@ -15,11 +16,12 @@ import crypto.factions.bloodfactions.commons.events.land.callback.GetNumberOfCla
 import crypto.factions.bloodfactions.commons.events.land.permissioned.ClaimEvent;
 import crypto.factions.bloodfactions.commons.events.land.permissioned.OverClaimEvent;
 import crypto.factions.bloodfactions.commons.events.land.permissioned.UnClaimEvent;
-import crypto.factions.bloodfactions.commons.events.role.GetDefaultRoleOfFactionEvent;
-import crypto.factions.bloodfactions.commons.events.role.GetRolesOfFactionEvent;
+import crypto.factions.bloodfactions.commons.events.role.*;
 import crypto.factions.bloodfactions.commons.events.shared.callback.GetFactionOfPlayerEvent;
 import crypto.factions.bloodfactions.commons.exceptions.NoFactionForFactionLessException;
 import crypto.factions.bloodfactions.commons.logger.Logger;
+import crypto.factions.bloodfactions.commons.messages.model.MessageContext;
+import crypto.factions.bloodfactions.commons.messages.model.MessageContextImpl;
 import crypto.factions.bloodfactions.commons.model.faction.Faction;
 import crypto.factions.bloodfactions.commons.model.faction.FactionImpl;
 import crypto.factions.bloodfactions.commons.model.faction.SystemFactionImpl;
@@ -27,7 +29,7 @@ import crypto.factions.bloodfactions.commons.model.land.FChunk;
 import crypto.factions.bloodfactions.commons.model.land.FLocation;
 import crypto.factions.bloodfactions.commons.model.permission.PermissionType;
 import crypto.factions.bloodfactions.commons.model.player.FPlayer;
-import crypto.factions.bloodfactions.commons.model.role.FactionRole;
+import crypto.factions.bloodfactions.commons.model.role.FactionRank;
 import crypto.factions.bloodfactions.commons.model.role.FactionRoleImpl;
 import crypto.factions.bloodfactions.commons.tasks.handler.TasksHandler;
 import org.bukkit.Bukkit;
@@ -106,9 +108,9 @@ public interface FactionsHandler extends DataHandler<Faction> {
 
     }
 
-    default Map<FactionRole, Set<PermissionType>> getDefaultRoles(UUID factionId) {
+    default Map<FactionRank, Set<PermissionType>> getDefaultRoles(UUID factionId) {
         Set<String> rolesSections = this.getSystemConfig().getKeys(SystemConfigItems.defaultRolesPath);
-        Map<FactionRole, Set<PermissionType>> factionRoles = new HashMap<>();
+        Map<FactionRank, Set<PermissionType>> factionRoles = new HashMap<>();
         for (String roleSection : rolesSections) {
 
             UUID id = UUID.randomUUID();//fromString((String) this.getSystemConfig().read(SystemConfigItems.defaultRolesPath + "." + roleSection + SystemConfigItems.roleIdSection));
@@ -133,10 +135,10 @@ public interface FactionsHandler extends DataHandler<Faction> {
             this.getPlayerDAO().addPlayerToFaction(player, faction, player);
 
             // Create roles
-            Map<FactionRole, Set<PermissionType>> rolesPermissions = this.getDefaultRoles(faction.getId());
-            for (Map.Entry<FactionRole, Set<PermissionType>> entry : rolesPermissions.entrySet()) {
+            Map<FactionRank, Set<PermissionType>> rolesPermissions = this.getDefaultRoles(faction.getId());
+            for (Map.Entry<FactionRank, Set<PermissionType>> entry : rolesPermissions.entrySet()) {
 
-                FactionRole role = entry.getKey();
+                FactionRank role = entry.getKey();
                 Set<PermissionType> permissions = entry.getValue();
 
                 // Create role
@@ -248,14 +250,14 @@ public interface FactionsHandler extends DataHandler<Faction> {
     @EventHandler(priority = EventPriority.HIGHEST)
     default void handleGetDefaultRole(GetDefaultRoleOfFactionEvent event) {
         Faction faction = event.getFaction();
-        FactionRole role = this.getRolesDAO().getDefaultRole(faction.getId());
+        FactionRank role = this.getRolesDAO().getDefaultRole(faction.getId());
         event.setDefaultRole(role);
     }
 
     @EventHandler(priority = EventPriority.HIGHEST)
     default void handleGetRolesOfFaction(GetRolesOfFactionEvent event) {
         Faction faction = event.getFaction();
-        Set<FactionRole> roles = this.getRolesDAO().getAllRolesOfFaction(faction.getId());
+        Set<FactionRank> roles = this.getRolesDAO().getAllRolesOfFaction(faction.getId());
         event.setRoles(roles);
     }
 
@@ -338,6 +340,77 @@ public interface FactionsHandler extends DataHandler<Faction> {
         } else {
             Logger.logInfo("Failed to un-claim.");
             event.setSuccess(false);
+        }
+    }
+
+    @EventHandler(priority = EventPriority.HIGHEST)
+    default void handleRoleCreation(CreateRankEvent event) {
+
+        String roleName = event.getRoleName();
+        Faction faction = event.getFaction();
+        FPlayer player = event.getPlayer();
+
+        // Role does not exist by name.
+        if (!this.getRolesDAO().roleExistsByName(roleName, faction.getId())) {
+            FactionRank role = new FactionRoleImpl(UUID.randomUUID(), faction.getId(), roleName, false);
+            this.getRolesDAO().insert(role);
+            String successMessage = (String) this.getLangConfig().get(LangConfigItems.COMMANDS_F_RANKS_CREATE);
+            MessageContext messageContext = new MessageContextImpl(player, successMessage);
+            player.sms(messageContext);
+        }
+
+        // Role already exists.
+        else {
+            String successMessage = (String) this.getLangConfig().get(LangConfigItems.COMMANDS_F_RANKS_ALREADY_EXISTS);
+            MessageContext messageContext = new MessageContextImpl(player, successMessage);
+            player.sms(messageContext);
+        }
+    }
+
+    @EventHandler(priority = EventPriority.HIGHEST)
+    default void handleListRoles(ListRolesEvent event) {
+        Faction faction = event.getFaction();
+        FPlayer player = event.getPlayer();
+
+        StringBuilder finalMessage = new StringBuilder((String) this.getLangConfig().get(LangConfigItems.COMMANDS_F_RANKS_LIST_HEADER));
+        String bodyBlueprint = (String) this.getLangConfig().get(LangConfigItems.COMMANDS_F_RANKS_LIST_BODY);
+
+        Set<FactionRank> roles = faction.getRoles();
+
+        for (FactionRank role : roles) {
+            Set<PermissionType> permissions = this.getRolesDAO().getRolePermissions(role.getId());
+            String roleBody = bodyBlueprint.replace("{rank_name}", role.getName())
+                    .replace("{permission_list}", permissions.stream().map(PermissionType::name).collect(Collectors.joining(", ")));
+            finalMessage.append(roleBody);
+        }
+
+        MessageContext messageContext = new MessageContextImpl(player, finalMessage.toString());
+        messageContext.setFaction(faction);
+        player.sms(messageContext);
+    }
+
+    @EventHandler(priority = EventPriority.HIGHEST)
+    default void handleRoleDeletion(DeleteRankEvent event) {
+
+        String roleName = event.getRoleName();
+        Faction faction = event.getFaction();
+        FPlayer player = event.getPlayer();
+
+        // Role exists by name.
+        if (this.getRolesDAO().roleExistsByName(roleName, faction.getId())) {
+
+            // Delete
+            this.getRolesDAO().deleteRoleByName(roleName, faction.getId());
+            String successMessage = (String) this.getLangConfig().get(LangConfigItems.COMMANDS_F_RANKS_DELETE);
+            MessageContext messageContext = new MessageContextImpl(player, successMessage);
+            player.sms(messageContext);
+        }
+
+        // Role does not exist.
+        else {
+            String successMessage = (String) this.getLangConfig().get(LangConfigItems.COMMANDS_F_RANKS_NOT_EXISTS);
+            MessageContext messageContext = new MessageContextImpl(player, successMessage);
+            player.sms(messageContext);
         }
     }
 

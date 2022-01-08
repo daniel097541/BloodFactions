@@ -24,6 +24,7 @@ import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerMoveEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
+import org.bukkit.event.weather.WeatherChangeEvent;
 
 import java.util.Objects;
 
@@ -156,6 +157,11 @@ public interface PlayerListener extends Listener {
                 }
             }
         }
+    }
+
+    @EventHandler
+    default void onWeatherChange(WeatherChangeEvent event) {
+        event.setCancelled(true);
     }
 
 }

@@ -4,7 +4,7 @@ import crypto.factions.bloodfactions.commons.model.NextGenFactionEntity;
 
 import java.util.UUID;
 
-public interface FactionRole extends NextGenFactionEntity {
+public interface FactionRank extends NextGenFactionEntity {
 
     boolean isDefaultRole();
 

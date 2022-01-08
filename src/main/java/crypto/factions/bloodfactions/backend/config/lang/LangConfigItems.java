@@ -83,6 +83,21 @@ public class LangConfigItems {
     public static ConfigItem COMMANDS_F_AUTO_FLY_OFF = new ConfigItemImpl("commands.f-auto-fly.disabled", "&cAuto-fly mode disabled.");
     public static ConfigItem COMMANDS_F_AUTO_FLY_FAIL = new ConfigItemImpl("commands.f-auto-fly.fail", "&cError activating auto-fly.");
 
+    // Roles
+    public static String rolesListHeaderBlueprint = "\n&7----------------- &a{faction_name}'s &dRanks &7-----------------\n";
+    public static String rolesListBlueprint =
+            "&7-------------------------------------------- \n" +
+            "&7|   &d- &7Rank name: &e{rank_name} \n" +
+            "&7|   &d- &7Rank permissions: &b{permission_list} \n" +
+            "&7-------------------------------------------- \n";
+    public static ConfigItem COMMANDS_F_RANKS_NO_FACTION = new ConfigItemImpl("commands.f-ranks.no-faction", "&cYou need a faction to do that.");
+    public static ConfigItem COMMANDS_F_RANKS_CREATE = new ConfigItemImpl("commands.f-ranks.create", "&aRank successfully created.");
+    public static ConfigItem COMMANDS_F_RANKS_DELETE = new ConfigItemImpl("commands.f-ranks.delete", "&aRank successfully deleted.");
+    public static ConfigItem COMMANDS_F_RANKS_NOT_EXISTS= new ConfigItemImpl("commands.f-ranks.not-exists", "&cThere is no rank with that name.");
+    public static ConfigItem COMMANDS_F_RANKS_ALREADY_EXISTS = new ConfigItemImpl("commands.f-ranks.already-exists", "&cThere is already a rank with that name.");
+    public static ConfigItem COMMANDS_F_RANKS_LIST_HEADER = new ConfigItemImpl("commands.f-ranks.list-header", rolesListHeaderBlueprint);
+    public static ConfigItem COMMANDS_F_RANKS_LIST_BODY = new ConfigItemImpl("commands.f-ranks.list-body", rolesListBlueprint);
+
 
     public static Map<String, ConfigItem> asMap() {
         Map<String, ConfigItem> items = new HashMap<>();
