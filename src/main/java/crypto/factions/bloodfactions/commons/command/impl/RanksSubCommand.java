@@ -7,12 +7,15 @@ import crypto.factions.bloodfactions.commons.config.NGFConfig;
 import crypto.factions.bloodfactions.commons.messages.model.MessageContext;
 import crypto.factions.bloodfactions.commons.messages.model.MessageContextImpl;
 import crypto.factions.bloodfactions.commons.model.faction.Faction;
+import crypto.factions.bloodfactions.commons.model.permission.PermissionType;
 import crypto.factions.bloodfactions.commons.model.player.FPlayer;
 import crypto.factions.bloodfactions.commons.model.role.FactionRank;
 
 import javax.inject.Inject;
 import javax.inject.Singleton;
+import java.util.HashSet;
 import java.util.Objects;
+import java.util.Set;
 
 @Singleton
 public class RanksSubCommand extends FSubCommandImpl {
@@ -48,9 +51,23 @@ public class RanksSubCommand extends FSubCommandImpl {
             if (action.equalsIgnoreCase("create")) {
 
                 // Create role with name.
-                if (args.length == 3) {
+                if (args.length >= 3) {
                     String roleName = args[2];
-                    FactionRank rank = faction.createRank(roleName, player);
+                    Set<PermissionType> permissions = new HashSet<>();
+
+                    if(args.length == 4){
+                        String permissionsStr = args[3];
+                        String[] permissionsNames = permissionsStr.split(",");
+
+                        for(String permName : permissionsNames){
+                            PermissionType type = PermissionType.fromName(permName);
+                            if(Objects.nonNull(type)){
+                                permissions.add(type);
+                            }
+                        }
+                    }
+
+                    FactionRank rank = faction.createRank(roleName, player, permissions);
                     return Objects.nonNull(rank);
                 }
 

@@ -14,6 +14,7 @@ import crypto.factions.bloodfactions.commons.logger.Logger;
 import crypto.factions.bloodfactions.commons.model.faction.Faction;
 import crypto.factions.bloodfactions.commons.model.land.FChunk;
 import crypto.factions.bloodfactions.commons.model.land.FLocation;
+import crypto.factions.bloodfactions.commons.model.permission.PermissionType;
 import crypto.factions.bloodfactions.commons.model.player.FPlayer;
 import crypto.factions.bloodfactions.commons.model.role.FactionRank;
 import org.jetbrains.annotations.NotNull;
@@ -204,9 +205,9 @@ public class PermissionNextGenFactionsAPI {
         return success;
     }
 
-    public static FactionRank createRank(String rankName, FPlayer player, Faction faction) {
+    public static FactionRank createRank(String rankName, FPlayer player, Faction faction, Set<PermissionType> permissions) {
         long start = System.currentTimeMillis();
-        CreateRankEvent event = new CreateRankEvent(faction, player, rankName);
+        CreateRankEvent event = new CreateRankEvent(faction, player, rankName, permissions);
         long end = System.currentTimeMillis();
         logAction(start, end, PermissionedAPIAction.CREATE_ROLE);
         return event.getRole();

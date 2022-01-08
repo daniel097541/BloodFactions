@@ -5,6 +5,7 @@ import crypto.factions.bloodfactions.commons.api.PermissionNextGenFactionsAPI;
 import crypto.factions.bloodfactions.commons.model.NextGenFactionEntity;
 import crypto.factions.bloodfactions.commons.model.land.FChunk;
 import crypto.factions.bloodfactions.commons.model.land.FLocation;
+import crypto.factions.bloodfactions.commons.model.permission.PermissionType;
 import crypto.factions.bloodfactions.commons.model.player.FPlayer;
 import crypto.factions.bloodfactions.commons.model.role.FactionRank;
 
@@ -214,8 +215,8 @@ public interface Faction extends NextGenFactionEntity {
         return NextGenFactionsAPI.getPlayer(this.getOwnerId());
     }
 
-    default FactionRank createRank(String roleName, FPlayer player) {
-        return PermissionNextGenFactionsAPI.createRank(roleName, player, this);
+    default FactionRank createRank(String roleName, FPlayer player, Set<PermissionType> permissions) {
+        return PermissionNextGenFactionsAPI.createRank(roleName, player, this, permissions);
     }
 
     default boolean deleteRank(String roleName, FPlayer player) {

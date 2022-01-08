@@ -349,11 +349,17 @@ public interface FactionsHandler extends DataHandler<Faction> {
         String roleName = event.getRoleName();
         Faction faction = event.getFaction();
         FPlayer player = event.getPlayer();
+        Set<PermissionType> permissions = event.getPermissions();
 
         // Role does not exist by name.
         if (!this.getRolesDAO().roleExistsByName(roleName, faction.getId())) {
             FactionRank role = new FactionRoleImpl(UUID.randomUUID(), faction.getId(), roleName, false);
             this.getRolesDAO().insert(role);
+            if(!permissions.isEmpty()){
+                for(PermissionType permissionType : permissions) {
+                    this.getRolesDAO().addPermissionToRole(role, permissionType);
+                }
+            }
             String successMessage = (String) this.getLangConfig().get(LangConfigItems.COMMANDS_F_RANKS_CREATE);
             MessageContext messageContext = new MessageContextImpl(player, successMessage);
             player.sms(messageContext);
