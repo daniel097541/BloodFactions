@@ -61,8 +61,19 @@ public class FactionsHandlerImpl implements FactionsHandler {
             .expireAfterAccess(5, TimeUnit.MINUTES)
             .build(new CacheLoader<String, Faction>() {
                 @Override
-                public Faction load(String key) throws Exception {
-                    return dao.findByName(key);
+                public @NotNull Faction load(@NotNull String key) throws Exception {
+                    return Objects.requireNonNull(dao.findByName(key));
+                }
+            });
+
+    private final LoadingCache<UUID, Faction> playerFactionsCache = CacheBuilder
+            .newBuilder()
+            .maximumSize(1000)
+            .expireAfterAccess(10, TimeUnit.MINUTES)
+            .build(new CacheLoader<UUID, Faction>() {
+                @Override
+                public @NotNull Faction load(@NotNull UUID key) throws Exception {
+                    return dao.getFactionOfPlayer(key);
                 }
             });
 

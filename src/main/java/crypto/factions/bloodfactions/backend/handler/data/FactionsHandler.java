@@ -39,6 +39,7 @@ import org.bukkit.event.EventPriority;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.*;
+import java.util.concurrent.ExecutionException;
 import java.util.stream.Collectors;
 
 public interface FactionsHandler extends DataHandler<Faction> {
@@ -59,6 +60,8 @@ public interface FactionsHandler extends DataHandler<Faction> {
     LoadingCache<String, Faction> getChunkFactionsCache();
 
     LoadingCache<String, Faction> getNameFactionsCache();
+
+    LoadingCache<UUID, Faction> getPlayerFactionsCache();
 
     Map<UUID, FPlayer> getUnClaimingAllPlayers();
 
@@ -227,9 +230,15 @@ public interface FactionsHandler extends DataHandler<Faction> {
     }
 
     @EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
-    default void handleGetFactionOfPlayer(GetFactionOfPlayerEvent event) {
+    default void handleGetFactionOfPlayer(GetFactionOfPlayerEvent event) throws NoFactionForFactionLessException {
         FPlayer player = event.getPlayer();
-        Faction faction = this.getDao().getFactionOfPlayer(player.getId());
+        Faction faction;
+        try {
+            faction = this.getPlayerFactionsCache().get(player.getId());
+        } catch (ExecutionException e) {
+            e.printStackTrace();
+            faction = this.getFactionForFactionLess();
+        }
         event.setFaction(faction);
     }
 
