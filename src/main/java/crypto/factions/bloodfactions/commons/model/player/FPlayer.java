@@ -33,6 +33,10 @@ public interface FPlayer extends NextGenFactionEntity {
 
     void setAutoFlying(boolean autoFlying);
 
+    default boolean isInFaction(Faction faction){
+        return this.getFaction().equals(faction);
+    }
+
     default void sms(@NotNull MessageContext context) {
         new MessageContextHandler() {
         }.handle(context);

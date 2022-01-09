@@ -175,7 +175,7 @@ public interface PlayerHandler extends DataHandler<FPlayer> {
             autoFly = true;
 
             // Enable flight mode.
-            if(player.isInHisLand()){
+            if(player.isInHisLand() && !player.isFlying()){
                 player.toggleFly();
             }
         }
@@ -323,4 +323,16 @@ public interface PlayerHandler extends DataHandler<FPlayer> {
         FPlayer player = this.getManager().getByName(playerName);
         event.setPlayer(player);
     }
+
+    @EventHandler(priority = EventPriority.HIGHEST)
+    default void handleChangeLand(PlayerChangedLandEvent event){
+        FPlayer player = event.getPlayer();
+        Faction factionTo = event.getFactionTo();
+
+        if(player.isInFaction(factionTo) && player.isAutoFlying() && !player.isFlying()){
+            player.toggleFly();
+        }
+
+    }
+
 }
