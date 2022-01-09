@@ -145,7 +145,7 @@ public interface PlayerDAO extends DAO<FPlayer> {
     /**
      * Kicks all players from the Faction.
      *
-     * @param faction
+     * @param factionId
      */
     default void removeAllPlayersFromFaction(UUID factionId) {
 
@@ -191,7 +191,7 @@ public interface PlayerDAO extends DAO<FPlayer> {
         return false;
     }
 
-    default void updatePlayersFlightMode(UUID playerId, boolean flying) {
+    default boolean updatePlayersFlightMode(UUID playerId, boolean flying) {
 
         String sql = "UPDATE players SET flying = ? WHERE id = ?;";
 
@@ -200,11 +200,12 @@ public interface PlayerDAO extends DAO<FPlayer> {
             statement.setBoolean(1, flying);
             statement.setString(2, playerId.toString());
 
-            statement.executeUpdate();
+            return statement.executeUpdate() > 0;
         } catch (Exception e) {
             e.printStackTrace();
         }
 
+        return false;
     }
 
     default boolean updatePlayersPower(UUID id, int power) {
@@ -223,7 +224,7 @@ public interface PlayerDAO extends DAO<FPlayer> {
         return false;
     }
 
-    default void updatePlayersAutoFly(UUID playerId, boolean autoFly) {
+    default boolean updatePlayersAutoFly(UUID playerId, boolean autoFly) {
 
         String sql = "UPDATE players SET auto_flying = ? WHERE id = ?;";
 
@@ -231,9 +232,10 @@ public interface PlayerDAO extends DAO<FPlayer> {
             statement.setBoolean(1, autoFly);
             statement.setString(2, playerId.toString());
 
-            statement.executeUpdate();
+            return statement.executeUpdate() > 0;
         } catch (Exception e) {
             e.printStackTrace();
         }
+        return false;
     }
 }

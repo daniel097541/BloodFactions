@@ -15,7 +15,6 @@ import java.util.concurrent.TimeUnit;
 @Singleton
 public class RolesDAOImpl implements RolesDAO {
     private final String tableName = "roles";
-    private final LoadingCache<UUID, FactionRank> cache = this.createCache(500, 5, TimeUnit.MINUTES);
     private final DBManager dbManager;
 
     @Inject

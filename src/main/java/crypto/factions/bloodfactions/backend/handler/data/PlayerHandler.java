@@ -59,14 +59,14 @@ public interface PlayerHandler extends DataHandler<FPlayer> {
     }
 
     @EventHandler(priority = EventPriority.HIGHEST)
-    default void getPlayer(GetPlayerEvent event) {
-        UUID uuid = event.getId();
-        FPlayer player = this.getById(uuid);
+    default void handleGetPlayer(GetPlayerEvent event) {
+        UUID playerId = event.getId();
+        FPlayer player = this.getById(playerId);
 
         if (Objects.isNull(player)) {
 
             // Create the player in DB.
-            OfflinePlayer offlinePlayer = Bukkit.getOfflinePlayer(uuid);
+            OfflinePlayer offlinePlayer = Bukkit.getOfflinePlayer(playerId);
             player = new FPlayerImpl(offlinePlayer.getUniqueId(), offlinePlayer.getName(), false, false, 0);
             player = this.getManager().insert(player);
 
@@ -173,10 +173,20 @@ public interface PlayerHandler extends DataHandler<FPlayer> {
             MessageContext messageContext = new MessageContextImpl(player, successMessage);
             player.sms(messageContext);
             autoFly = true;
+
+            // Enable flight mode.
+            if(player.isInHisLand()){
+                player.toggleFly();
+            }
         }
 
         // Update auto-fly
-        this.getManager().updatePlayersAutoFly(player, autoFly);
+        boolean updated = this.getManager().updatePlayersAutoFly(player, autoFly);
+        if (updated) {
+            event.setAutoFlying(autoFly);
+        }
+
+        event.setSuccess(updated);
     }
 
     @EventHandler(priority = EventPriority.HIGHEST)
@@ -209,8 +219,9 @@ public interface PlayerHandler extends DataHandler<FPlayer> {
             player.sms(messageContext);
         }
 
-        event.setSuccess(flying);
-        this.getManager().updatePlayersFlightMode(player, flying);
+        boolean updated = this.getManager().updatePlayersFlightMode(player, flying);
+        event.setFlying(flying);
+        event.setSuccess(updated);
     }
 
     @EventHandler(priority = EventPriority.HIGHEST)

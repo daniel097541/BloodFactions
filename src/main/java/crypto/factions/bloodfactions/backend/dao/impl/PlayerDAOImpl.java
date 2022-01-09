@@ -18,7 +18,6 @@ import java.util.concurrent.TimeUnit;
 @Getter
 public class PlayerDAOImpl implements PlayerDAO {
     private final String tableName = "players";
-    private final LoadingCache<UUID, FPlayer> cache = this.createCache(500, 5, TimeUnit.MINUTES);
     private final DBManager dbManager;
 
     @Inject

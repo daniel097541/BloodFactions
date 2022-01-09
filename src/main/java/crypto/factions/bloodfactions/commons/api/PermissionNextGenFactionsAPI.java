@@ -190,16 +190,16 @@ public class PermissionNextGenFactionsAPI {
     public static boolean toggleFlightMode(FPlayer player) {
         long start = System.currentTimeMillis();
         PlayerFlightEvent event = new PlayerFlightEvent(player.getFaction(), player);
-        boolean success = event.isSuccess();
+        boolean flying = event.isFlying();
         long end = System.currentTimeMillis();
         logAction(start, end, PermissionedAPIAction.FLY);
-        return success;
+        return flying;
     }
 
     public static boolean toggleAutoFly(FPlayer player) {
         long start = System.currentTimeMillis();
         PlayerAutoFlyEvent event = new PlayerAutoFlyEvent(player.getFaction(), player);
-        boolean success = event.isSuccess();
+        boolean success = event.isAutoFlying();
         long end = System.currentTimeMillis();
         logAction(start, end, PermissionedAPIAction.AUTO_FLY);
         return success;

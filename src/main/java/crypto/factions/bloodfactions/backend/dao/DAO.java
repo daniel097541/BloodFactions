@@ -1,8 +1,8 @@
 package crypto.factions.bloodfactions.backend.dao;
 
-import com.google.common.cache.*;
 import crypto.factions.bloodfactions.backend.db.DBManager;
 import crypto.factions.bloodfactions.commons.model.NextGenFactionEntity;
+import org.bukkit.Bukkit;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -10,16 +10,12 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.Statement;
 import java.util.Map;
-import java.util.Objects;
 import java.util.Set;
 import java.util.UUID;
-import java.util.concurrent.TimeUnit;
 
 public interface DAO<T extends NextGenFactionEntity> {
 
     @NotNull DBManager getDbManager();
-
-    @NotNull LoadingCache<UUID, T> getCache();
 
     @NotNull String getTableName();
 
@@ -61,17 +57,13 @@ public interface DAO<T extends NextGenFactionEntity> {
             for (Object value : map.values()) {
                 if (value instanceof String) {
                     statement.setString(i, (String) value);
-                }
-                else if (value instanceof Integer) {
+                } else if (value instanceof Integer) {
                     statement.setInt(i, (int) value);
-                }
-                else if (value instanceof Boolean) {
+                } else if (value instanceof Boolean) {
                     statement.setBoolean(i, (boolean) value);
-                }
-                else if (value instanceof Float) {
+                } else if (value instanceof Float) {
                     statement.setFloat(i, (float) value);
-                }
-                else {
+                } else {
                     statement.setString(i, value.toString());
                 }
 
@@ -84,35 +76,6 @@ public interface DAO<T extends NextGenFactionEntity> {
         }
 
         return null;
-    }
-
-    /**
-     * Creates the cache.
-     *
-     * @param size
-     * @param duration
-     * @param timeUnit
-     * @return
-     */
-    default @NotNull LoadingCache<UUID, T> createCache(int size, int duration, TimeUnit timeUnit) {
-        return CacheBuilder.newBuilder()
-                .maximumSize(size)
-                .expireAfterAccess(duration, timeUnit)
-                .removalListener((RemovalListener<UUID, T>) notification -> {
-                    UUID id = notification.getKey();
-                    RemovalCause cause = notification.getCause();
-                    // Explicit delete, means remove from database.
-                    if (Objects.nonNull(id) && cause.equals(RemovalCause.EXPLICIT)) {
-                        deleteByIdInDB(id);
-                    }
-                })
-                .build(
-                        new CacheLoader<UUID, T>() {
-                            @Override
-                            public T load(@NotNull UUID key) {
-                                return findByIdInDB(key);
-                            }
-                        });
     }
 
     default @Nullable T findByIdInDB(@NotNull UUID id) {
@@ -203,10 +166,7 @@ public interface DAO<T extends NextGenFactionEntity> {
     }
 
     default boolean existsById(@NotNull UUID id, boolean forceDBCheck) {
-        if (forceDBCheck) {
-            return this.existsByIdInDB(id);
-        }
-        return this.getCache().asMap().containsKey(id);
+        return this.existsByIdInDB(id);
     }
 
     default boolean existsByName(@NotNull String name) {

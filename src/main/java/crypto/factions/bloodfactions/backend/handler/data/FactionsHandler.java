@@ -269,18 +269,25 @@ public interface FactionsHandler extends DataHandler<Faction> {
         Logger.logInfo("Player &d" + player.getName() + " &7is claiming for faction: &d" + faction.getName() + " &7at: &d" + chunk.getId());
         boolean claimed = this.getManager().claimForFaction(faction, chunk, player);
 
+        if(claimed){
+            player.changedLand(factionAt, faction);
+        }
+
         event.setSuccess(claimed);
     }
 
     @EventHandler(priority = EventPriority.HIGHEST)
-    default void handleUnClaim(UnClaimEvent event) {
+    default void handleUnClaim(UnClaimEvent event) throws NoFactionForFactionLessException {
         Faction faction = event.getFaction();
         FPlayer player = event.getPlayer();
         FChunk chunk = event.getChunk();
-        Faction factionAt = chunk.getFactionAt();
 
         Logger.logInfo("Player &d" + player.getName() + " &7is un-claiming for faction: &d" + faction.getName() + " &7at: &d" + chunk.getId());
         boolean unClaimed = this.getManager().removeClaim(faction, chunk);
+
+        if(unClaimed){
+            player.changedLand(faction, this.getFactionForFactionLess());
+        }
 
         event.setSuccess(unClaimed);
     }
@@ -413,12 +420,24 @@ public interface FactionsHandler extends DataHandler<Faction> {
         this.getUnClaimingAllPlayers().remove(player.getId());
     }
 
+
+    default void sendExitLandToAllPlayers(Faction faction) throws NoFactionForFactionLessException {
+        Set<FPlayer> onlineMembersInFaction = faction.getMembers()
+                .stream()
+                .filter(FPlayer::isOnline)
+                .filter(FPlayer::isInHisLand)
+                .collect(Collectors.toSet());
+
+        for(FPlayer playerInHisLand : onlineMembersInFaction){
+            playerInHisLand.changedLand(faction, this.getFactionForFactionLess());
+        }
+    }
+
     @EventHandler(priority = EventPriority.HIGHEST)
-    default void handleUnClaimAll(UnClaimAllEvent event) {
+    default void handleUnClaimAll(UnClaimAllEvent event) throws NoFactionForFactionLessException {
 
         FPlayer player = event.getPlayer();
         Faction faction = event.getFaction();
-
         boolean isUnClaimingAll = this.isUnClaimingAll(player);
 
         if (!isUnClaimingAll) {
@@ -431,13 +450,20 @@ public interface FactionsHandler extends DataHandler<Faction> {
 
         // Un-Claim all
         else {
+
+            // All players from faction exit the land
+            this.sendExitLandToAllPlayers(faction);
+
             this.removeUnClaimingAll(player);
             boolean removed = this.getManager().removeAllClaimsOfFaction(faction);
             event.setSuccess(removed);
-            String successMessage = (String) this.getLangConfig().get(LangConfigItems.COMMANDS_F_UN_CLAIM_SUCCESS);
-            MessageContext messageContext = new MessageContextImpl(player, successMessage);
-            messageContext.setFaction(faction);
-            player.sms(messageContext);
+
+            if(removed) {
+                String successMessage = (String) this.getLangConfig().get(LangConfigItems.COMMANDS_F_UN_CLAIM_SUCCESS);
+                MessageContext messageContext = new MessageContextImpl(player, successMessage);
+                messageContext.setFaction(faction);
+                player.sms(messageContext);
+            }
         }
     }
 

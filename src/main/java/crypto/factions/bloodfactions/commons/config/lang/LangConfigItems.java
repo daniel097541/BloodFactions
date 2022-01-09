@@ -45,7 +45,7 @@ public class LangConfigItems {
     // Un-Claim command
     public static ConfigItem COMMANDS_F_UN_CLAIM_NOT_YOUR_LAND = new ConfigItemImpl("commands.f-unclaim.not-your-land", "&cThis chunk is not claimed by your faction.");
     public static ConfigItem COMMANDS_F_UN_CLAIM_NO_FACTION = new ConfigItemImpl("commands.f-unclaim.no-faction", "&cYou are not in a faction.");
-    public static ConfigItem COMMANDS_F_UN_CLAIM_SUCCESS = new ConfigItemImpl("commands.f-unclaim.success", "&aYou successfully un-claimed all claims of &7{faction_name}.");
+    public static ConfigItem COMMANDS_F_UN_CLAIM_SUCCESS = new ConfigItemImpl("commands.f-unclaim.success", "&aYou successfully un-claimed this chunk of &7{faction_name}.");
     public static ConfigItem COMMANDS_F_UN_CLAIM_FAIL = new ConfigItemImpl("commands.f-unclaim.fail", "&cFailed to un-claim this chunk.");
 
     // Un-Claim all command

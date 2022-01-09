@@ -16,7 +16,6 @@ import java.util.concurrent.TimeUnit;
 public class FactionsDAOImpl implements FactionsDAO {
 
     private final String tableName = "factions";
-    private final LoadingCache<UUID, Faction> cache = this.createCache(500, 5, TimeUnit.MINUTES);
     private final DBManager dbManager;
 
     @Inject

@@ -16,16 +16,16 @@ public interface PlayersManager extends DataManager<FPlayer> {
 
     LoadingCache<UUID, FPlayer> getPlayersCache();
 
-    default void updatePlayersAutoFly(FPlayer player, boolean autoFly) {
-
+    default boolean updatePlayersAutoFly(FPlayer player, boolean autoFly) {
+        return this.getDAO().updatePlayersAutoFly(player.getId(), autoFly);
     }
 
-    default void updatePlayersFlightMode(FPlayer player, boolean flying) {
-
+    default boolean updatePlayersFlightMode(FPlayer player, boolean flying) {
+        return this.getDAO().updatePlayersFlightMode(player.getId(), flying);
     }
 
     default void updatePlayersPower(FPlayer player) {
-
+        this.getDAO().updatePlayersPower(player.getId(), player.getPower());
     }
 
     default Set<FPlayer> findPlayersInFaction(Faction faction) {
