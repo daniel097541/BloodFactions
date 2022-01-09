@@ -15,6 +15,7 @@ import crypto.factions.bloodfactions.commons.events.faction.unpermissioned.Creat
 import crypto.factions.bloodfactions.commons.events.land.callback.GetNumberOfClaimsEvent;
 import crypto.factions.bloodfactions.commons.events.land.permissioned.ClaimEvent;
 import crypto.factions.bloodfactions.commons.events.land.permissioned.OverClaimEvent;
+import crypto.factions.bloodfactions.commons.events.land.permissioned.UnClaimAllEvent;
 import crypto.factions.bloodfactions.commons.events.land.permissioned.UnClaimEvent;
 import crypto.factions.bloodfactions.commons.events.role.*;
 import crypto.factions.bloodfactions.commons.events.shared.callback.GetFactionOfPlayerEvent;
@@ -58,6 +59,8 @@ public interface FactionsHandler extends DataHandler<Faction> {
     LoadingCache<String, Faction> getChunkFactionsCache();
 
     LoadingCache<String, Faction> getNameFactionsCache();
+
+    Map<UUID, FPlayer> getUnClaimingAllPlayers();
 
     @EventHandler(priority = EventPriority.HIGHEST)
     default void handleGetFactionLessFaction(GetFactionLessFactionEvent event) throws NoFactionForFactionLessException {
@@ -355,8 +358,8 @@ public interface FactionsHandler extends DataHandler<Faction> {
         if (!this.getRolesDAO().roleExistsByName(roleName, faction.getId())) {
             FactionRank role = new FactionRoleImpl(UUID.randomUUID(), faction.getId(), roleName, false);
             this.getRolesDAO().insert(role);
-            if(!permissions.isEmpty()){
-                for(PermissionType permissionType : permissions) {
+            if (!permissions.isEmpty()) {
+                for (PermissionType permissionType : permissions) {
                     this.getRolesDAO().addPermissionToRole(role, permissionType);
                 }
             }
@@ -416,6 +419,47 @@ public interface FactionsHandler extends DataHandler<Faction> {
         else {
             String successMessage = (String) this.getLangConfig().get(LangConfigItems.COMMANDS_F_RANKS_NOT_EXISTS);
             MessageContext messageContext = new MessageContextImpl(player, successMessage);
+            player.sms(messageContext);
+        }
+    }
+
+    default void addUnClaimingAll(FPlayer player) {
+        this.getUnClaimingAllPlayers().put(player.getId(), player);
+        Bukkit.getScheduler().runTaskLaterAsynchronously(this.getPlugin(), () -> this.getUnClaimingAllPlayers().remove(player.getId()), (30 * 1000) / 20);
+    }
+
+    default boolean isUnClaimingAll(FPlayer player) {
+        return this.getUnClaimingAllPlayers().containsKey(player.getId());
+    }
+
+    default void removeUnClaimingAll(FPlayer player) {
+        this.getUnClaimingAllPlayers().remove(player.getId());
+    }
+
+    @EventHandler(priority = EventPriority.HIGHEST)
+    default void handleUnClaimAll(UnClaimAllEvent event) {
+
+        FPlayer player = event.getPlayer();
+        Faction faction = event.getFaction();
+
+        boolean isUnClaimingAll = this.isUnClaimingAll(player);
+
+        if (!isUnClaimingAll) {
+            this.addUnClaimingAll(player);
+            String successMessage = (String) this.getLangConfig().get(LangConfigItems.COMMANDS_F_UN_CLAIM_ALL_CONFIRMATION);
+            MessageContext messageContext = new MessageContextImpl(player, successMessage);
+            player.sms(messageContext);
+            event.setSuccess(false);
+        }
+
+        // Un-Claim all
+        else {
+            this.removeUnClaimingAll(player);
+            boolean removed = this.getDao().removeAllClaimsOfFaction(faction);
+            event.setSuccess(removed);
+            String successMessage = (String) this.getLangConfig().get(LangConfigItems.COMMANDS_F_UN_CLAIM_SUCCESS);
+            MessageContext messageContext = new MessageContextImpl(player, successMessage);
+            messageContext.setFaction(faction);
             player.sms(messageContext);
         }
     }

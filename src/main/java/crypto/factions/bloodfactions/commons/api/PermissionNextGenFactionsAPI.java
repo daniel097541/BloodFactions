@@ -220,4 +220,12 @@ public class PermissionNextGenFactionsAPI {
         logAction(start, end, PermissionedAPIAction.DELETE_ROLE);
         return event.isSuccess();
     }
+
+    public static boolean unClaimAll(FPlayer player, Faction faction) {
+        long start = System.currentTimeMillis();
+        UnClaimAllEvent event = new UnClaimAllEvent(faction, player);
+        long end = System.currentTimeMillis();
+        logAction(start, end, PermissionedAPIAction.UN_CLAIM_ALL);
+        return event.isSuccess();
+    }
 }

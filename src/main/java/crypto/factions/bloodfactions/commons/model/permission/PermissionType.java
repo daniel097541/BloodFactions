@@ -17,7 +17,8 @@ public enum PermissionType {
     SET_CORE(10),
     FLY(11),
     DELETE_ROLE(12),
-    CREATE_ROLE(13);
+    CREATE_ROLE(13),
+    UN_CLAIM_ALL(14);
 
     @Getter
     private final int id;

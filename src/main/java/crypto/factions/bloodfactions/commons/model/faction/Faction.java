@@ -233,4 +233,8 @@ public interface Faction extends NextGenFactionEntity {
                 .orElse(null);
     }
 
+    default boolean unClaimAll(@NotNull FPlayer player, @NotNull Faction faction){
+        return PermissionNextGenFactionsAPI.unClaimAll(player, faction);
+    }
+
 }

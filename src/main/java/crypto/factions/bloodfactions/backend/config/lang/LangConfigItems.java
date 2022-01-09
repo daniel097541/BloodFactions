@@ -48,6 +48,12 @@ public class LangConfigItems {
     public static ConfigItem COMMANDS_F_UN_CLAIM_SUCCESS = new ConfigItemImpl("commands.f-unclaim.success", "&aYou successfully un-claimed this chunk from &7{faction_name}.");
     public static ConfigItem COMMANDS_F_UN_CLAIM_FAIL = new ConfigItemImpl("commands.f-unclaim.fail", "&cFailed to un-claim this chunk.");
 
+    // Un-Claim all command
+    public static ConfigItem COMMANDS_F_UN_CLAIM_ALL_NO_FACTION = new ConfigItemImpl("commands.f-unclaimall.no-faction", "&cYou are not in a faction.");
+    public static ConfigItem COMMANDS_F_UN_CLAIM_ALL_SUCCESS = new ConfigItemImpl("commands.f-unclaimall.success", "&aYou successfully un-claimed all the claims from &7{faction_name}.");
+    public static ConfigItem COMMANDS_F_UN_CLAIM_ALL_FAIL = new ConfigItemImpl("commands.f-unclaimall.fail", "&cFailed to un-claim all.");
+    public static ConfigItem COMMANDS_F_UN_CLAIM_ALL_CONFIRMATION = new ConfigItemImpl("commands.f-unclaimall.confirmation", "&eUn-claim all command requires confirmation, type the command again before 30s.");
+
     // Home
     public static ConfigItem COMMANDS_F_HOME_NO_FACTION = new ConfigItemImpl("commands.f-home.no-faction", "&cYou need a faction to do that.");
     public static ConfigItem COMMANDS_F_HOME_SUCCESS = new ConfigItemImpl("commands.f-home.success", "&aTeleported to your home!");
@@ -78,7 +84,7 @@ public class LangConfigItems {
     public static ConfigItem COMMANDS_F_FLY_NOT_IN_YOUR_FACTION = new ConfigItemImpl("commands.f-fly.not-in-your-faction", "&cYou are not in your factions land.");
 
 
-    // Fly
+    // Auto Fly
     public static ConfigItem COMMANDS_F_AUTO_FLY_NO_FACTION = new ConfigItemImpl("commands.f-auto-fly.no-faction", "&cYou need a faction to do that.");
     public static ConfigItem COMMANDS_F_AUTO_FLY_SUCCESS = new ConfigItemImpl("commands.f-auto-fly.success", "&aAuto-fly mode activated.");
     public static ConfigItem COMMANDS_F_AUTO_FLY_OFF = new ConfigItemImpl("commands.f-auto-fly.disabled", "&cAuto-fly mode disabled.");

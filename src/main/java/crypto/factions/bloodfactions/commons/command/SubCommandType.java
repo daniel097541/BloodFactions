@@ -11,6 +11,7 @@ public enum SubCommandType {
     FLY(new String[]{"fly", "flight"}, "ngf.command.fly", "commands.f-fly", false, 2),
     SHOW(new String[]{"show", "info"}, "ngf.command.show", "commands.f-show", false, 2),
     HOME(new String[]{"core", "home"}, "ngf.command.home", "commands.f-home", false, 2),
+    UN_CLAIM_ALL(new String[]{"unclaimall", "disclaimall"}, "ngf.command.unclaimall", "commands.f-unclaimall", false, 2),
     UN_CLAIM(new String[]{"unclaim", "disclaim"}, "ngf.command.unclaim", "commands.f-unclaim", false, 2),
     CLAIM(new String[]{"claim"}, "ngf.command.claim", "commands.f-claim", false, 2),
     CREATE(new String[]{"create", "new"}, "ngf.command.create", "commands.f-create", true, 2),

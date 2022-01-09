@@ -169,17 +169,19 @@ public interface FactionsDAO extends DAO<Faction> {
      *
      * @param faction
      */
-    default void removeAllClaimsOfFaction(@NotNull Faction faction) {
+    default boolean removeAllClaimsOfFaction(@NotNull Faction faction) {
 
         String sql = "DELETE FROM as_faction_claims WHERE faction_id = ?;";
 
         try (PreparedStatement statement = this.getPreparedStatement(sql)) {
             statement.setString(1, faction.getId().toString());
 
-            statement.executeUpdate();
+            int removed = statement.executeUpdate();
+            return removed > 0;
         } catch (Exception e) {
             e.printStackTrace();
         }
+        return false;
     }
 
     /**

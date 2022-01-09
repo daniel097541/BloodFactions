@@ -11,13 +11,17 @@ import crypto.factions.bloodfactions.commons.annotation.config.LangConfiguration
 import crypto.factions.bloodfactions.commons.annotation.config.SystemConfiguration;
 import crypto.factions.bloodfactions.commons.config.NGFConfig;
 import crypto.factions.bloodfactions.commons.model.faction.Faction;
+import crypto.factions.bloodfactions.commons.model.player.FPlayer;
 import crypto.factions.bloodfactions.commons.tasks.handler.TasksHandler;
 import lombok.Getter;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import javax.inject.Inject;
 import javax.inject.Singleton;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Objects;
+import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 
 @Singleton
@@ -31,6 +35,7 @@ public class FactionsHandlerImpl implements FactionsHandler {
     private final NGFConfig systemConfig;
     private final NGFConfig langConfig;
     private final TasksHandler tasksHandler;
+    private final Map<UUID, FPlayer> unClaimingAllPlayers = new HashMap<>();
 
     private final LoadingCache<String, Faction> chunkFactionsCache = CacheBuilder.newBuilder()
             .maximumSize(10000)
