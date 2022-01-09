@@ -2,7 +2,7 @@ package crypto.factions.bloodfactions.backend.dao.impl;
 
 import com.google.common.cache.LoadingCache;
 import crypto.factions.bloodfactions.backend.dao.RolesDAO;
-import crypto.factions.bloodfactions.backend.manager.DBManager;
+import crypto.factions.bloodfactions.backend.db.DBManager;
 import crypto.factions.bloodfactions.commons.model.role.FactionRank;
 import lombok.Getter;
 

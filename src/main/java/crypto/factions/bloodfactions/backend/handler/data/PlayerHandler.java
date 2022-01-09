@@ -1,11 +1,12 @@
 package crypto.factions.bloodfactions.backend.handler.data;
 
-import crypto.factions.bloodfactions.commons.config.lang.LangConfigItems;
-import crypto.factions.bloodfactions.commons.config.system.SystemConfigItems;
-import crypto.factions.bloodfactions.backend.dao.PlayerDAO;
-import crypto.factions.bloodfactions.backend.dao.RolesDAO;
+import crypto.factions.bloodfactions.backend.manager.FactionsManager;
+import crypto.factions.bloodfactions.backend.manager.PlayersManager;
+import crypto.factions.bloodfactions.backend.manager.RanksManager;
 import crypto.factions.bloodfactions.commons.api.NextGenFactionsAPI;
 import crypto.factions.bloodfactions.commons.config.NGFConfig;
+import crypto.factions.bloodfactions.commons.config.lang.LangConfigItems;
+import crypto.factions.bloodfactions.commons.config.system.SystemConfigItems;
 import crypto.factions.bloodfactions.commons.events.faction.unpermissioned.ShowFactionEvent;
 import crypto.factions.bloodfactions.commons.events.player.callback.CheckIfPlayerHasFactionEvent;
 import crypto.factions.bloodfactions.commons.events.player.callback.GetPlayerByNameEvent;
@@ -35,10 +36,11 @@ import java.util.stream.Collectors;
 
 public interface PlayerHandler extends DataHandler<FPlayer> {
 
-    @Override
-    PlayerDAO getDao();
+    PlayersManager getManager();
 
-    RolesDAO getRolesDAO();
+    RanksManager getRanksManager();
+
+    FactionsManager getFactionsManager();
 
     NGFConfig getLangConfig();
 
@@ -52,7 +54,7 @@ public interface PlayerHandler extends DataHandler<FPlayer> {
     @EventHandler(priority = EventPriority.HIGHEST)
     default void checkIfPlayerHasFaction(CheckIfPlayerHasFactionEvent event) {
         FPlayer player = event.getPlayer();
-        boolean hasFaction = this.getDao().checkIfPlayerHasFaction(player.getId());
+        boolean hasFaction = this.getFactionsManager().checkIfPlayerHasFaction(player);
         event.setHasFaction(hasFaction);
     }
 
@@ -66,12 +68,12 @@ public interface PlayerHandler extends DataHandler<FPlayer> {
             // Create the player in DB.
             OfflinePlayer offlinePlayer = Bukkit.getOfflinePlayer(uuid);
             player = new FPlayerImpl(offlinePlayer.getUniqueId(), offlinePlayer.getName(), false, false, 0);
-            player = this.getDao().insert(player);
+            player = this.getManager().insert(player);
 
             if (Objects.nonNull(player)) {
                 // Add the player to the faction-less faction.
                 Faction factionLessFaction = NextGenFactionsAPI.getFactionLessFaction();
-                this.getDao().addPlayerToFaction(player, factionLessFaction, player);
+                this.getFactionsManager().addPlayerToFaction(player, factionLessFaction, player);
             }
         }
 
@@ -81,14 +83,14 @@ public interface PlayerHandler extends DataHandler<FPlayer> {
     @EventHandler(priority = EventPriority.HIGHEST)
     default void getPlayersInFaction(GetPlayersInFactionEvent event) {
         Faction faction = event.getFaction();
-        Set<FPlayer> playersInFaction = this.getDao().findPlayersInFaction(faction.getId());
+        Set<FPlayer> playersInFaction = this.getManager().findPlayersInFaction(faction);
         event.setPlayers(playersInFaction);
     }
 
     @EventHandler(priority = EventPriority.HIGHEST)
     default void handleGetRoleOfPlayer(GetRoleOfPlayerEvent event) {
         FPlayer player = event.getPlayer();
-        FactionRank role = this.getRolesDAO().getRoleOFPlayer(player.getId());
+        FactionRank role = this.getRanksManager().getRoleOFPlayer(player);
         event.setRole(role);
     }
 
@@ -126,7 +128,7 @@ public interface PlayerHandler extends DataHandler<FPlayer> {
 
             // Change event
             event.setChanged(false);
-            boolean changed = this.getRolesDAO().setPlayersRole(player, rank);
+            boolean changed = this.getRanksManager().setPlayersRole(player, rank);
             event.setChanged(changed);
         }
     }
@@ -174,7 +176,7 @@ public interface PlayerHandler extends DataHandler<FPlayer> {
         }
 
         // Update auto-fly
-        this.getDao().updatePlayersAutoFly(player.getId(), autoFly);
+        this.getManager().updatePlayersAutoFly(player, autoFly);
     }
 
     @EventHandler(priority = EventPriority.HIGHEST)
@@ -208,7 +210,7 @@ public interface PlayerHandler extends DataHandler<FPlayer> {
         }
 
         event.setSuccess(flying);
-        this.getDao().updatePlayersFlightMode(player.getId(), flying);
+        this.getManager().updatePlayersFlightMode(player, flying);
     }
 
     @EventHandler(priority = EventPriority.HIGHEST)
@@ -237,7 +239,7 @@ public interface PlayerHandler extends DataHandler<FPlayer> {
 
         player.setPower(total);
         // Update power in db.
-        this.getDao().updatePlayersPower(player.getId(), player.getPower());
+        this.getManager().updatePlayersPower(player);
     }
 
     @EventHandler(priority = EventPriority.HIGHEST)
@@ -307,7 +309,7 @@ public interface PlayerHandler extends DataHandler<FPlayer> {
     @EventHandler(priority = EventPriority.HIGHEST)
     default void handleGetPlayerByName(GetPlayerByNameEvent event) {
         String playerName = event.getName();
-        FPlayer player = this.getDao().findByName(playerName);
+        FPlayer player = this.getManager().getByName(playerName);
         event.setPlayer(player);
     }
 }

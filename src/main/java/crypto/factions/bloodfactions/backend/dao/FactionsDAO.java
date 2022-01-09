@@ -169,12 +169,12 @@ public interface FactionsDAO extends DAO<Faction> {
      *
      * @param faction
      */
-    default boolean removeAllClaimsOfFaction(@NotNull Faction faction) {
+    default boolean removeAllClaimsOfFaction(@NotNull UUID factionId) {
 
         String sql = "DELETE FROM as_faction_claims WHERE faction_id = ?;";
 
         try (PreparedStatement statement = this.getPreparedStatement(sql)) {
-            statement.setString(1, faction.getId().toString());
+            statement.setString(1, factionId.toString());
 
             int removed = statement.executeUpdate();
             return removed > 0;
@@ -270,7 +270,7 @@ public interface FactionsDAO extends DAO<Faction> {
         return false;
     }
 
-    default void setCore(@NotNull UUID factionId, @NotNull UUID playerId, @NotNull FLocation core) {
+    default boolean setCore(@NotNull UUID factionId, @NotNull UUID playerId, @NotNull FLocation core) {
 
         String sql = "INSERT INTO factions_tps (faction_id, world_id, x, y, z, created_by, is_core) VALUES (?, ?, ?, ?, ?, ?, ?);";
 
@@ -284,9 +284,10 @@ public interface FactionsDAO extends DAO<Faction> {
             statement.setString(6, playerId.toString());
             statement.setBoolean(7, true);
 
-            statement.executeUpdate();
+            return statement.executeUpdate() > 0;
         } catch (Exception e) {
             e.printStackTrace();
         }
+        return false;
     }
 }

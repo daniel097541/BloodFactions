@@ -1,9 +1,8 @@
 package crypto.factions.bloodfactions.backend.handler.data;
 
-import com.google.common.cache.LoadingCache;
-import crypto.factions.bloodfactions.backend.dao.FactionsDAO;
-import crypto.factions.bloodfactions.backend.dao.PlayerDAO;
-import crypto.factions.bloodfactions.backend.dao.RolesDAO;
+import crypto.factions.bloodfactions.backend.manager.FactionsManager;
+import crypto.factions.bloodfactions.backend.manager.PlayersManager;
+import crypto.factions.bloodfactions.backend.manager.RanksManager;
 import crypto.factions.bloodfactions.commons.config.NGFConfig;
 import crypto.factions.bloodfactions.commons.config.lang.LangConfigItems;
 import crypto.factions.bloodfactions.commons.config.system.SystemConfigItems;
@@ -39,29 +38,21 @@ import org.bukkit.event.EventPriority;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.*;
-import java.util.concurrent.ExecutionException;
 import java.util.stream.Collectors;
 
 public interface FactionsHandler extends DataHandler<Faction> {
 
-    @Override
-    FactionsDAO getDao();
+    FactionsManager getManager();
 
-    PlayerDAO getPlayerDAO();
+    RanksManager getRanksManager();
 
-    RolesDAO getRolesDAO();
+    PlayersManager getPlayersManager();
 
     TasksHandler getTasksHandler();
 
     NGFConfig getSystemConfig();
 
     NGFConfig getLangConfig();
-
-    LoadingCache<String, Faction> getChunkFactionsCache();
-
-    LoadingCache<String, Faction> getNameFactionsCache();
-
-    LoadingCache<UUID, Faction> getPlayerFactionsCache();
 
     Map<UUID, FPlayer> getUnClaimingAllPlayers();
 
@@ -109,8 +100,8 @@ public interface FactionsHandler extends DataHandler<Faction> {
 
         for (Faction faction : systemFactions) {
             UUID id = faction.getId();
-            if (!this.getDao().existsById(id)) {
-                this.getDao().insert(faction);
+            if (!this.getManager().existsById(id)) {
+                this.getManager().insert(faction);
             }
         }
 
@@ -134,13 +125,13 @@ public interface FactionsHandler extends DataHandler<Faction> {
     default Faction createFaction(Faction faction, FPlayer player) {
 
         // Insert in DB
-        faction = this.getDao().insert(faction);
+        faction = this.getManager().insert(faction);
 
         // Add player to faction
         if (Objects.nonNull(faction)) {
 
             // Add player to faction.
-            this.getPlayerDAO().addPlayerToFaction(player, faction, player);
+            this.getManager().addPlayerToFaction(player, faction, player);
 
             // Create roles
             Map<FactionRank, Set<PermissionType>> rolesPermissions = this.getDefaultRoles(faction.getId());
@@ -150,11 +141,11 @@ public interface FactionsHandler extends DataHandler<Faction> {
                 Set<PermissionType> permissions = entry.getValue();
 
                 // Create role
-                this.getRolesDAO().insert(role);
+                this.getRanksManager().insert(role);
 
                 // Permissions
                 for (PermissionType permissionType : permissions) {
-                    this.getRolesDAO().addPermissionToRole(role, permissionType);
+                    this.getRanksManager().addPermissionToRole(role, permissionType);
                 }
             }
         }
@@ -164,7 +155,7 @@ public interface FactionsHandler extends DataHandler<Faction> {
     @EventHandler(priority = EventPriority.HIGHEST)
     default void handleGetCountOfClaims(GetNumberOfClaimsEvent event) {
         Faction faction = event.getFaction();
-        int count = this.getDao().getCountOfClaims(faction.getId());
+        int count = this.getManager().getCountOfClaims(faction.getId());
         event.setNumberOfClaims(count);
     }
 
@@ -174,13 +165,13 @@ public interface FactionsHandler extends DataHandler<Faction> {
         Faction faction = event.getFaction();
 
         // Delete players
-        this.getPlayerDAO().removeAllPlayersFromFaction(faction);
+        this.getManager().removeAllPlayersFromFaction(faction);
 
         // Delete claims
-        this.getDao().removeAllClaimsOfFaction(faction);
+        boolean deleted = this.getManager().removeAllClaimsOfFaction(faction);
 
         // Delete faction
-        boolean disbanded = this.getDao().deleteById(faction.getId());
+        boolean disbanded = this.getManager().deleteById(faction.getId());
 
         event.setDisbanded(disbanded);
     }
@@ -213,12 +204,7 @@ public interface FactionsHandler extends DataHandler<Faction> {
     @EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
     default void handleGetFactionByName(GetFactionByNameEvent getFactionEvent) {
         String name = getFactionEvent.getName();
-        Faction faction;
-        try {
-            faction = this.getNameFactionsCache().get(name);
-        } catch (Exception e) {
-            faction = null;
-        }
+        Faction faction = this.getManager().getByName(name);
         getFactionEvent.setFaction(faction);
     }
 
@@ -234,8 +220,8 @@ public interface FactionsHandler extends DataHandler<Faction> {
         FPlayer player = event.getPlayer();
         Faction faction;
         try {
-            faction = this.getPlayerFactionsCache().get(player.getId());
-        } catch (ExecutionException e) {
+            faction = this.getManager().getFactionOfPlayer(player);
+        } catch (Exception e) {
             e.printStackTrace();
             faction = this.getFactionForFactionLess();
         }
@@ -245,12 +231,10 @@ public interface FactionsHandler extends DataHandler<Faction> {
     @EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
     default void handleGetFactionAtChunk(GetFactionAtChunkEvent event) throws NoFactionForFactionLessException {
         FChunk chunk = event.getChunk();
-        Faction faction;
-
+        Faction faction = null;
         try {
-            faction = this.getChunkFactionsCache().get(chunk.getId());
-        } catch (Exception e) {
-            faction = null;
+            faction = this.getManager().getFactionAtChunk(chunk);
+        } catch (Exception ignored) {
         }
 
         // If the faction is null, then return faction less.
@@ -264,14 +248,14 @@ public interface FactionsHandler extends DataHandler<Faction> {
     @EventHandler(priority = EventPriority.HIGHEST)
     default void handleGetDefaultRole(GetDefaultRoleOfFactionEvent event) {
         Faction faction = event.getFaction();
-        FactionRank role = this.getRolesDAO().getDefaultRole(faction.getId());
+        FactionRank role = this.getRanksManager().getDefaultRole(faction);
         event.setDefaultRole(role);
     }
 
     @EventHandler(priority = EventPriority.HIGHEST)
     default void handleGetRolesOfFaction(GetRolesOfFactionEvent event) {
         Faction faction = event.getFaction();
-        Set<FactionRank> roles = this.getRolesDAO().getAllRolesOfFaction(faction.getId());
+        Set<FactionRank> roles = this.getRanksManager().getAllRolesOfFaction(faction);
         event.setRoles(roles);
     }
 
@@ -283,13 +267,7 @@ public interface FactionsHandler extends DataHandler<Faction> {
         Faction factionAt = chunk.getFactionAt();
 
         Logger.logInfo("Player &d" + player.getName() + " &7is claiming for faction: &d" + faction.getName() + " &7at: &d" + chunk.getId());
-        boolean claimed = this.getDao().claimForFaction(faction.getId(), chunk, player.getId());
-
-        // If claimed update cache.
-        if (claimed) {
-            this.getChunkFactionsCache().put(chunk.getId(), faction);
-            player.changedLand(factionAt, faction);
-        }
+        boolean claimed = this.getManager().claimForFaction(faction, chunk, player);
 
         event.setSuccess(claimed);
     }
@@ -302,13 +280,7 @@ public interface FactionsHandler extends DataHandler<Faction> {
         Faction factionAt = chunk.getFactionAt();
 
         Logger.logInfo("Player &d" + player.getName() + " &7is un-claiming for faction: &d" + faction.getName() + " &7at: &d" + chunk.getId());
-        boolean unClaimed = this.getDao().removeClaim(faction.getId(), chunk.getId());
-
-        // If unclaimed, invalidate chunk in cache.
-        if (unClaimed) {
-            this.getChunkFactionsCache().invalidate(chunk.getId());
-            player.changedLand(factionAt, Objects.requireNonNull(player.getLocation()).getFactionAt());
-        }
+        boolean unClaimed = this.getManager().removeClaim(faction, chunk);
 
         event.setSuccess(unClaimed);
     }
@@ -319,17 +291,15 @@ public interface FactionsHandler extends DataHandler<Faction> {
         FPlayer player = event.getPlayer();
         Faction faction = event.getFaction();
 
-        // Remove previous core.
-        this.getDao().removeCore(faction.getId());
-
-        // Set new core.
-        this.getDao().setCore(faction.getId(), player.getId(), core);
+        // Set new home.
+        boolean homeSet = this.getManager().setHome(faction, core, player);
+        event.setSuccess(homeSet);
     }
 
     @EventHandler(priority = EventPriority.HIGH)
     default void handleGetCore(GetCoreEvent event) {
         Faction faction = event.getFaction();
-        FLocation core = this.getDao().getCore(faction.getId());
+        FLocation core = this.getManager().getHome(faction);
         event.setCore(core);
     }
 
@@ -341,15 +311,10 @@ public interface FactionsHandler extends DataHandler<Faction> {
         FChunk chunk = event.getChunk();
         Logger.logInfo("Player &a" + player.getName() + " &7is over-claiming from faction: &a" + overClaimedFaction.getName() + " &7at: &2" + chunk.getId());
 
-        boolean removed = this.getDao().removeClaim(overClaimedFaction.getId(), chunk.getId());
+        boolean removed = this.getManager().removeClaim(overClaimedFaction, chunk);
 
         if (removed) {
-            boolean claimed = this.getDao().claimForFaction(faction.getId(), chunk, player.getId());
-
-            if (claimed) {
-                this.getChunkFactionsCache().put(chunk.getId(), faction);
-            }
-
+            boolean claimed = this.getManager().claimForFaction(faction, chunk, player);
             event.setSuccess(claimed);
         } else {
             Logger.logInfo("Failed to un-claim.");
@@ -366,12 +331,12 @@ public interface FactionsHandler extends DataHandler<Faction> {
         Set<PermissionType> permissions = event.getPermissions();
 
         // Role does not exist by name.
-        if (!this.getRolesDAO().roleExistsByName(roleName, faction.getId())) {
+        if (!this.getRanksManager().roleExistsByName(roleName, faction)) {
             FactionRank role = new FactionRoleImpl(UUID.randomUUID(), faction.getId(), roleName, false);
-            this.getRolesDAO().insert(role);
+            this.getRanksManager().insert(role);
             if (!permissions.isEmpty()) {
                 for (PermissionType permissionType : permissions) {
-                    this.getRolesDAO().addPermissionToRole(role, permissionType);
+                    this.getRanksManager().addPermissionToRole(role, permissionType);
                 }
             }
             String successMessage = (String) this.getLangConfig().get(LangConfigItems.COMMANDS_F_RANKS_CREATE);
@@ -398,7 +363,7 @@ public interface FactionsHandler extends DataHandler<Faction> {
         Set<FactionRank> roles = faction.getRoles();
 
         for (FactionRank role : roles) {
-            Set<PermissionType> permissions = this.getRolesDAO().getRolePermissions(role.getId());
+            Set<PermissionType> permissions = this.getRanksManager().getRolePermissions(role);
             String roleBody = bodyBlueprint.replace("{rank_name}", role.getName())
                     .replace("{permission_list}", permissions.stream().map(PermissionType::name).collect(Collectors.joining(", ")));
             finalMessage.append(roleBody);
@@ -415,12 +380,13 @@ public interface FactionsHandler extends DataHandler<Faction> {
         String roleName = event.getRoleName();
         Faction faction = event.getFaction();
         FPlayer player = event.getPlayer();
+        FactionRank rank = this.getRanksManager().getRankByName(roleName, faction);
 
         // Role exists by name.
-        if (this.getRolesDAO().roleExistsByName(roleName, faction.getId())) {
+        if (Objects.nonNull(rank)) {
 
             // Delete
-            this.getRolesDAO().deleteRoleByName(roleName, faction.getId());
+            this.getRanksManager().deleteById(rank.getId());
             String successMessage = (String) this.getLangConfig().get(LangConfigItems.COMMANDS_F_RANKS_DELETE);
             MessageContext messageContext = new MessageContextImpl(player, successMessage);
             player.sms(messageContext);
@@ -466,7 +432,7 @@ public interface FactionsHandler extends DataHandler<Faction> {
         // Un-Claim all
         else {
             this.removeUnClaimingAll(player);
-            boolean removed = this.getDao().removeAllClaimsOfFaction(faction);
+            boolean removed = this.getManager().removeAllClaimsOfFaction(faction);
             event.setSuccess(removed);
             String successMessage = (String) this.getLangConfig().get(LangConfigItems.COMMANDS_F_UN_CLAIM_SUCCESS);
             MessageContext messageContext = new MessageContextImpl(player, successMessage);

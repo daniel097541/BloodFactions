@@ -1,6 +1,7 @@
 package crypto.factions.bloodfactions.backend.handler.data;
 
 import crypto.factions.bloodfactions.backend.dao.DAO;
+import crypto.factions.bloodfactions.backend.manager.DataManager;
 import crypto.factions.bloodfactions.commons.model.NextGenFactionEntity;
 import org.bukkit.Bukkit;
 import org.bukkit.event.Listener;
@@ -12,7 +13,7 @@ import java.util.UUID;
 
 public interface DataHandler<T extends NextGenFactionEntity> extends Listener {
 
-    DAO<T> getDao();
+    DataManager<T> getManager();
 
     JavaPlugin getPlugin();
 
@@ -22,23 +23,23 @@ public interface DataHandler<T extends NextGenFactionEntity> extends Listener {
     }
 
     default @Nullable T getById(@NotNull UUID id) {
-        return this.getDao().findById(id);
+        return this.getManager().getById(id);
     }
 
     default @Nullable T getByName(@NotNull String name) {
-        return this.getDao().findByName(name);
+        return this.getManager().getByName(name);
     }
 
     default boolean existsById(@NotNull UUID id) {
-        return this.getDao().existsById(id);
+        return this.getManager().existsById(id);
     }
 
     default boolean existsByName(@NotNull String name) {
-        return this.getDao().existsByName(name);
+        return this.getManager().existsByName(name);
     }
 
     default boolean deleteById(@NotNull UUID id) {
-        return this.getDao().deleteById(id);
+        return this.getManager().deleteById(id);
     }
 
 }

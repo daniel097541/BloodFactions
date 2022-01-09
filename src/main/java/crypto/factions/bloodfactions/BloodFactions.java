@@ -7,7 +7,7 @@ import crypto.factions.bloodfactions.backend.handler.data.AlertsHandler;
 import crypto.factions.bloodfactions.backend.handler.data.FactionsHandler;
 import crypto.factions.bloodfactions.backend.handler.data.PlayerHandler;
 import crypto.factions.bloodfactions.backend.handler.permissions.PermissionsHandler;
-import crypto.factions.bloodfactions.backend.manager.DBMigrationManager;
+import crypto.factions.bloodfactions.backend.db.DBMigrationManager;
 import crypto.factions.bloodfactions.frontend.listener.PlayerListener;
 import crypto.factions.bloodfactions.injection.NGFBinder;
 import org.bukkit.plugin.java.JavaPlugin;

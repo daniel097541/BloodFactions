@@ -3,6 +3,12 @@ package crypto.factions.bloodfactions.injection;
 import com.google.inject.AbstractModule;
 import com.google.inject.Guice;
 import com.google.inject.Injector;
+import crypto.factions.bloodfactions.backend.manager.FactionsManager;
+import crypto.factions.bloodfactions.backend.manager.PlayersManager;
+import crypto.factions.bloodfactions.backend.manager.RanksManager;
+import crypto.factions.bloodfactions.backend.manager.impl.FactionsManagerImpl;
+import crypto.factions.bloodfactions.backend.manager.impl.PlayersManagerImpl;
+import crypto.factions.bloodfactions.backend.manager.impl.RanksManagerImpl;
 import crypto.factions.bloodfactions.commons.config.lang.LangConfig;
 import crypto.factions.bloodfactions.commons.config.system.SystemConfig;
 import crypto.factions.bloodfactions.backend.dao.FactionsDAO;
@@ -21,9 +27,9 @@ import crypto.factions.bloodfactions.backend.handler.data.impl.FactionsHandlerIm
 import crypto.factions.bloodfactions.backend.handler.data.impl.PlayerHandlerImpl;
 import crypto.factions.bloodfactions.backend.handler.permissions.PermissionsHandler;
 import crypto.factions.bloodfactions.backend.handler.permissions.PermissionsHandlerImpl;
-import crypto.factions.bloodfactions.backend.manager.DBManager;
-import crypto.factions.bloodfactions.backend.manager.DBMigrationManager;
-import crypto.factions.bloodfactions.backend.manager.DBMigrationManagerImpl;
+import crypto.factions.bloodfactions.backend.db.DBManager;
+import crypto.factions.bloodfactions.backend.db.DBMigrationManager;
+import crypto.factions.bloodfactions.backend.db.DBMigrationManagerImpl;
 import crypto.factions.bloodfactions.commons.annotation.command.*;
 import crypto.factions.bloodfactions.commons.annotation.config.LangConfiguration;
 import crypto.factions.bloodfactions.commons.annotation.config.SystemConfiguration;
@@ -76,6 +82,9 @@ public class NGFBinder extends AbstractModule {
         // Bind db manager
         this.bind(DBManager.class).toInstance(new DBManager());
         this.bind(DBMigrationManager.class).to(DBMigrationManagerImpl.class);
+        this.bind(PlayersManager.class).to(PlayersManagerImpl.class);
+        this.bind(FactionsManager.class).to(FactionsManagerImpl.class);
+        this.bind(RanksManager.class).to(RanksManagerImpl.class);
 
         // Bind DAOs
         this.bind(FactionsDAO.class).to(FactionsDAOImpl.class);

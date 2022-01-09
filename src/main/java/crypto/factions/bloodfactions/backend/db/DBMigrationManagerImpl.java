@@ -1,4 +1,4 @@
-package crypto.factions.bloodfactions.backend.manager;
+package crypto.factions.bloodfactions.backend.db;
 
 import com.google.inject.Inject;
 import com.google.inject.Singleton;

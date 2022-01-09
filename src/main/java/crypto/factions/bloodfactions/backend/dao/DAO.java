@@ -1,7 +1,7 @@
 package crypto.factions.bloodfactions.backend.dao;
 
 import com.google.common.cache.*;
-import crypto.factions.bloodfactions.backend.manager.DBManager;
+import crypto.factions.bloodfactions.backend.db.DBManager;
 import crypto.factions.bloodfactions.commons.model.NextGenFactionEntity;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;

@@ -1,8 +1,9 @@
 package crypto.factions.bloodfactions.backend.handler.data.impl;
 
-import crypto.factions.bloodfactions.backend.dao.PlayerDAO;
-import crypto.factions.bloodfactions.backend.dao.RolesDAO;
 import crypto.factions.bloodfactions.backend.handler.data.PlayerHandler;
+import crypto.factions.bloodfactions.backend.manager.FactionsManager;
+import crypto.factions.bloodfactions.backend.manager.PlayersManager;
+import crypto.factions.bloodfactions.backend.manager.RanksManager;
 import crypto.factions.bloodfactions.commons.annotation.config.LangConfiguration;
 import crypto.factions.bloodfactions.commons.annotation.config.SystemConfiguration;
 import crypto.factions.bloodfactions.commons.config.NGFConfig;
@@ -13,7 +14,6 @@ import org.bukkit.plugin.java.JavaPlugin;
 
 import javax.inject.Inject;
 import javax.inject.Singleton;
-import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
@@ -22,24 +22,27 @@ import java.util.concurrent.ConcurrentHashMap;
 @Getter
 public class PlayerHandlerImpl implements PlayerHandler {
 
-    private final PlayerDAO dao;
+    private final PlayersManager manager;
+    private final RanksManager ranksManager;
+    private final FactionsManager factionsManager;
     private final JavaPlugin plugin;
-    private final RolesDAO rolesDAO;
     private final NGFConfig langConfig;
     private final NGFConfig sysConfig;
     private final TasksHandler tasksHandler;
     private final Map<UUID, FPlayer> noFallDamagePlayers = new ConcurrentHashMap<>();
 
     @Inject
-    public PlayerHandlerImpl(PlayerDAO playerDAO,
+    public PlayerHandlerImpl(PlayersManager manager,
                              JavaPlugin plugin,
-                             RolesDAO rolesDAO,
+                             RanksManager ranksManager,
+                             FactionsManager factionsManager,
                              @LangConfiguration NGFConfig langConfig,
                              @SystemConfiguration NGFConfig systemConfig,
                              TasksHandler tasksHandler) {
-        this.dao = playerDAO;
+        this.manager = manager;
         this.plugin = plugin;
-        this.rolesDAO = rolesDAO;
+        this.ranksManager = ranksManager;
+        this.factionsManager = factionsManager;
         this.langConfig = langConfig;
         this.sysConfig = systemConfig;
         this.tasksHandler = tasksHandler;

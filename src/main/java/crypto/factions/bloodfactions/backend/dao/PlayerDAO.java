@@ -147,12 +147,12 @@ public interface PlayerDAO extends DAO<FPlayer> {
      *
      * @param faction
      */
-    default void removeAllPlayersFromFaction(Faction faction) {
+    default void removeAllPlayersFromFaction(UUID factionId) {
 
         String sql = "DELETE FROM as_faction_players WHERE faction_id = ?;";
 
         try (PreparedStatement statement = this.getPreparedStatement(sql)) {
-            statement.setString(1, faction.getId().toString());
+            statement.setString(1, factionId.toString());
 
             statement.executeUpdate();
         } catch (Exception e) {
