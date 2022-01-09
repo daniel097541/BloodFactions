@@ -270,7 +270,9 @@ public interface FactionsHandler extends DataHandler<Faction> {
         boolean claimed = this.getManager().claimForFaction(faction, chunk, player);
 
         if (claimed) {
-            player.changedLand(factionAt, faction);
+            chunk
+                    .getPlayersAtChunk()
+                    .forEach(player1 -> player1.changedLand(factionAt, faction));
         }
 
         event.setSuccess(claimed);
@@ -286,7 +288,15 @@ public interface FactionsHandler extends DataHandler<Faction> {
         boolean unClaimed = this.getManager().removeClaim(faction, chunk);
 
         if (unClaimed) {
-            player.changedLand(faction, this.getFactionForFactionLess());
+            chunk
+                    .getPlayersAtChunk()
+                    .forEach(player1 -> {
+                        try {
+                            player1.changedLand(faction, this.getFactionForFactionLess());
+                        } catch (NoFactionForFactionLessException e) {
+                            e.printStackTrace();
+                        }
+                    });
         }
 
         event.setSuccess(unClaimed);
@@ -325,9 +335,6 @@ public interface FactionsHandler extends DataHandler<Faction> {
 
             chunk
                     .getPlayersAtChunk()
-                    .stream()
-                    .filter(player1 -> player1.getFaction().equals(overClaimedFaction))
-                    .filter(FPlayer::isFlying)
                     .forEach(player1 -> player1.changedLand(overClaimedFaction, faction));
 
             event.setSuccess(claimed);
