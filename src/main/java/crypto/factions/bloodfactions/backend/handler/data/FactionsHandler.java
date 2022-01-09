@@ -11,6 +11,7 @@ import crypto.factions.bloodfactions.commons.events.faction.callback.*;
 import crypto.factions.bloodfactions.commons.events.faction.permissioned.DisbandFactionEvent;
 import crypto.factions.bloodfactions.commons.events.faction.unpermissioned.CreateFactionByNameEvent;
 import crypto.factions.bloodfactions.commons.events.faction.unpermissioned.CreateFactionEvent;
+import crypto.factions.bloodfactions.commons.events.land.callback.GetClaimsOfFactionEvent;
 import crypto.factions.bloodfactions.commons.events.land.callback.GetNumberOfClaimsEvent;
 import crypto.factions.bloodfactions.commons.events.land.permissioned.ClaimEvent;
 import crypto.factions.bloodfactions.commons.events.land.permissioned.OverClaimEvent;
@@ -436,16 +437,34 @@ public interface FactionsHandler extends DataHandler<Faction> {
     }
 
 
-    default void sendExitLandToAllPlayers(Faction faction) throws NoFactionForFactionLessException {
-        Set<FPlayer> onlineMembersInFaction = faction.getMembers()
-                .stream()
-                .filter(FPlayer::isOnline)
-                .filter(FPlayer::isInHisLand)
-                .collect(Collectors.toSet());
+    @EventHandler(priority = EventPriority.HIGHEST)
+    default void handleGetAllClaimsOfFaction(GetClaimsOfFactionEvent event){
+        Faction faction = event.getFaction();
+        Set<FChunk> allChunks = this.getManager().getAllClaims(faction);
+        event.setChunks(allChunks);
+    }
 
-        for (FPlayer playerInHisLand : onlineMembersInFaction) {
-            playerInHisLand.changedLand(faction, this.getFactionForFactionLess());
-        }
+    default void sendExitLandToAllPlayers(Faction faction) throws NoFactionForFactionLessException {
+
+        Set<FChunk> chunks = faction.getAllAClaims();
+        Faction factionLess = this.getFactionForFactionLess();
+
+        chunks
+                .forEach(chunk -> {
+                    chunk
+                            .getPlayersAtChunk()
+                            .forEach(player1 -> player1.changedLand(faction, factionLess));
+                });
+
+//        Set<FPlayer> onlineMembersInFaction = faction.getMembers()
+//                .stream()
+//                .filter(FPlayer::isOnline)
+//                .filter(FPlayer::isInHisLand)
+//                .collect(Collectors.toSet());
+//
+//        for (FPlayer playerInHisLand : onlineMembersInFaction) {
+//            playerInHisLand.changedLand(faction, this.getFactionForFactionLess());
+//        }
     }
 
     @EventHandler(priority = EventPriority.HIGHEST)

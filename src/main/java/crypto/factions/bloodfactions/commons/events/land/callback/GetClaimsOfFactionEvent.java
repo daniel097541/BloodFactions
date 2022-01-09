@@ -6,5 +6,6 @@ import crypto.factions.bloodfactions.commons.model.faction.Faction;
 public class GetClaimsOfFactionEvent extends FChunksEvent {
     public GetClaimsOfFactionEvent(Faction faction) {
         super(faction);
+        this.launch();
     }
 }

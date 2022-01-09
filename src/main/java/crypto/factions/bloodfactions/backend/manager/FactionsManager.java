@@ -101,4 +101,11 @@ public interface FactionsManager extends DataManager<Faction> {
     default Faction getFactionOfPlayer(FPlayer player){
         return this.getDAO().getFactionOfPlayer(player.getId());
     }
+
+    default Set<FChunk> getAllClaims(Faction faction){
+        Set<FChunk> claims = this.getDAO().getAllClaimsOfFaction(faction.getId());
+        claims.forEach(c -> this.getChunkFactionsCache().put(c.getId(), faction));
+        return claims;
+    }
+
 }

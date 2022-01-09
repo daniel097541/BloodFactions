@@ -6,8 +6,8 @@ import crypto.factions.bloodfactions.commons.model.faction.FactionImpl;
 import crypto.factions.bloodfactions.commons.model.faction.SystemFactionImpl;
 import crypto.factions.bloodfactions.commons.model.land.FChunk;
 import crypto.factions.bloodfactions.commons.model.land.FLocation;
+import crypto.factions.bloodfactions.commons.model.land.impl.FChunkImpl;
 import crypto.factions.bloodfactions.commons.model.land.impl.FLocationImpl;
-import org.bukkit.Bukkit;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -290,4 +290,38 @@ public interface FactionsDAO extends DAO<Faction> {
         }
         return false;
     }
+
+    default Set<FChunk> getAllClaimsOfFaction(UUID factionId){
+
+        String sql = "SELECT * FROM as_faction_claims AS rel " +
+                " JOIN claims AS c ON c.id = rel.claim_id " +
+                "WHERE rel.faction_id = ?;";
+
+        Set<FChunk> claims = new HashSet<>();
+
+        try(PreparedStatement statement = this.getPreparedStatement(sql)){
+
+            statement.setString(1, factionId.toString());
+
+            try(ResultSet rs = statement.executeQuery()){
+
+                while(rs.next()){
+
+                    UUID worldId = UUID.fromString(rs.getString("world_id"));
+                    int x = rs.getInt("x");
+                    int z = rs.getInt("z");
+
+                    FChunk claim = new FChunkImpl(worldId, x, z);
+                    claims.add(claim);
+                }
+
+            }
+        }
+        catch (Exception e){
+            e.printStackTrace();
+        }
+
+        return claims;
+    }
+
 }
