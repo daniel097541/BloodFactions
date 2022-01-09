@@ -15,6 +15,7 @@ import crypto.factions.bloodfactions.commons.model.player.FPlayer;
 import crypto.factions.bloodfactions.commons.tasks.handler.TasksHandler;
 import lombok.Getter;
 import org.bukkit.plugin.java.JavaPlugin;
+import org.jetbrains.annotations.NotNull;
 
 import javax.inject.Inject;
 import javax.inject.Singleton;
@@ -22,6 +23,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
 import java.util.UUID;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.TimeUnit;
 
 @Singleton
@@ -35,15 +37,16 @@ public class FactionsHandlerImpl implements FactionsHandler {
     private final NGFConfig systemConfig;
     private final NGFConfig langConfig;
     private final TasksHandler tasksHandler;
-    private final Map<UUID, FPlayer> unClaimingAllPlayers = new HashMap<>();
+    private final Map<UUID, FPlayer> unClaimingAllPlayers = new ConcurrentHashMap<>();
 
-    private final LoadingCache<String, Faction> chunkFactionsCache = CacheBuilder.newBuilder()
+    private final LoadingCache<String, Faction> chunkFactionsCache = CacheBuilder
+            .newBuilder()
             .maximumSize(10000)
             .expireAfterAccess(1, TimeUnit.MINUTES)
             .recordStats()
             .build(new CacheLoader<String, Faction>() {
                 @Override
-                public Faction load(String key) throws Exception {
+                public @NotNull Faction load(@NotNull String key) throws Exception {
                     Faction faction = dao.getFactionAtChunk(key);
                     if (Objects.isNull(faction)) {
                         faction = getFactionForFactionLess();
@@ -52,7 +55,8 @@ public class FactionsHandlerImpl implements FactionsHandler {
                 }
             });
 
-    private final LoadingCache<String, Faction> nameFactionsCache = CacheBuilder.newBuilder()
+    private final LoadingCache<String, Faction> nameFactionsCache = CacheBuilder
+            .newBuilder()
             .maximumSize(10000)
             .expireAfterAccess(5, TimeUnit.MINUTES)
             .build(new CacheLoader<String, Faction>() {

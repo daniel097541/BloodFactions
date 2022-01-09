@@ -35,7 +35,7 @@ public interface FactionsDAO extends DAO<Faction> {
                 }
                 // Returns sys faction.
                 else {
-                    factions.add(new SystemFactionImpl(id, name, ownerId));
+                    factions.add(new SystemFactionImpl(id, name, "&7", ownerId));
                 }
             }
         } catch (Exception e) {
@@ -131,7 +131,7 @@ public interface FactionsDAO extends DAO<Faction> {
                 }
                 // Returns sys faction.
                 else {
-                    return new SystemFactionImpl(id, name, ownerId);
+                    return new SystemFactionImpl(id, name, "&7", ownerId);
                 }
             }
         } catch (Exception e) {

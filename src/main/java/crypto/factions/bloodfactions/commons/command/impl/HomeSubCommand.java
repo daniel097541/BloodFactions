@@ -1,6 +1,6 @@
 package crypto.factions.bloodfactions.commons.command.impl;
 
-import crypto.factions.bloodfactions.backend.config.lang.LangConfigItems;
+import crypto.factions.bloodfactions.commons.config.lang.LangConfigItems;
 import crypto.factions.bloodfactions.commons.annotation.config.LangConfiguration;
 import crypto.factions.bloodfactions.commons.command.SubCommandType;
 import crypto.factions.bloodfactions.commons.config.NGFConfig;
@@ -9,7 +9,6 @@ import crypto.factions.bloodfactions.commons.messages.model.MessageContextImpl;
 import crypto.factions.bloodfactions.commons.model.faction.Faction;
 import crypto.factions.bloodfactions.commons.model.land.FLocation;
 import crypto.factions.bloodfactions.commons.model.player.FPlayer;
-import org.bukkit.Bukkit;
 
 import javax.inject.Inject;
 import javax.inject.Singleton;

@@ -1,18 +1,15 @@
 package crypto.factions.bloodfactions.commons.command.impl;
 
-import crypto.factions.bloodfactions.backend.config.lang.LangConfigItems;
+import crypto.factions.bloodfactions.commons.config.lang.LangConfigItems;
 import crypto.factions.bloodfactions.commons.annotation.config.LangConfiguration;
 import crypto.factions.bloodfactions.commons.command.SubCommandType;
 import crypto.factions.bloodfactions.commons.config.NGFConfig;
 import crypto.factions.bloodfactions.commons.messages.model.MessageContext;
 import crypto.factions.bloodfactions.commons.messages.model.MessageContextImpl;
-import crypto.factions.bloodfactions.commons.model.faction.Faction;
-import crypto.factions.bloodfactions.commons.model.land.FChunk;
 import crypto.factions.bloodfactions.commons.model.player.FPlayer;
 
 import javax.inject.Inject;
 import javax.inject.Singleton;
-import java.util.Objects;
 
 @Singleton
 public class AutoFlySubCommand extends FSubCommandImpl {

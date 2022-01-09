@@ -1,4 +1,4 @@
-package crypto.factions.bloodfactions.backend.config.system;
+package crypto.factions.bloodfactions.commons.config.system;
 
 import crypto.factions.bloodfactions.commons.config.ConfigType;
 import crypto.factions.bloodfactions.commons.config.impl.NGFConfigImpl;

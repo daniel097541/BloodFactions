@@ -16,6 +16,7 @@ import javax.inject.Singleton;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
+import java.util.concurrent.ConcurrentHashMap;
 
 @Singleton
 @Getter
@@ -27,7 +28,7 @@ public class PlayerHandlerImpl implements PlayerHandler {
     private final NGFConfig langConfig;
     private final NGFConfig sysConfig;
     private final TasksHandler tasksHandler;
-    private final Map<UUID, FPlayer> noFallDamagePlayers = new HashMap<>();
+    private final Map<UUID, FPlayer> noFallDamagePlayers = new ConcurrentHashMap<>();
 
     @Inject
     public PlayerHandlerImpl(PlayerDAO playerDAO,

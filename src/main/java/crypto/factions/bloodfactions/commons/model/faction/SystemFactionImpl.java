@@ -1,6 +1,7 @@
 package crypto.factions.bloodfactions.commons.model.faction;
 
 import crypto.factions.bloodfactions.commons.annotation.db.ColumnName;
+import crypto.factions.bloodfactions.commons.annotation.db.MemoryOnlyField;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
@@ -14,6 +15,9 @@ public class SystemFactionImpl implements Faction {
     private final UUID id;
 
     private final String name;
+
+    @MemoryOnlyField
+    private final String color;
 
     @ColumnName("owner_id")
     private final UUID ownerId;

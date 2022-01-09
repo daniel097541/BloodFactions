@@ -1,12 +1,12 @@
 package crypto.factions.bloodfactions.backend.handler.data;
 
 import com.google.common.cache.LoadingCache;
-import crypto.factions.bloodfactions.backend.config.lang.LangConfigItems;
-import crypto.factions.bloodfactions.backend.config.system.SystemConfigItems;
 import crypto.factions.bloodfactions.backend.dao.FactionsDAO;
 import crypto.factions.bloodfactions.backend.dao.PlayerDAO;
 import crypto.factions.bloodfactions.backend.dao.RolesDAO;
 import crypto.factions.bloodfactions.commons.config.NGFConfig;
+import crypto.factions.bloodfactions.commons.config.lang.LangConfigItems;
+import crypto.factions.bloodfactions.commons.config.system.SystemConfigItems;
 import crypto.factions.bloodfactions.commons.events.faction.SetCoreEvent;
 import crypto.factions.bloodfactions.commons.events.faction.callback.*;
 import crypto.factions.bloodfactions.commons.events.faction.permissioned.DisbandFactionEvent;
@@ -76,7 +76,8 @@ public interface FactionsHandler extends DataHandler<Faction> {
             if (isForFactionLess) {
                 UUID id = UUID.fromString((String) this.getSystemConfig().read(SystemConfigItems.defaultFactionsPath + "." + factionSection + SystemConfigItems.systemFactionIdSection));
                 String factionName = (String) this.getSystemConfig().read(SystemConfigItems.defaultFactionsPath + "." + factionSection + SystemConfigItems.systemFactionNameSection);
-                return new SystemFactionImpl(id, factionName, getDefaultOwnerId());
+                String color = (String) this.getSystemConfig().read(SystemConfigItems.defaultFactionsPath + "." + factionSection + SystemConfigItems.systemFactionColorSection);
+                return new SystemFactionImpl(id, factionName, color, getDefaultOwnerId());
             }
         }
         throw new NoFactionForFactionLessException();
@@ -92,7 +93,8 @@ public interface FactionsHandler extends DataHandler<Faction> {
         for (String factionSection : systemFactions) {
             UUID id = UUID.fromString((String) this.getSystemConfig().read(SystemConfigItems.defaultFactionsPath + "." + factionSection + SystemConfigItems.systemFactionIdSection));
             String factionName = (String) this.getSystemConfig().read(SystemConfigItems.defaultFactionsPath + "." + factionSection + SystemConfigItems.systemFactionNameSection);
-            Faction systemFaction = new SystemFactionImpl(id, factionName, getDefaultOwnerId());
+            String color = (String) this.getSystemConfig().read(SystemConfigItems.defaultFactionsPath + "." + factionSection + SystemConfigItems.systemFactionColorSection);
+            Faction systemFaction = new SystemFactionImpl(id, factionName, color, getDefaultOwnerId());
             factions.add(systemFaction);
         }
         return factions;

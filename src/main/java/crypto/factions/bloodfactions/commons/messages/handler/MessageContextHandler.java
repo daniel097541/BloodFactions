@@ -1,7 +1,7 @@
 package crypto.factions.bloodfactions.commons.messages.handler;
 
-import crypto.factions.bloodfactions.backend.config.lang.LangConfig;
-import crypto.factions.bloodfactions.backend.config.lang.LangConfigItems;
+import crypto.factions.bloodfactions.commons.config.lang.LangConfig;
+import crypto.factions.bloodfactions.commons.config.lang.LangConfigItems;
 import crypto.factions.bloodfactions.commons.messages.model.MessageContext;
 import crypto.factions.bloodfactions.commons.messages.model.MessagePlaceholder;
 import crypto.factions.bloodfactions.commons.messages.util.MessageUtils;

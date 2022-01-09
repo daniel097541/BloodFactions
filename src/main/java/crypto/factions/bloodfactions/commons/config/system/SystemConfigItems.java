@@ -1,4 +1,4 @@
-package crypto.factions.bloodfactions.backend.config.system;
+package crypto.factions.bloodfactions.commons.config.system;
 
 import crypto.factions.bloodfactions.commons.config.ConfigItem;
 import crypto.factions.bloodfactions.commons.config.impl.ConfigItemImpl;
@@ -34,14 +34,14 @@ public class SystemConfigItems {
     public static ConfigItem DEFAULT_FACTIONS_FACTION_LESS_NAME = new ConfigItemImpl(factionLessPath + systemFactionNameSection, "Wilderness");
     public static ConfigItem DEFAULT_FACTIONS_FACTION_LESS_PVP = new ConfigItemImpl(factionLessPath + systemFactionBlocksPvPSection, false);
     public static ConfigItem DEFAULT_FACTIONS_FACTION_LESS_ALLOW_FLY = new ConfigItemImpl(factionLessPath + systemFactionAllowFlightSection, false);
-    public static ConfigItem DEFAULT_FACTIONS_FACTION_LESS_COLOR = new ConfigItemImpl(factionLessPath + systemFactionColorSection, "&7");
+    public static ConfigItem DEFAULT_FACTIONS_FACTION_LESS_COLOR = new ConfigItemImpl(factionLessPath + systemFactionColorSection, "&2");
     public static ConfigItem DEFAULT_FACTIONS_FACTION_IS_FOR_FACTION_LESS = new ConfigItemImpl(factionLessPath + systemFactionDefaultFaction, true);
 
     public static ConfigItem DEFAULT_FACTIONS_WAR_ZONE_ID = new ConfigItemImpl(warZonePath + systemFactionIdSection, "00000000-0000-0000-0000-000000000001");
     public static ConfigItem DEFAULT_FACTIONS_WAR_ZONE_NAME = new ConfigItemImpl(warZonePath + ".name", "WarZone");
     public static ConfigItem DEFAULT_FACTIONS_WAR_ZONE_PVP = new ConfigItemImpl(warZonePath + ".blocks-pvp", false);
     public static ConfigItem DEFAULT_FACTIONS_WAR_ZONE_ALLOW_FLY = new ConfigItemImpl(warZonePath + ".allow-flight", false);
-    public static ConfigItem DEFAULT_FACTIONS_WAR_ZONE_COLOR = new ConfigItemImpl(warZonePath + ".color", "&c");
+    public static ConfigItem DEFAULT_FACTIONS_WAR_ZONE_COLOR = new ConfigItemImpl(warZonePath + ".color", "&4");
     public static ConfigItem DEFAULT_FACTIONS_WAR_ZONE_IS_FOR_FACTION_LESS = new ConfigItemImpl(warZonePath + systemFactionDefaultFaction, false);
 
     public static ConfigItem DEFAULT_FACTIONS_PEACE_ZONE_ID = new ConfigItemImpl(peaceZonePath + systemFactionIdSection, "00000000-0000-0000-0000-000000000002");

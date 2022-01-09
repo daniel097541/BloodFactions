@@ -1,6 +1,6 @@
 package crypto.factions.bloodfactions.commons.command;
 
-import crypto.factions.bloodfactions.backend.config.lang.LangConfigItems;
+import crypto.factions.bloodfactions.commons.config.lang.LangConfigItems;
 import crypto.factions.bloodfactions.commons.config.NGFConfig;
 import crypto.factions.bloodfactions.commons.model.player.FPlayer;
 

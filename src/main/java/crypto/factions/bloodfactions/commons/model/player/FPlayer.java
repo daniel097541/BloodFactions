@@ -13,10 +13,8 @@ import crypto.factions.bloodfactions.commons.model.land.impl.FChunkImpl;
 import crypto.factions.bloodfactions.commons.model.land.impl.FLocationImpl;
 import crypto.factions.bloodfactions.commons.model.permission.Action;
 import crypto.factions.bloodfactions.commons.model.role.FactionRank;
-import org.bukkit.Bukkit;
-import org.bukkit.Chunk;
-import org.bukkit.Location;
-import org.bukkit.OfflinePlayer;
+import crypto.factions.bloodfactions.commons.utils.StringUtils;
+import org.bukkit.*;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -359,5 +357,9 @@ public interface FPlayer extends NextGenFactionEntity {
 
     default boolean setRank(@NotNull FactionRank targetRank, @NotNull FPlayer playerSettingTheRank){
         return PermissionNextGenFactionsAPI.changeRankOfPlayer(this, targetRank, playerSettingTheRank);
+    }
+
+    default void sendTitle(String title){
+        StringUtils.sendTitle(this.getBukkitPlayer(), title, 250,250,250, ChatColor.AQUA);
     }
 }

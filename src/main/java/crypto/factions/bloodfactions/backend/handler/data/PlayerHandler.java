@@ -1,7 +1,7 @@
 package crypto.factions.bloodfactions.backend.handler.data;
 
-import crypto.factions.bloodfactions.backend.config.lang.LangConfigItems;
-import crypto.factions.bloodfactions.backend.config.system.SystemConfigItems;
+import crypto.factions.bloodfactions.commons.config.lang.LangConfigItems;
+import crypto.factions.bloodfactions.commons.config.system.SystemConfigItems;
 import crypto.factions.bloodfactions.backend.dao.PlayerDAO;
 import crypto.factions.bloodfactions.backend.dao.RolesDAO;
 import crypto.factions.bloodfactions.commons.api.NextGenFactionsAPI;
