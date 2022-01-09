@@ -61,9 +61,15 @@ public interface PlayerHandler extends DataHandler<FPlayer> {
     @EventHandler(priority = EventPriority.HIGHEST)
     default void handleGetPlayer(GetPlayerEvent event) {
         UUID playerId = event.getId();
-        FPlayer player = this.getById(playerId);
+        FPlayer player = null;
+
+        try {
+            player = this.getById(playerId);
+        }
+        catch (Exception ignored){}
 
         if (Objects.isNull(player)) {
+            Logger.logInfo("Creating player: " + playerId.toString());
 
             // Create the player in DB.
             OfflinePlayer offlinePlayer = Bukkit.getOfflinePlayer(playerId);
@@ -71,6 +77,7 @@ public interface PlayerHandler extends DataHandler<FPlayer> {
             player = this.getManager().insert(player);
 
             if (Objects.nonNull(player)) {
+                Logger.logInfo("New player inserted");
                 // Add the player to the faction-less faction.
                 Faction factionLessFaction = NextGenFactionsAPI.getFactionLessFaction();
                 this.getFactionsManager().addPlayerToFaction(player, factionLessFaction, player);

@@ -28,7 +28,7 @@ public enum APIAction {
     LOGGED_OUT,
     HANDLE_FALL_DAMAGE,
     LIST_ROLES,
-    PLAYER_DIED
+    GET_ONLINE_PLAYERS, PLAYER_DIED
 
 
 }

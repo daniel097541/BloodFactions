@@ -20,6 +20,7 @@ import crypto.factions.bloodfactions.commons.model.land.FLocation;
 import crypto.factions.bloodfactions.commons.model.permission.Action;
 import crypto.factions.bloodfactions.commons.model.player.FPlayer;
 import crypto.factions.bloodfactions.commons.model.role.FactionRank;
+import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -27,6 +28,7 @@ import org.jetbrains.annotations.Nullable;
 import java.util.Objects;
 import java.util.Set;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 public class NextGenFactionsAPI {
 
@@ -37,6 +39,17 @@ public class NextGenFactionsAPI {
                 .replace("{action}", action.name())
                 .replace("{time}", String.valueOf(end - start));
         Logger.logInfo("&dAPI", message);
+    }
+
+    public static Set<FPlayer> getOnlinePlayers(){
+        long start = System.currentTimeMillis();
+        Set<FPlayer> onlinePlayers = Bukkit.getOnlinePlayers()
+                .stream()
+                .map(NextGenFactionsAPI::getPlayer)
+                .collect(Collectors.toSet());
+        long end = System.currentTimeMillis();
+        logAction(start, end, APIAction.GET_ONLINE_PLAYERS);
+        return onlinePlayers;
     }
 
     /**

@@ -269,7 +269,7 @@ public interface FactionsHandler extends DataHandler<Faction> {
         Logger.logInfo("Player &d" + player.getName() + " &7is claiming for faction: &d" + faction.getName() + " &7at: &d" + chunk.getId());
         boolean claimed = this.getManager().claimForFaction(faction, chunk, player);
 
-        if(claimed){
+        if (claimed) {
             player.changedLand(factionAt, faction);
         }
 
@@ -285,7 +285,7 @@ public interface FactionsHandler extends DataHandler<Faction> {
         Logger.logInfo("Player &d" + player.getName() + " &7is un-claiming for faction: &d" + faction.getName() + " &7at: &d" + chunk.getId());
         boolean unClaimed = this.getManager().removeClaim(faction, chunk);
 
-        if(unClaimed){
+        if (unClaimed) {
             player.changedLand(faction, this.getFactionForFactionLess());
         }
 
@@ -322,6 +322,14 @@ public interface FactionsHandler extends DataHandler<Faction> {
 
         if (removed) {
             boolean claimed = this.getManager().claimForFaction(faction, chunk, player);
+
+            chunk
+                    .getPlayersAtChunk()
+                    .stream()
+                    .filter(player1 -> player1.getFaction().equals(overClaimedFaction))
+                    .filter(FPlayer::isFlying)
+                    .forEach(player1 -> player1.changedLand(overClaimedFaction, faction));
+
             event.setSuccess(claimed);
         } else {
             Logger.logInfo("Failed to un-claim.");
@@ -428,7 +436,7 @@ public interface FactionsHandler extends DataHandler<Faction> {
                 .filter(FPlayer::isInHisLand)
                 .collect(Collectors.toSet());
 
-        for(FPlayer playerInHisLand : onlineMembersInFaction){
+        for (FPlayer playerInHisLand : onlineMembersInFaction) {
             playerInHisLand.changedLand(faction, this.getFactionForFactionLess());
         }
     }
@@ -458,7 +466,7 @@ public interface FactionsHandler extends DataHandler<Faction> {
             boolean removed = this.getManager().removeAllClaimsOfFaction(faction);
             event.setSuccess(removed);
 
-            if(removed) {
+            if (removed) {
                 String successMessage = (String) this.getLangConfig().get(LangConfigItems.COMMANDS_F_UN_CLAIM_SUCCESS);
                 MessageContext messageContext = new MessageContextImpl(player, successMessage);
                 messageContext.setFaction(faction);
