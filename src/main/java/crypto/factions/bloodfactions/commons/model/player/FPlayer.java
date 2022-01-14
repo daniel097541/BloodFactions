@@ -33,6 +33,14 @@ public interface FPlayer extends NextGenFactionEntity {
 
     void setAutoFlying(boolean autoFlying);
 
+    default boolean breakBlock(Faction faction, FLocation location){
+        return PermissionNextGenFactionsAPI.breakBlock(this, faction, location);
+    }
+
+    default boolean placeBlock(Faction faction, FLocation location){
+        return PermissionNextGenFactionsAPI.placeBlock(this, faction, location);
+    }
+
     default boolean isInFaction(Faction faction){
         return this.getFaction().equals(faction);
     }

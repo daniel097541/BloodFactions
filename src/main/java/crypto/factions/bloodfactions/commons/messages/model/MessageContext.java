@@ -2,6 +2,7 @@ package crypto.factions.bloodfactions.commons.messages.model;
 
 import crypto.factions.bloodfactions.commons.model.faction.Faction;
 import crypto.factions.bloodfactions.commons.model.land.FChunk;
+import crypto.factions.bloodfactions.commons.model.permission.PermissionType;
 import crypto.factions.bloodfactions.commons.model.player.FPlayer;
 import crypto.factions.bloodfactions.commons.model.role.FactionRank;
 import org.jetbrains.annotations.NotNull;
@@ -27,7 +28,11 @@ public interface MessageContext {
 
     @Nullable FactionRank getRank();
 
+    @Nullable PermissionType getPermission();
+
     void setRank(FactionRank rank);
+
+    void setPermission(PermissionType permission);
 
     void setFaction(@NotNull Faction faction);
 

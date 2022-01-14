@@ -7,6 +7,7 @@ import crypto.factions.bloodfactions.commons.messages.model.MessagePlaceholder;
 import crypto.factions.bloodfactions.commons.messages.util.MessageUtils;
 import crypto.factions.bloodfactions.commons.model.faction.Faction;
 import crypto.factions.bloodfactions.commons.model.land.FChunk;
+import crypto.factions.bloodfactions.commons.model.permission.PermissionType;
 import crypto.factions.bloodfactions.commons.model.player.FPlayer;
 import crypto.factions.bloodfactions.commons.model.role.FactionRank;
 import org.bukkit.entity.Player;
@@ -27,6 +28,7 @@ public interface MessageContextHandler {
         Faction targetFaction = messageContext.getTargetFaction();
         FactionRank rank = messageContext.getRank();
         FChunk chunk = messageContext.getChunk();
+        PermissionType permissionType = messageContext.getPermission();
 
         Map<String, String> placeHolders = new HashMap<>();
 
@@ -44,6 +46,9 @@ public interface MessageContextHandler {
         }
         if (message.contains(MessagePlaceholder.RANK.getPlaceholder()) && Objects.nonNull(rank)) {
             placeHolders.put(MessagePlaceholder.RANK.getPlaceholder(), rank.getName());
+        }
+        if(message.contains(MessagePlaceholder.PERMISSION.getPlaceholder()) && Objects.nonNull(permissionType)){
+            placeHolders.put(MessagePlaceholder.PERMISSION.getPlaceholder(), permissionType.name());
         }
 
         for (FPlayer player : players) {

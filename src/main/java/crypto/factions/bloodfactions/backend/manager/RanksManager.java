@@ -37,6 +37,7 @@ public interface RanksManager extends DataManager<FactionRank> {
     }
 
     default boolean setPlayersRole(FPlayer player, FactionRank rank) {
+        this.getDAO().removePlayersRole(player);
         return this.getDAO().setPlayersRole(player, rank);
     }
 

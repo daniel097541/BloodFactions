@@ -167,7 +167,7 @@ public interface FactionsDAO extends DAO<Faction> {
     /**
      * Removes all claims from the faction.
      *
-     * @param faction
+     * @param factionId
      */
     default boolean removeAllClaimsOfFaction(@NotNull UUID factionId) {
 

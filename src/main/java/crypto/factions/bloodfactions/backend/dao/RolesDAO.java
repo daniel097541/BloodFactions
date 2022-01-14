@@ -25,7 +25,12 @@ public interface RolesDAO extends DAO<FactionRank> {
                 String name = rs.getString("name");
                 boolean isDefaultRole = rs.getBoolean("default_role");
                 UUID factionId = UUID.fromString(rs.getString("faction_id"));
+
+                Logger.logInfo("Found role: " + name);
+
                 return new FactionRoleImpl(id, factionId, name, isDefaultRole);
+            } else {
+                Logger.logInfo("Role not found");
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -113,7 +118,7 @@ public interface RolesDAO extends DAO<FactionRank> {
     /**
      * Adds a permission to the given role.
      *
-     * @param role
+     * @param roleId
      * @param permissionType
      */
     default void addPermissionToRole(@NotNull UUID roleId, @NotNull PermissionType permissionType) {
@@ -185,16 +190,16 @@ public interface RolesDAO extends DAO<FactionRank> {
      * @return
      */
     default @Nullable FactionRank getRoleOFPlayer(@NotNull UUID playerId) {
-        final String sql = "SELECT * FROM as_player_role AS rel " +
+        String sql = "SELECT * FROM as_player_role AS rel " +
                 " JOIN roles AS r ON r.id = rel.role_id " +
                 " WHERE rel.player_id = ?;";
 
-        try (final PreparedStatement statement = this.getPreparedStatement(sql)) {
+        try (PreparedStatement statement = this.getPreparedStatement(sql)) {
             statement.setString(1, playerId.toString());
-            try (final ResultSet rs = statement.executeQuery()) {
+            try (ResultSet rs = statement.executeQuery()) {
                 return this.fromResultSet(rs);
             }
-        } catch (final Exception e) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
         return null;
@@ -228,29 +233,22 @@ public interface RolesDAO extends DAO<FactionRank> {
      * @return
      */
     default boolean setPlayersRole(@NotNull FPlayer player, @NotNull FactionRank role) {
-
-        boolean removed = this.removePlayersRole(player);
-
         // Removed, keep working.
-        if (removed) {
-            UUID playerId = player.getId();
-            UUID roleId = role.getId();
+        UUID playerId = player.getId();
+        UUID roleId = role.getId();
 
-            final String sql = "INSERT INTO as_player_role (player_id, role_id) VALUES (?,?);";
+        final String sql = "INSERT INTO as_player_role (player_id, role_id) VALUES (?,?);";
 
-            try (final PreparedStatement statement = this.getPreparedStatement(sql)) {
-                statement.setString(1, playerId.toString());
-                statement.setString(2, roleId.toString());
-                statement.executeUpdate();
-                return true;
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-            return false;
-        } else {
-            Logger.logInfo("Could not remove player's role: " + player.getName());
-            return false;
+        try (final PreparedStatement statement = this.getPreparedStatement(sql)) {
+            statement.setString(1, playerId.toString());
+            statement.setString(2, roleId.toString());
+            statement.executeUpdate();
+            Logger.logInfo("Player's role inserted");
+            return true;
+        } catch (Exception e) {
+            e.printStackTrace();
         }
+        return false;
     }
 
 
@@ -294,11 +292,8 @@ public interface RolesDAO extends DAO<FactionRank> {
     }
 
     default boolean removePlayersRole(FPlayer player) {
-
         String sql = "DELETE FROM as_player_role WHERE player_id = ?";
-
         try (PreparedStatement statement = this.getPreparedStatement(sql)) {
-
             statement.setString(1, player.getId().toString());
             return statement.executeUpdate() > 0;
         } catch (Exception e) {

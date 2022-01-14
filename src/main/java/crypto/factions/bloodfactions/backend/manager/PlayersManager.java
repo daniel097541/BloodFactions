@@ -2,7 +2,9 @@ package crypto.factions.bloodfactions.backend.manager;
 
 import com.google.common.cache.LoadingCache;
 import crypto.factions.bloodfactions.backend.dao.PlayerDAO;
+import crypto.factions.bloodfactions.backend.dao.RolesDAO;
 import crypto.factions.bloodfactions.commons.model.faction.Faction;
+import crypto.factions.bloodfactions.commons.model.permission.PermissionType;
 import crypto.factions.bloodfactions.commons.model.player.FPlayer;
 
 import java.util.Set;
@@ -30,5 +32,9 @@ public interface PlayersManager extends DataManager<FPlayer> {
 
     default Set<FPlayer> findPlayersInFaction(Faction faction) {
         return getDAO().findPlayersInFaction(faction.getId());
+    }
+
+    default boolean checkIfPlayerHasPermission(FPlayer player, PermissionType permission){
+        return this.getDAO().checkIfPlayerHasPermission(player, permission);
     }
 }

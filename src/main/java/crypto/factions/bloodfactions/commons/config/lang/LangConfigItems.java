@@ -19,6 +19,8 @@ public class LangConfigItems {
     public static ConfigItem ACTIONS_BREAK_NOT_YOUR_FACTION = new ConfigItemImpl("actions.block-break.not-your-faction", "&7This land is claimed by: &c{faction_name}&7, you cannot break blocks here!");
     public static ConfigItem ACTIONS_PLACE_NOT_YOUR_FACTION = new ConfigItemImpl("actions.block-place.not-your-faction", "&7This land is claimed by: &c{faction_name}&7, you cannot place blocks here!");
 
+    public static ConfigItem FACTION_PERMISSIONS_NO_PERMISSION = new ConfigItemImpl("f-permissions.no-permission", "&cYour role doesn't have the required permission: &7{permission_name}");
+
     // No permission for commands.
     public static ConfigItem COMMANDS_NO_PERMISSION = new ConfigItemImpl("commands.messages.no-permission", "&cYou dont have permission to perform this command.");
 

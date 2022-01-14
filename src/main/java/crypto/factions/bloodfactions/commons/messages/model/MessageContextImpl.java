@@ -2,6 +2,7 @@ package crypto.factions.bloodfactions.commons.messages.model;
 
 import crypto.factions.bloodfactions.commons.model.faction.Faction;
 import crypto.factions.bloodfactions.commons.model.land.FChunk;
+import crypto.factions.bloodfactions.commons.model.permission.PermissionType;
 import crypto.factions.bloodfactions.commons.model.player.FPlayer;
 import crypto.factions.bloodfactions.commons.model.role.FactionRank;
 import lombok.EqualsAndHashCode;
@@ -49,5 +50,8 @@ public class MessageContextImpl implements MessageContext {
 
     @Nullable
     private FactionRank rank;
+
+    @Nullable
+    private PermissionType permission;
 
 }

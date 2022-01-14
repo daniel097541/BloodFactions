@@ -20,6 +20,8 @@ public enum PermissionedAPIAction {
     REMOVE_ROLE_OF_PLAYER,
     ADD_PERMISSION_TO_ROLE,
     ADD_PERMISSION_TO_PLAYER,
-    UN_CLAIM_ALL
+    UN_CLAIM_ALL,
+    BREAK_BLOCK,
+    PLACE_BLOCK
 
 }

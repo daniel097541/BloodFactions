@@ -9,6 +9,8 @@ import crypto.factions.bloodfactions.commons.config.system.SystemConfigItems;
 import crypto.factions.bloodfactions.commons.events.faction.SetCoreEvent;
 import crypto.factions.bloodfactions.commons.events.faction.callback.*;
 import crypto.factions.bloodfactions.commons.events.faction.permissioned.DisbandFactionEvent;
+import crypto.factions.bloodfactions.commons.events.faction.permissioned.PlayerBreakBlockInFactionEvent;
+import crypto.factions.bloodfactions.commons.events.faction.permissioned.PlayerPlaceBlockInFactionEvent;
 import crypto.factions.bloodfactions.commons.events.faction.unpermissioned.CreateFactionByNameEvent;
 import crypto.factions.bloodfactions.commons.events.faction.unpermissioned.CreateFactionEvent;
 import crypto.factions.bloodfactions.commons.events.land.callback.GetClaimsOfFactionEvent;
@@ -34,6 +36,7 @@ import crypto.factions.bloodfactions.commons.model.role.FactionRank;
 import crypto.factions.bloodfactions.commons.model.role.FactionRoleImpl;
 import crypto.factions.bloodfactions.commons.tasks.handler.TasksHandler;
 import org.bukkit.Bukkit;
+import org.bukkit.block.Block;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.jetbrains.annotations.NotNull;
@@ -438,7 +441,7 @@ public interface FactionsHandler extends DataHandler<Faction> {
 
 
     @EventHandler(priority = EventPriority.HIGHEST)
-    default void handleGetAllClaimsOfFaction(GetClaimsOfFactionEvent event){
+    default void handleGetAllClaimsOfFaction(GetClaimsOfFactionEvent event) {
         Faction faction = event.getFaction();
         Set<FChunk> allChunks = this.getManager().getAllClaims(faction);
         event.setChunks(allChunks);
@@ -455,16 +458,6 @@ public interface FactionsHandler extends DataHandler<Faction> {
                             .getPlayersAtChunk()
                             .forEach(player1 -> player1.changedLand(faction, factionLess));
                 });
-
-//        Set<FPlayer> onlineMembersInFaction = faction.getMembers()
-//                .stream()
-//                .filter(FPlayer::isOnline)
-//                .filter(FPlayer::isInHisLand)
-//                .collect(Collectors.toSet());
-//
-//        for (FPlayer playerInHisLand : onlineMembersInFaction) {
-//            playerInHisLand.changedLand(faction, this.getFactionForFactionLess());
-//        }
     }
 
     @EventHandler(priority = EventPriority.HIGHEST)
@@ -501,5 +494,25 @@ public interface FactionsHandler extends DataHandler<Faction> {
         }
     }
 
+    @EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
+    default void handlePlayerBreakBlockInFaction(PlayerBreakBlockInFactionEvent event) {
+        Faction faction = event.getFaction();
+        FPlayer player = event.getPlayer();
+        FLocation location = event.getLocation();
+
+        Block block = Objects.requireNonNull(location.getBukkitLocation()).getBlock();
+
+        event.setSuccess(true);
+    }
+
+    @EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
+    default void handlePlayerPlaceBlockInFaction(PlayerPlaceBlockInFactionEvent event) {
+        Faction faction = event.getFaction();
+        FPlayer player = event.getPlayer();
+        FLocation location = event.getLocation();
+
+        Block block = Objects.requireNonNull(location.getBukkitLocation()).getBlock();
+        event.setSuccess(true);
+    }
 
 }

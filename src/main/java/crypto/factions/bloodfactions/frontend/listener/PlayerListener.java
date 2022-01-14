@@ -1,8 +1,8 @@
 package crypto.factions.bloodfactions.frontend.listener;
 
-import crypto.factions.bloodfactions.commons.config.lang.LangConfigItems;
 import crypto.factions.bloodfactions.commons.api.NextGenFactionsAPI;
 import crypto.factions.bloodfactions.commons.config.NGFConfig;
+import crypto.factions.bloodfactions.commons.config.lang.LangConfigItems;
 import crypto.factions.bloodfactions.commons.logger.Logger;
 import crypto.factions.bloodfactions.commons.messages.model.MessageContext;
 import crypto.factions.bloodfactions.commons.messages.model.MessageContextImpl;
@@ -56,6 +56,12 @@ public interface PlayerListener extends Listener {
                 messageContext.setFaction(factionAt);
                 player.sms(messageContext);
             }
+            else{
+                boolean isAllowed = player.placeBlock(factionAt, FLocationImpl.fromLocation(bukkitLocation));
+                if(!isAllowed){
+                    event.setCancelled(true);
+                }
+            }
         } else {
             // Not wilderness.
             if (!factionAt.isFactionLessFaction()) {
@@ -90,6 +96,13 @@ public interface PlayerListener extends Listener {
                 MessageContext messageContext = new MessageContextImpl(player, message);
                 messageContext.setFaction(factionAt);
                 player.sms(messageContext);
+            }
+            // Same faction
+            else {
+                boolean isAllowed = player.breakBlock(factionAt, FLocationImpl.fromLocation(bukkitLocation));
+                if (!isAllowed) {
+                    event.setCancelled(true);
+                }
             }
         } else {
             // Not wilderness.
@@ -161,7 +174,7 @@ public interface PlayerListener extends Listener {
     }
 
     @EventHandler(priority = EventPriority.HIGHEST)
-    default void handlePlayerDeath(PlayerDeathEvent event){
+    default void handlePlayerDeath(PlayerDeathEvent event) {
 
         Player bukkitPlayer = event.getEntity();
         FPlayer player = NextGenFactionsAPI.getPlayer(bukkitPlayer.getUniqueId());
