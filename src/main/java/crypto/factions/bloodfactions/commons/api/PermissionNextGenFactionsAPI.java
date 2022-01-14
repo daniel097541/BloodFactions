@@ -1,10 +1,7 @@
 package crypto.factions.bloodfactions.commons.api;
 
 import crypto.factions.bloodfactions.commons.events.faction.SetCoreEvent;
-import crypto.factions.bloodfactions.commons.events.faction.permissioned.DisbandFactionEvent;
-import crypto.factions.bloodfactions.commons.events.faction.permissioned.InvitePlayerToFactionEvent;
-import crypto.factions.bloodfactions.commons.events.faction.permissioned.KickPlayerFromFactionEvent;
-import crypto.factions.bloodfactions.commons.events.faction.permissioned.PlayerBreakBlockInFactionEvent;
+import crypto.factions.bloodfactions.commons.events.faction.permissioned.*;
 import crypto.factions.bloodfactions.commons.events.land.permissioned.*;
 import crypto.factions.bloodfactions.commons.events.player.permissioned.PlayerAutoFlyEvent;
 import crypto.factions.bloodfactions.commons.events.player.permissioned.PlayerFlightEvent;
@@ -240,7 +237,7 @@ public class PermissionNextGenFactionsAPI {
 
     public static boolean placeBlock(FPlayer player, Faction faction, FLocation location) {
         long start = System.currentTimeMillis();
-        PlayerBreakBlockInFactionEvent event = new PlayerBreakBlockInFactionEvent(faction, player, location);
+        PlayerPlaceBlockInFactionEvent event = new PlayerPlaceBlockInFactionEvent(faction, player, location);
         long end = System.currentTimeMillis();
         logAction(start, end, PermissionedAPIAction.PLACE_BLOCK);
         return event.isSuccess();

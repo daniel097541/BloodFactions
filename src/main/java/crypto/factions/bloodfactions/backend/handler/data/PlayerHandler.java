@@ -160,7 +160,7 @@ public interface PlayerHandler extends DataHandler<FPlayer> {
 
     }
 
-    @EventHandler(priority = EventPriority.HIGHEST)
+    @EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
     default void handleAutoFly(PlayerAutoFlyEvent event) {
 
         FPlayer player = event.getPlayer();
@@ -196,7 +196,7 @@ public interface PlayerHandler extends DataHandler<FPlayer> {
         event.setSuccess(updated);
     }
 
-    @EventHandler(priority = EventPriority.HIGHEST)
+    @EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
     default void handleToggleFlight(PlayerFlightEvent event) {
 
         FPlayer player = event.getPlayer();
