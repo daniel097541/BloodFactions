@@ -12,6 +12,9 @@ import crypto.factions.bloodfactions.commons.model.land.impl.FChunkImpl;
 import crypto.factions.bloodfactions.commons.model.land.impl.FLocationImpl;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.joda.time.DateTime;
+import org.joda.time.format.DateTimeFormat;
+import org.joda.time.format.DateTimeFormatter;
 
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -354,7 +357,7 @@ public interface FactionsDAO extends DAO<Faction> {
             boolean inserted = statement.executeUpdate() > 0;
 
             if (inserted) {
-                return new FactionInvitationImpl(factionId, playerId, inviterId, new Date());
+                return new FactionInvitationImpl(factionId, playerId, inviterId, new Date().toString());
             }
             return null;
         } catch (Exception e) {
@@ -397,9 +400,12 @@ public interface FactionsDAO extends DAO<Faction> {
 
                 while (rs.next()) {
                     UUID invitedPlayerId = UUID.fromString(rs.getString("player_id"));
-                    UUID inviterId = UUID.fromString(rs.getString("player_id"));
-                    Date invitedOn = rs.getDate("date");
-                    invitations.add(new FactionInvitationImpl(factionId, invitedPlayerId, inviterId, invitedOn));
+                    UUID inviterId = UUID.fromString(rs.getString("inviter_id"));
+                    String invitedOn = (String) rs.getObject("date");
+                    Logger.logInfo(invitedOn);
+                    DateTimeFormatter formatter = DateTimeFormat.forPattern("yyyy-MM-dd HH:mm:ss");
+                    DateTime date = DateTime.parse(invitedOn, formatter);
+                    invitations.add(new FactionInvitationImpl(factionId, invitedPlayerId, inviterId, date.toString()));
                 }
 
             }
@@ -424,8 +430,11 @@ public interface FactionsDAO extends DAO<Faction> {
 
                 while (rs.next()) {
                     UUID factionId = UUID.fromString(rs.getString("faction_id"));
-                    UUID inviterId = UUID.fromString(rs.getString("player_id"));
-                    Date invitedOn = rs.getDate("date");
+                    UUID inviterId = UUID.fromString(rs.getString("inviter_id"));
+                    String invitedOn = (String) rs.getObject("date");
+
+                    DateTimeFormatter formatter = DateTimeFormat.forPattern("yyyy-MM-dd HH:mm:ss");
+                    DateTime date = DateTime.parse(invitedOn, formatter);
                     invitations.add(new FactionInvitationImpl(factionId, playerId, inviterId, invitedOn));
                 }
 

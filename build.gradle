@@ -26,6 +26,7 @@ dependencies {
 
     // Bundled dependencies
     implementation 'org.jetbrains:annotations:22.0.0'
+    implementation 'joda-time:joda-time:2.10.13'
     implementation 'com.google.inject:guice:4.1.0'
 }
 

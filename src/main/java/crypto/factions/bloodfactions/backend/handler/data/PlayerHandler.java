@@ -359,12 +359,12 @@ public interface PlayerHandler extends DataHandler<FPlayer> {
 
             FPlayer invitedBy = invitation.getInviter();
             FPlayer invited = invitation.getPlayer();
-            Date date = invitation.getDate();
+            String date = invitation.getDate();
             Faction faction = invitation.getFaction();
 
             String finalBody = body
                     .replace("{inviter_name}", invitedBy.getName())
-                    .replace("{invitation_date}", DateFormat.getDateInstance().format(date))
+                    .replace("{invitation_date}", date)
                     .replace("{target_player_name}", invited.getName())
                     .replace("{faction_name}", faction.getName());
 
@@ -392,11 +392,11 @@ public interface PlayerHandler extends DataHandler<FPlayer> {
 
             FPlayer invitedBy = invitation.getInviter();
             FPlayer invited = invitation.getPlayer();
-            Date date = invitation.getDate();
+            String date = invitation.getDate();
 
             String finalBody = body
                     .replace("{inviter_name}", invitedBy.getName())
-                    .replace("{invitation_date}", DateFormat.getDateInstance().format(date))
+                    .replace("{invitation_date}", date)
                     .replace("{target_player_name}", invited.getName())
                     .replace("{faction_name}", faction.getName());
 

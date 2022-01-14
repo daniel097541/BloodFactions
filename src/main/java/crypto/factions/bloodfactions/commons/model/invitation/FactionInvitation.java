@@ -15,7 +15,7 @@ public interface FactionInvitation {
 
     UUID getInviterId();
 
-    Date getDate();
+    String getDate();
 
     default Faction getFaction(){
         return NextGenFactionsAPI.getFaction(this.getFactionId());

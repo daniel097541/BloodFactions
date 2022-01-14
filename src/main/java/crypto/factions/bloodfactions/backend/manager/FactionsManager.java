@@ -31,6 +31,7 @@ public interface FactionsManager extends DataManager<Faction> {
 
     LoadingCache<UUID, Faction> getPlayerFactionCache();
 
+
     default int getCountOfClaims(@NotNull UUID factionId) {
         return this.getDAO().getCountOfClaims(factionId);
     }
@@ -99,33 +100,33 @@ public interface FactionsManager extends DataManager<Faction> {
         this.getPlayerDAO().removeAllPlayersFromFaction(faction.getId());
     }
 
-    default @NotNull Faction getFactionOfPlayer(@NotNull FPlayer player){
+    default @NotNull Faction getFactionOfPlayer(@NotNull FPlayer player) {
         return this.getDAO().getFactionOfPlayer(player.getId());
     }
 
-    default @NotNull Set<FChunk> getAllClaims(@NotNull Faction faction){
+    default @NotNull Set<FChunk> getAllClaims(@NotNull Faction faction) {
         Set<FChunk> claims = this.getDAO().getAllClaimsOfFaction(faction.getId());
         claims.forEach(c -> this.getChunkFactionsCache().put(c.getId(), faction));
         return claims;
     }
 
-    default @Nullable FactionInvitation invitePlayerToFaction(@NotNull FPlayer player,@NotNull Faction faction,@NotNull FPlayer inviter){
+    default @Nullable FactionInvitation invitePlayerToFaction(@NotNull FPlayer player, @NotNull Faction faction, @NotNull FPlayer inviter) {
         return this.getDAO().invitePlayerToFaction(faction.getId(), player.getId(), inviter.getId());
     }
 
-    default boolean isPlayerInvitedToFaction(@NotNull FPlayer player, @NotNull Faction faction){
+    default boolean isPlayerInvitedToFaction(@NotNull FPlayer player, @NotNull Faction faction) {
         return this.getDAO().isPlayerInvitedToFaction(faction.getId(), player.getId());
     }
 
-    default boolean deInvitePlayer(@NotNull FPlayer player, @NotNull Faction faction){
+    default boolean deInvitePlayer(@NotNull FPlayer player, @NotNull Faction faction) {
         return this.getDAO().deInvitePlayerFromFaction(faction.getId(), player.getId());
     }
 
-    default @NotNull Set<FactionInvitation> getInvitationsOfFaction(@NotNull Faction faction){
+    default @NotNull Set<FactionInvitation> getInvitationsOfFaction(@NotNull Faction faction) {
         return this.getDAO().getInvitationsOfFaction(faction.getId());
     }
 
-    default @NotNull Set<FactionInvitation> getInvitationsOfPlayer(@NotNull FPlayer player){
+    default @NotNull Set<FactionInvitation> getInvitationsOfPlayer(@NotNull FPlayer player) {
         return this.getDAO().getInvitationsOfPlayer(player.getId());
     }
 
