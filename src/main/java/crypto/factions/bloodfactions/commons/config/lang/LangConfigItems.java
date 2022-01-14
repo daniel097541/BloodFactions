@@ -120,13 +120,24 @@ public class LangConfigItems {
 
 
     // Invite
+
+    public static String listToMyFactionHeaderBluePrint = "\n&7----------------- &a{faction_name} &eInvitations &7-----------------\n";
+    public static String listItemBlueprint =
+            "&7-----------------------------------------------\n" +
+            "   &d- &7Faction inviting: &e{faction_name}\n" +
+            "   &d- &7Player invited: &e{target_player_name}\n" +
+            "   &d- &7Invited by: &e{inviter_name}\n" +
+            "   &d- &7Invited on: &e{invitation_date} \n" +
+            "&7-----------------------------------------------\n";
+
     public static ConfigItem COMMANDS_F_INVITE_PLAYER_DOES_NOT_EXIST = new ConfigItemImpl("commands.f-invite.player-does-not-exist", "&cThe player is offline or does not exist.");
-    public static ConfigItem COMMANDS_F_INVITE_SUCCESS= new ConfigItemImpl("commands.f-invite.success", "&aYou successfully invited &7{target_player_name} &ato your faction.");
+    public static ConfigItem COMMANDS_F_INVITE_SUCCESS = new ConfigItemImpl("commands.f-invite.success", "&aYou successfully invited &7{target_player_name} &ato your faction.");
     public static ConfigItem COMMANDS_F_INVITE_FAILED = new ConfigItemImpl("commands.f-invite.failed", "&cThe command failed.");
     public static ConfigItem COMMANDS_F_INVITE_INVITED_TO_FACTION = new ConfigItemImpl("commands.f-invite.you-were-invited", "&d{target_player_name} &7just invited you to: &e{faction_name}");
     public static ConfigItem COMMANDS_F_INVITE_ALREADY_INVITED = new ConfigItemImpl("commands.f-invite.already-invited", "&7{target_player_name} &cis already invited to your faction.");
     public static ConfigItem COMMANDS_F_INVITE_ALREADY_IN_FACTION = new ConfigItemImpl("commands.f-invite.already-in-faction", "&7{target_player_name} &cis already in your faction.");
-
+    public static ConfigItem COMMANDS_F_INVITE_LIST_TO_MY_FACTION_HEADER = new ConfigItemImpl("commands.f-invite.list-invitations-of-my-faction-header", listToMyFactionHeaderBluePrint);
+    public static ConfigItem COMMANDS_F_INVITE_LIST_ITEM = new ConfigItemImpl("commands.f-invite.list-item", listItemBlueprint);
 
 
     public static Map<String, ConfigItem> asMap() {

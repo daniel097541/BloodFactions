@@ -10,7 +10,10 @@ import crypto.factions.bloodfactions.commons.events.player.callback.GetPlayerByN
 import crypto.factions.bloodfactions.commons.events.player.callback.GetPlayerEvent;
 import crypto.factions.bloodfactions.commons.events.player.callback.PlayerHasPermissionEvent;
 import crypto.factions.bloodfactions.commons.events.player.unpermissioned.*;
-import crypto.factions.bloodfactions.commons.events.role.*;
+import crypto.factions.bloodfactions.commons.events.role.GetDefaultRoleOfFactionEvent;
+import crypto.factions.bloodfactions.commons.events.role.GetRoleOfPlayerEvent;
+import crypto.factions.bloodfactions.commons.events.role.GetRolesOfFactionEvent;
+import crypto.factions.bloodfactions.commons.events.role.ListRolesEvent;
 import crypto.factions.bloodfactions.commons.events.shared.callback.GetFactionOfPlayerEvent;
 import crypto.factions.bloodfactions.commons.events.shared.callback.GetPlayersInFactionEvent;
 import crypto.factions.bloodfactions.commons.logger.Logger;
@@ -41,7 +44,7 @@ public class NextGenFactionsAPI {
         Logger.logInfo("&dAPI", message);
     }
 
-    public static Set<FPlayer> getOnlinePlayers(){
+    public static Set<FPlayer> getOnlinePlayers() {
         long start = System.currentTimeMillis();
         Set<FPlayer> onlinePlayers = Bukkit.getOnlinePlayers()
                 .stream()
@@ -457,5 +460,19 @@ public class NextGenFactionsAPI {
         new FPlayerDiedEvent(player);
         long end = System.currentTimeMillis();
         logAction(start, end, APIAction.PLAYER_DIED);
+    }
+
+    public static void listInvitationsToFaction(FPlayer player, Faction faction) {
+        long start = System.currentTimeMillis();
+        new ListInvitationsToFactionEvent(faction, player);
+        long end = System.currentTimeMillis();
+        logAction(start, end, APIAction.LIST_INVITATIONS_TO_FACTION);
+    }
+
+    public static void listInvitationsToOtherFactions(FPlayer player) {
+        long start = System.currentTimeMillis();
+        new FPlayerDiedEvent(player);
+        long end = System.currentTimeMillis();
+        logAction(start, end, APIAction.LIST_INVITATIONS_TO_OTHER_FACTIONS);
     }
 }

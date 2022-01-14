@@ -374,4 +374,12 @@ public interface FPlayer extends NextGenFactionEntity {
     default void sendTitle(String title){
         StringUtils.sendTitle(this.getBukkitPlayer(), title, 250,250,250, ChatColor.AQUA);
     }
+
+    default void listInvitationsOfMyFaction(){
+        NextGenFactionsAPI.listInvitationsToFaction(this, this.getFaction());
+    }
+
+    default void listInvitationsToOtherFactions(){
+        NextGenFactionsAPI.listInvitationsToOtherFactions(this);
+    }
 }

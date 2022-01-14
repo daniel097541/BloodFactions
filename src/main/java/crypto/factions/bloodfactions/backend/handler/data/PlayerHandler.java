@@ -21,6 +21,7 @@ import crypto.factions.bloodfactions.commons.logger.Logger;
 import crypto.factions.bloodfactions.commons.messages.model.MessageContext;
 import crypto.factions.bloodfactions.commons.messages.model.MessageContextImpl;
 import crypto.factions.bloodfactions.commons.model.faction.Faction;
+import crypto.factions.bloodfactions.commons.model.invitation.FactionInvitation;
 import crypto.factions.bloodfactions.commons.model.player.FPlayer;
 import crypto.factions.bloodfactions.commons.model.player.FPlayerImpl;
 import crypto.factions.bloodfactions.commons.model.role.FactionRank;
@@ -31,6 +32,7 @@ import org.bukkit.OfflinePlayer;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 
+import java.text.DateFormat;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -65,8 +67,8 @@ public interface PlayerHandler extends DataHandler<FPlayer> {
 
         try {
             player = this.getById(playerId);
+        } catch (Exception ignored) {
         }
-        catch (Exception ignored){}
 
         if (Objects.isNull(player)) {
             Logger.logInfo("Creating player: " + playerId.toString());
@@ -182,7 +184,7 @@ public interface PlayerHandler extends DataHandler<FPlayer> {
             autoFly = true;
 
             // Enable flight mode.
-            if(player.isInHisLand() && !player.isFlying()){
+            if (player.isInHisLand() && !player.isFlying()) {
                 player.toggleFly();
             }
         }
@@ -332,14 +334,46 @@ public interface PlayerHandler extends DataHandler<FPlayer> {
     }
 
     @EventHandler(priority = EventPriority.HIGHEST)
-    default void handleChangeLand(PlayerChangedLandEvent event){
+    default void handleChangeLand(PlayerChangedLandEvent event) {
         FPlayer player = event.getPlayer();
         Faction factionTo = event.getFactionTo();
 
-        if(player.isInFaction(factionTo) && player.isAutoFlying() && !player.isFlying()){
+        if (player.isInFaction(factionTo) && player.isAutoFlying() && !player.isFlying()) {
             player.toggleFly();
         }
 
+    }
+
+    @EventHandler(priority = EventPriority.HIGHEST)
+    default void handleListFactionInvitations(ListInvitationsToFactionEvent event) {
+
+        FPlayer player = event.getPlayer();
+        Faction faction = event.getFaction();
+
+        Set<FactionInvitation> invitations = this.getFactionsManager().getInvitationsOfFaction(faction);
+
+        String header = (String) this.getLangConfig().get(LangConfigItems.COMMANDS_F_INVITE_LIST_TO_MY_FACTION_HEADER);
+        String body = (String) this.getLangConfig().get(LangConfigItems.COMMANDS_F_INVITE_LIST_ITEM);
+        StringBuilder finalMessage = new StringBuilder(header);
+
+        for (FactionInvitation invitation : invitations) {
+
+            FPlayer invitedBy = invitation.getInviter();
+            FPlayer invited = invitation.getPlayer();
+            Date date = invitation.getDate();
+
+            String finalBody = body
+                    .replace("{inviter_name}", invitedBy.getName())
+                    .replace("{invitation_date}", DateFormat.getDateInstance().format(date))
+                    .replace("{target_player_name}", invited.getName())
+                    .replace("{faction_name}", faction.getName());
+
+            finalMessage.append(finalBody);
+        }
+
+        MessageContext messageContext = new MessageContextImpl(player, finalMessage.toString());
+        messageContext.setFaction(faction);
+        player.sms(messageContext);
     }
 
 }

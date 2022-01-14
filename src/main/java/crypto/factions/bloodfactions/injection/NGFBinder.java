@@ -78,7 +78,7 @@ public class NGFBinder extends AbstractModule {
         this.bind(FSubCommand.class).annotatedWith(AutoFlyCommand.class).to(AutoFlySubCommand.class);
         this.bind(FSubCommand.class).annotatedWith(RolesCommand.class).to(RanksSubCommand.class);
         this.bind(FSubCommand.class).annotatedWith(UnClaimAllCommand.class).to(UnClaimAllSubCommand.class);
-        this.bind(FSubCommand.class).annotatedWith(InviteCommand.class).to(InvitePlayerSubCommand.class);
+        this.bind(FSubCommand.class).annotatedWith(InviteCommand.class).to(InvitationsSubCommand.class);
 
         // Bind db manager
         this.bind(DBManager.class).toInstance(new DBManager());

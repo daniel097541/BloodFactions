@@ -397,7 +397,7 @@ public interface FactionsDAO extends DAO<Faction> {
 
                 while (rs.next()) {
                     UUID invitedPlayerId = UUID.fromString(rs.getString("player_id"));
-                    UUID inviterId = UUID.fromString(rs.getString("invited_id"));
+                    UUID inviterId = UUID.fromString(rs.getString("player_id"));
                     Date invitedOn = rs.getDate("date");
                     invitations.add(new FactionInvitationImpl(factionId, invitedPlayerId, inviterId, invitedOn));
                 }
@@ -424,7 +424,7 @@ public interface FactionsDAO extends DAO<Faction> {
 
                 while (rs.next()) {
                     UUID factionId = UUID.fromString(rs.getString("faction_id"));
-                    UUID inviterId = UUID.fromString(rs.getString("invited_id"));
+                    UUID inviterId = UUID.fromString(rs.getString("player_id"));
                     Date invitedOn = rs.getDate("date");
                     invitations.add(new FactionInvitationImpl(factionId, playerId, inviterId, invitedOn));
                 }
