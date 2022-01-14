@@ -2,6 +2,7 @@ package crypto.factions.bloodfactions.commons.model.player;
 
 import crypto.factions.bloodfactions.commons.api.NextGenFactionsAPI;
 import crypto.factions.bloodfactions.commons.api.PermissionNextGenFactionsAPI;
+import crypto.factions.bloodfactions.commons.logger.Logger;
 import crypto.factions.bloodfactions.commons.messages.handler.MessageContextHandler;
 import crypto.factions.bloodfactions.commons.messages.model.MessageContext;
 import crypto.factions.bloodfactions.commons.messages.model.MessageContextImpl;
@@ -42,7 +43,8 @@ public interface FPlayer extends NextGenFactionEntity {
     }
 
     default boolean isInFaction(Faction faction){
-        return this.getFaction().equals(faction);
+        Faction myFaction = this.getFaction();
+        return myFaction.equals(faction);
     }
 
     default void sms(@NotNull MessageContext context) {
@@ -381,5 +383,13 @@ public interface FPlayer extends NextGenFactionEntity {
 
     default void listInvitationsToOtherFactions(){
         NextGenFactionsAPI.listInvitationsToOtherFactions(this);
+    }
+
+    default void acceptInvitation(Faction faction){
+        NextGenFactionsAPI.acceptFactionInvitation(this, faction);
+    }
+
+    default void declineInvitation(Faction faction){
+        NextGenFactionsAPI.declineFactionInvitation(this, faction);
     }
 }

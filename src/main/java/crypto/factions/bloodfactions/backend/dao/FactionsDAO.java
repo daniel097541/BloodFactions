@@ -18,10 +18,8 @@ import org.joda.time.format.DateTimeFormatter;
 
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
-import java.util.Date;
-import java.util.HashSet;
-import java.util.Set;
-import java.util.UUID;
+import java.sql.SQLException;
+import java.util.*;
 
 public interface FactionsDAO extends DAO<Faction> {
 
@@ -329,7 +327,7 @@ public interface FactionsDAO extends DAO<Faction> {
         return claims;
     }
 
-    default boolean deInvitePlayerFromFaction(@NotNull UUID factionId, @NotNull UUID playerId) {
+    default boolean removeInvitation(@NotNull UUID factionId, @NotNull UUID playerId) {
         String sql = "DELETE FROM faction_invitations WHERE faction_id = ? AND player_id = ?;";
 
         try (PreparedStatement statement = this.getPreparedStatement(sql)) {
@@ -344,7 +342,7 @@ public interface FactionsDAO extends DAO<Faction> {
         return false;
     }
 
-    default @Nullable FactionInvitation invitePlayerToFaction(@NotNull UUID factionId, @NotNull UUID playerId, @NotNull UUID inviterId) {
+    default @Nullable FactionInvitation createInvitation(@NotNull UUID factionId, @NotNull UUID playerId, @NotNull UUID inviterId) {
 
         String sql = "INSERT INTO faction_invitations (faction_id, player_id, inviter_id) VALUES (?, ?, ?);";
 
@@ -367,7 +365,7 @@ public interface FactionsDAO extends DAO<Faction> {
         return null;
     }
 
-    default boolean isPlayerInvitedToFaction(UUID factionId, UUID playerId) {
+    default boolean existsInvitation(UUID factionId, UUID playerId) {
 
         String sql = "SELECT count(*) AS count FROM faction_invitations WHERE faction_id = ? AND player_id = ?;";
 
@@ -399,13 +397,10 @@ public interface FactionsDAO extends DAO<Faction> {
             try (ResultSet rs = statement.executeQuery()) {
 
                 while (rs.next()) {
-                    UUID invitedPlayerId = UUID.fromString(rs.getString("player_id"));
-                    UUID inviterId = UUID.fromString(rs.getString("inviter_id"));
-                    String invitedOn = (String) rs.getObject("date");
-                    Logger.logInfo(invitedOn);
-                    DateTimeFormatter formatter = DateTimeFormat.forPattern("yyyy-MM-dd HH:mm:ss");
-                    DateTime date = DateTime.parse(invitedOn, formatter);
-                    invitations.add(new FactionInvitationImpl(factionId, invitedPlayerId, inviterId, date.toString()));
+                    FactionInvitation invitation = this.factionInvitationFromResultSet(rs);
+                    if(Objects.nonNull(invitation)){
+                        invitations.add(invitation);
+                    }
                 }
 
             }
@@ -429,13 +424,10 @@ public interface FactionsDAO extends DAO<Faction> {
             try (ResultSet rs = statement.executeQuery()) {
 
                 while (rs.next()) {
-                    UUID factionId = UUID.fromString(rs.getString("faction_id"));
-                    UUID inviterId = UUID.fromString(rs.getString("inviter_id"));
-                    String invitedOn = (String) rs.getObject("date");
-
-                    DateTimeFormatter formatter = DateTimeFormat.forPattern("yyyy-MM-dd HH:mm:ss");
-                    DateTime date = DateTime.parse(invitedOn, formatter);
-                    invitations.add(new FactionInvitationImpl(factionId, playerId, inviterId, invitedOn));
+                    FactionInvitation invitation = this.factionInvitationFromResultSet(rs);
+                    if(Objects.nonNull(invitation)){
+                        invitations.add(invitation);
+                    }
                 }
 
             }
@@ -446,4 +438,38 @@ public interface FactionsDAO extends DAO<Faction> {
 
         return invitations;
     }
+
+    default @Nullable FactionInvitation factionInvitationFromResultSet(ResultSet rs) throws SQLException {
+        UUID factionId = UUID.fromString(rs.getString("faction_id"));
+        UUID inviterId = UUID.fromString(rs.getString("inviter_id"));
+        UUID playerId = UUID.fromString(rs.getString("player_id"));
+        String invitedOn = (String) rs.getObject("date");
+
+        DateTimeFormatter formatter = DateTimeFormat.forPattern("yyyy-MM-dd HH:mm:ss");
+        DateTime date = DateTime.parse(invitedOn, formatter);
+        return new FactionInvitationImpl(factionId, playerId, inviterId, date.toString());
+    }
+
+    default FactionInvitation getInvitation(UUID playerId, UUID factionId){
+
+        String sql = "SELECT * FROM faction_invitations WHERE faction_id = ? AND player_id = ?;";
+
+        try(PreparedStatement statement = this.getPreparedStatement(sql)){
+
+            statement.setString(1, factionId.toString());
+            statement.setString(2, playerId.toString());
+
+            try(ResultSet rs = statement.executeQuery()){
+                if(rs.next()){
+                    return this.factionInvitationFromResultSet(rs);
+                }
+            }
+        }
+        catch (Exception e){
+            e.printStackTrace();
+        }
+
+        return null;
+    }
+
 }

@@ -9,6 +9,7 @@ import crypto.factions.bloodfactions.commons.config.NGFConfig;
 import crypto.factions.bloodfactions.commons.config.lang.LangConfigItems;
 import crypto.factions.bloodfactions.commons.messages.model.MessageContext;
 import crypto.factions.bloodfactions.commons.messages.model.MessageContextImpl;
+import crypto.factions.bloodfactions.commons.model.faction.Faction;
 import crypto.factions.bloodfactions.commons.model.player.FPlayer;
 
 import java.util.Objects;
@@ -40,6 +41,18 @@ public class InvitationsSubCommand extends FSubCommandImpl {
             }
 
             return true;
+        }
+
+        else if(action.equals("accept")){
+            String factionName = args[2];
+            Faction faction = NextGenFactionsAPI.getFactionByName(factionName);
+            player.acceptInvitation(faction);
+        }
+
+        else if(action.equals("decline")){
+            String factionName = args[2];
+            Faction faction = NextGenFactionsAPI.getFactionByName(factionName);
+            player.declineInvitation(faction);
         }
 
         // Add invitation.

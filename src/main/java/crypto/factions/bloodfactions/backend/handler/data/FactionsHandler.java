@@ -221,13 +221,17 @@ public interface FactionsHandler extends DataHandler<Faction> {
     @EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
     default void handleGetFactionOfPlayer(GetFactionOfPlayerEvent event) throws NoFactionForFactionLessException {
         FPlayer player = event.getPlayer();
-        Faction faction;
+        Faction faction = null;
         try {
             faction = this.getManager().getFactionOfPlayer(player);
         } catch (Exception e) {
             e.printStackTrace();
+        }
+
+        if(Objects.isNull(faction)){
             faction = this.getFactionForFactionLess();
         }
+
         event.setFaction(faction);
     }
 
@@ -570,7 +574,7 @@ public interface FactionsHandler extends DataHandler<Faction> {
         FPlayer player = event.getDeInvitedPlayer();
         Faction faction = event.getFaction();
 
-        boolean deInvited = this.getManager().deInvitePlayer(player, faction);
+        boolean deInvited = this.getManager().removePlayerInvitation(player, faction);
         event.setDeInvited(deInvited);
         event.setSuccess(deInvited);
     }

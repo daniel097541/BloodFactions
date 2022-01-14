@@ -126,11 +126,11 @@ public class LangConfigItems {
 
     public static String listItemBlueprint =
             "&7-----------------------------------------------\n" +
-            "   &d- &7Faction inviting: &e{faction_name}\n" +
-            "   &d- &7Player invited: &e{target_player_name}\n" +
-            "   &d- &7Invited by: &e{inviter_name}\n" +
-            "   &d- &7Invited on: &e{invitation_date} \n" +
-            "&7-----------------------------------------------\n";
+                    "   &d- &7Faction inviting: &e{faction_name}\n" +
+                    "   &d- &7Player invited: &e{target_player_name}\n" +
+                    "   &d- &7Invited by: &e{inviter_name}\n" +
+                    "   &d- &7Invited on: &e{invitation_date} \n" +
+                    "&7-----------------------------------------------\n";
 
     public static ConfigItem COMMANDS_F_INVITE_PLAYER_DOES_NOT_EXIST = new ConfigItemImpl("commands.f-invite.player-does-not-exist", "&cThe player is offline or does not exist.");
     public static ConfigItem COMMANDS_F_INVITE_SUCCESS = new ConfigItemImpl("commands.f-invite.success", "&aYou successfully invited &7{target_player_name} &ato your faction.");
@@ -141,6 +141,9 @@ public class LangConfigItems {
     public static ConfigItem COMMANDS_F_INVITE_LIST_TO_MY_FACTION_HEADER = new ConfigItemImpl("commands.f-invite.list-invitations-of-my-faction-header", listToMyFactionHeaderBluePrint);
     public static ConfigItem COMMANDS_F_INVITE_LIST_TO_OTHER_FACTIONS_HEADER = new ConfigItemImpl("commands.f-invite.list-my-invitations", listToOtherFactions);
     public static ConfigItem COMMANDS_F_INVITE_LIST_ITEM = new ConfigItemImpl("commands.f-invite.list-item", listItemBlueprint);
+    public static ConfigItem COMMANDS_F_INVITE_NOT_INVITED_BY_FACTION = new ConfigItemImpl("commands.f-invite.not-invited-by-faction", "&cYou dont have any invitation of: &7{faction_name}");
+    public static ConfigItem COMMANDS_F_INVITE_ACCEPTED = new ConfigItemImpl("commands.f-invite.accepted-invitation", "&7You successfully joined: &a{faction_name}");
+    public static ConfigItem COMMANDS_F_INVITE_DECLINED = new ConfigItemImpl("commands.f-invite.declined-invitation", "&7You declined an invitation from &c{faction_name}");
 
 
     public static Map<String, ConfigItem> asMap() {

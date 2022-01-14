@@ -111,15 +111,15 @@ public interface FactionsManager extends DataManager<Faction> {
     }
 
     default @Nullable FactionInvitation invitePlayerToFaction(@NotNull FPlayer player, @NotNull Faction faction, @NotNull FPlayer inviter) {
-        return this.getDAO().invitePlayerToFaction(faction.getId(), player.getId(), inviter.getId());
+        return this.getDAO().createInvitation(faction.getId(), player.getId(), inviter.getId());
     }
 
     default boolean isPlayerInvitedToFaction(@NotNull FPlayer player, @NotNull Faction faction) {
-        return this.getDAO().isPlayerInvitedToFaction(faction.getId(), player.getId());
+        return this.getDAO().existsInvitation(faction.getId(), player.getId());
     }
 
-    default boolean deInvitePlayer(@NotNull FPlayer player, @NotNull Faction faction) {
-        return this.getDAO().deInvitePlayerFromFaction(faction.getId(), player.getId());
+    default boolean removePlayerInvitation(@NotNull FPlayer player, @NotNull Faction faction) {
+        return this.getDAO().removeInvitation(faction.getId(), player.getId());
     }
 
     default @NotNull Set<FactionInvitation> getInvitationsOfFaction(@NotNull Faction faction) {
@@ -130,4 +130,7 @@ public interface FactionsManager extends DataManager<Faction> {
         return this.getDAO().getInvitationsOfPlayer(player.getId());
     }
 
+    default FactionInvitation getInvitation(FPlayer player, Faction faction){
+        return this.getDAO().getInvitation(player.getId(), faction.getId());
+    }
 }

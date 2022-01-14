@@ -32,7 +32,6 @@ import org.bukkit.OfflinePlayer;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 
-import java.text.DateFormat;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -345,7 +344,7 @@ public interface PlayerHandler extends DataHandler<FPlayer> {
     }
 
     @EventHandler(priority = EventPriority.HIGHEST)
-    default void handleListInvitationsFromOtherFactions(ListInvitationsToOtherFactionsEvent event){
+    default void handleListInvitationsFromOtherFactions(ListInvitationsToOtherFactionsEvent event) {
 
         FPlayer player = event.getPlayer();
 
@@ -406,6 +405,61 @@ public interface PlayerHandler extends DataHandler<FPlayer> {
         MessageContext messageContext = new MessageContextImpl(player, finalMessage.toString());
         messageContext.setFaction(faction);
         player.sms(messageContext);
+    }
+
+    @EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
+    default void handleDeclineInvitationEvent(DeclineFactionInvitationEvent event) {
+
+        FPlayer player = event.getPlayer();
+        Faction faction = event.getFaction();
+
+        boolean isInvited = this.getFactionsManager().isPlayerInvitedToFaction(player, faction);
+
+        // Player is invited
+        if (isInvited) {
+
+            // Remove
+            this.getFactionsManager().removePlayerInvitation(player, faction);
+
+            String notInvited = (String) this.getLangConfig().get(LangConfigItems.COMMANDS_F_INVITE_NOT_INVITED_BY_FACTION);
+            MessageContext messageContext = new MessageContextImpl(player, notInvited);
+            messageContext.setFaction(faction);
+            player.sms(messageContext);
+        }
+
+        // Player is not invited
+        else {
+
+            String notInvited = (String) this.getLangConfig().get(LangConfigItems.COMMANDS_F_INVITE_NOT_INVITED_BY_FACTION);
+            MessageContext messageContext = new MessageContextImpl(player, notInvited);
+            messageContext.setFaction(faction);
+            player.sms(messageContext);
+        }
+    }
+
+    @EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
+    default void handleAcceptInvitationEvent(AcceptFactionInvitationEvent event) {
+
+        FPlayer player = event.getPlayer();
+        Faction faction = event.getFaction();
+
+        FactionInvitation invitation = this.getFactionsManager().getInvitation(player, faction);
+        if (Objects.nonNull(invitation)) {
+
+            // Remove invitation and add player.
+            this.getFactionsManager().removePlayerInvitation(player, faction);
+            this.getFactionsManager().addPlayerToFaction(invitation.getPlayer(), invitation.getFaction(), invitation.getInviter());
+            String notInvited = (String) this.getLangConfig().get(LangConfigItems.COMMANDS_F_INVITE_ACCEPTED);
+            MessageContext messageContext = new MessageContextImpl(player, notInvited);
+            messageContext.setFaction(faction);
+            player.sms(messageContext);
+
+        } else {
+            String notInvited = (String) this.getLangConfig().get(LangConfigItems.COMMANDS_F_INVITE_NOT_INVITED_BY_FACTION);
+            MessageContext messageContext = new MessageContextImpl(player, notInvited);
+            messageContext.setFaction(faction);
+            player.sms(messageContext);
+        }
     }
 
 }

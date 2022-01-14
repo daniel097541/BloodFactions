@@ -475,4 +475,18 @@ public class NextGenFactionsAPI {
         long end = System.currentTimeMillis();
         logAction(start, end, APIAction.LIST_INVITATIONS_TO_OTHER_FACTIONS);
     }
+
+    public static void acceptFactionInvitation(FPlayer player, Faction faction) {
+        long start = System.currentTimeMillis();
+        new AcceptFactionInvitationEvent(faction, player);
+        long end = System.currentTimeMillis();
+        logAction(start, end, APIAction.ACCEPT_INVITATION);
+    }
+
+    public static void declineFactionInvitation(FPlayer player, Faction faction) {
+        long start = System.currentTimeMillis();
+        new DeclineFactionInvitationEvent(faction, player);
+        long end = System.currentTimeMillis();
+        logAction(start, end, APIAction.DECLINE_INVITATION);
+    }
 }
