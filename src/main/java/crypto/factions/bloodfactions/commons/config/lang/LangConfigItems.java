@@ -119,6 +119,16 @@ public class LangConfigItems {
             "\n&7-----------------------------------------------");
 
 
+    // Invite
+    public static ConfigItem COMMANDS_F_INVITE_PLAYER_DOES_NOT_EXIST = new ConfigItemImpl("commands.f-invite.player-does-not-exist", "&cThe player is offline or does not exist.");
+    public static ConfigItem COMMANDS_F_INVITE_SUCCESS= new ConfigItemImpl("commands.f-invite.success", "&aYou successfully invited &7{target_player_name} &ato your faction.");
+    public static ConfigItem COMMANDS_F_INVITE_FAILED = new ConfigItemImpl("commands.f-invite.failed", "&cThe command failed.");
+    public static ConfigItem COMMANDS_F_INVITE_INVITED_TO_FACTION = new ConfigItemImpl("commands.f-invite.you-were-invited", "&d{target_player_name} &7just invited you to: &e{faction_name}");
+    public static ConfigItem COMMANDS_F_INVITE_ALREADY_INVITED = new ConfigItemImpl("commands.f-invite.already-invited", "&7{target_player_name} &cis already invited to your faction.");
+    public static ConfigItem COMMANDS_F_INVITE_ALREADY_IN_FACTION = new ConfigItemImpl("commands.f-invite.already-in-faction", "&7{target_player_name} &cis already in your faction.");
+
+
+
     public static Map<String, ConfigItem> asMap() {
         Map<String, ConfigItem> items = new HashMap<>();
         Arrays.asList(LangConfigItems.class.getDeclaredFields())

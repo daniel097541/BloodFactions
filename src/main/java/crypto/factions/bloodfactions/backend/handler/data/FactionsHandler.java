@@ -8,9 +8,7 @@ import crypto.factions.bloodfactions.commons.config.lang.LangConfigItems;
 import crypto.factions.bloodfactions.commons.config.system.SystemConfigItems;
 import crypto.factions.bloodfactions.commons.events.faction.SetCoreEvent;
 import crypto.factions.bloodfactions.commons.events.faction.callback.*;
-import crypto.factions.bloodfactions.commons.events.faction.permissioned.DisbandFactionEvent;
-import crypto.factions.bloodfactions.commons.events.faction.permissioned.PlayerBreakBlockInFactionEvent;
-import crypto.factions.bloodfactions.commons.events.faction.permissioned.PlayerPlaceBlockInFactionEvent;
+import crypto.factions.bloodfactions.commons.events.faction.permissioned.*;
 import crypto.factions.bloodfactions.commons.events.faction.unpermissioned.CreateFactionByNameEvent;
 import crypto.factions.bloodfactions.commons.events.faction.unpermissioned.CreateFactionEvent;
 import crypto.factions.bloodfactions.commons.events.land.callback.GetClaimsOfFactionEvent;
@@ -28,6 +26,7 @@ import crypto.factions.bloodfactions.commons.messages.model.MessageContextImpl;
 import crypto.factions.bloodfactions.commons.model.faction.Faction;
 import crypto.factions.bloodfactions.commons.model.faction.FactionImpl;
 import crypto.factions.bloodfactions.commons.model.faction.SystemFactionImpl;
+import crypto.factions.bloodfactions.commons.model.invitation.FactionInvitation;
 import crypto.factions.bloodfactions.commons.model.land.FChunk;
 import crypto.factions.bloodfactions.commons.model.land.FLocation;
 import crypto.factions.bloodfactions.commons.model.permission.PermissionType;
@@ -163,7 +162,7 @@ public interface FactionsHandler extends DataHandler<Faction> {
         event.setNumberOfClaims(count);
     }
 
-    @EventHandler(priority = EventPriority.HIGHEST)
+    @EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
     default void handleDisbandFaction(DisbandFactionEvent event) {
         FPlayer player = event.getPlayer();
         Faction faction = event.getFaction();
@@ -263,7 +262,7 @@ public interface FactionsHandler extends DataHandler<Faction> {
         event.setRoles(roles);
     }
 
-    @EventHandler(priority = EventPriority.HIGHEST)
+    @EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
     default void handleClaim(ClaimEvent event) {
         Faction faction = event.getFaction();
         FPlayer player = event.getPlayer();
@@ -282,7 +281,7 @@ public interface FactionsHandler extends DataHandler<Faction> {
         event.setSuccess(claimed);
     }
 
-    @EventHandler(priority = EventPriority.HIGHEST)
+    @EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
     default void handleUnClaim(UnClaimEvent event) throws NoFactionForFactionLessException {
         Faction faction = event.getFaction();
         FPlayer player = event.getPlayer();
@@ -306,7 +305,7 @@ public interface FactionsHandler extends DataHandler<Faction> {
         event.setSuccess(unClaimed);
     }
 
-    @EventHandler(priority = EventPriority.HIGH)
+    @EventHandler(priority = EventPriority.HIGH, ignoreCancelled = true)
     default void handleSetCore(SetCoreEvent event) {
         FLocation core = event.getCore();
         FPlayer player = event.getPlayer();
@@ -324,7 +323,7 @@ public interface FactionsHandler extends DataHandler<Faction> {
         event.setCore(core);
     }
 
-    @EventHandler(priority = EventPriority.HIGH)
+    @EventHandler(priority = EventPriority.HIGH, ignoreCancelled = true)
     default void handleOverClaim(OverClaimEvent event) {
         Faction faction = event.getFaction();
         Faction overClaimedFaction = event.getOverClaimedFaction();
@@ -348,7 +347,7 @@ public interface FactionsHandler extends DataHandler<Faction> {
         }
     }
 
-    @EventHandler(priority = EventPriority.HIGHEST)
+    @EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
     default void handleRoleCreation(CreateRankEvent event) {
 
         String roleName = event.getRoleName();
@@ -400,7 +399,7 @@ public interface FactionsHandler extends DataHandler<Faction> {
         player.sms(messageContext);
     }
 
-    @EventHandler(priority = EventPriority.HIGHEST)
+    @EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
     default void handleRoleDeletion(DeleteRankEvent event) {
 
         String roleName = event.getRoleName();
@@ -460,7 +459,7 @@ public interface FactionsHandler extends DataHandler<Faction> {
                 });
     }
 
-    @EventHandler(priority = EventPriority.HIGHEST)
+    @EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
     default void handleUnClaimAll(UnClaimAllEvent event) throws NoFactionForFactionLessException {
 
         FPlayer player = event.getPlayer();
@@ -513,6 +512,67 @@ public interface FactionsHandler extends DataHandler<Faction> {
 
         Block block = Objects.requireNonNull(location.getBukkitLocation()).getBlock();
         event.setSuccess(true);
+    }
+
+    @EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
+    default void handleInvitePlayerToFaction(InvitePlayerToFactionEvent event) {
+
+        FPlayer invitedPlayer = event.getInvitedPlayer();
+        FPlayer inviter = event.getPlayer();
+        Faction faction = event.getFaction();
+        boolean invited = false;
+
+        // Player already in faction.
+        if(invitedPlayer.isInFaction(faction)){
+            String successMessage = (String) this.getLangConfig().get(LangConfigItems.COMMANDS_F_INVITE_ALREADY_IN_FACTION);
+            MessageContext messageContext = new MessageContextImpl(inviter, successMessage);
+            messageContext.setTargetPlayer(invitedPlayer);
+            inviter.sms(messageContext);
+        }
+        else {
+            boolean isPlayerInvitedAlready = this.getManager().isPlayerInvitedToFaction(invitedPlayer, faction);
+
+            // Invite player
+            if (!isPlayerInvitedAlready) {
+                FactionInvitation invitation = this.getManager().invitePlayerToFaction(invitedPlayer, faction, inviter);
+                invited = true;
+
+                // Send success message
+                String successMessage = (String) this.getLangConfig().get(LangConfigItems.COMMANDS_F_INVITE_SUCCESS);
+                MessageContext messageContext = new MessageContextImpl(inviter, successMessage);
+                messageContext.setTargetPlayer(invitedPlayer);
+                inviter.sms(messageContext);
+
+
+                // Send invited message
+                String invitedMessage = (String) this.getLangConfig().get(LangConfigItems.COMMANDS_F_INVITE_INVITED_TO_FACTION);
+                MessageContext invitedMessageContext = new MessageContextImpl(invitedPlayer, invitedMessage);
+                invitedMessageContext.setTargetPlayer(inviter);
+                invitedMessageContext.setFaction(faction);
+                invitedPlayer.sms(invitedMessageContext);
+            }
+
+            // Already invited
+            else {
+                String successMessage = (String) this.getLangConfig().get(LangConfigItems.COMMANDS_F_INVITE_ALREADY_INVITED);
+                MessageContext messageContext = new MessageContextImpl(inviter, successMessage);
+                messageContext.setTargetPlayer(invitedPlayer);
+                inviter.sms(messageContext);
+            }
+        }
+        event.setInvited(invited);
+        event.setSuccess(event.isInvited());
+    }
+
+    @EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
+    default void handleDeInvitePlayerFromFaction(DeInvitePlayerFromFactionEvent event) {
+
+        FPlayer player = event.getDeInvitedPlayer();
+        Faction faction = event.getFaction();
+
+        boolean deInvited = this.getManager().deInvitePlayer(player, faction);
+        event.setDeInvited(deInvited);
+        event.setSuccess(deInvited);
     }
 
 }

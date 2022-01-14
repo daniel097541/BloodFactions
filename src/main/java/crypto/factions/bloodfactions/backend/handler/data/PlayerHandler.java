@@ -101,7 +101,7 @@ public interface PlayerHandler extends DataHandler<FPlayer> {
         event.setRole(role);
     }
 
-    @EventHandler(priority = EventPriority.HIGHEST)
+    @EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
     default void handleChangeRoleOfPlayer(ChangeRankOfPlayerEvent event) {
         FPlayer player = event.getPlayerToBeChanged();
         FactionRank rank = event.getRole();

@@ -58,7 +58,7 @@ public interface PermissionsHandler extends Listener {
         PermissionType permissionType = event.getPermissionType();
 
         // If player is OP, has all permissions.
-        if (player.isOp()) {
+        if (!player.isOp()) {
 
             // Check concrete permission and ALL permission.
             boolean playerPermissions = this.checkPlayerPermissions(player, permissionType);

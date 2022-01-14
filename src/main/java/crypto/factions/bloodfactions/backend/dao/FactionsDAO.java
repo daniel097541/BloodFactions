@@ -4,6 +4,8 @@ import crypto.factions.bloodfactions.commons.logger.Logger;
 import crypto.factions.bloodfactions.commons.model.faction.Faction;
 import crypto.factions.bloodfactions.commons.model.faction.FactionImpl;
 import crypto.factions.bloodfactions.commons.model.faction.SystemFactionImpl;
+import crypto.factions.bloodfactions.commons.model.invitation.FactionInvitation;
+import crypto.factions.bloodfactions.commons.model.invitation.FactionInvitationImpl;
 import crypto.factions.bloodfactions.commons.model.land.FChunk;
 import crypto.factions.bloodfactions.commons.model.land.FLocation;
 import crypto.factions.bloodfactions.commons.model.land.impl.FChunkImpl;
@@ -13,6 +15,7 @@ import org.jetbrains.annotations.Nullable;
 
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.UUID;
@@ -291,7 +294,7 @@ public interface FactionsDAO extends DAO<Faction> {
         return false;
     }
 
-    default Set<FChunk> getAllClaimsOfFaction(UUID factionId){
+    default Set<FChunk> getAllClaimsOfFaction(UUID factionId) {
 
         String sql = "SELECT * FROM as_faction_claims AS rel " +
                 " JOIN claims AS c ON c.id = rel.claim_id " +
@@ -299,13 +302,13 @@ public interface FactionsDAO extends DAO<Faction> {
 
         Set<FChunk> claims = new HashSet<>();
 
-        try(PreparedStatement statement = this.getPreparedStatement(sql)){
+        try (PreparedStatement statement = this.getPreparedStatement(sql)) {
 
             statement.setString(1, factionId.toString());
 
-            try(ResultSet rs = statement.executeQuery()){
+            try (ResultSet rs = statement.executeQuery()) {
 
-                while(rs.next()){
+                while (rs.next()) {
 
                     UUID worldId = UUID.fromString(rs.getString("world_id"));
                     int x = rs.getInt("x");
@@ -316,12 +319,122 @@ public interface FactionsDAO extends DAO<Faction> {
                 }
 
             }
-        }
-        catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
         }
 
         return claims;
     }
 
+    default boolean deInvitePlayerFromFaction(@NotNull UUID factionId, @NotNull UUID playerId) {
+        String sql = "DELETE FROM faction_invitations WHERE faction_id = ? AND player_id = ?;";
+
+        try (PreparedStatement statement = this.getPreparedStatement(sql)) {
+
+            statement.setString(1, factionId.toString());
+            statement.setString(2, playerId.toString());
+
+            return statement.executeUpdate() > 0;
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return false;
+    }
+
+    default @Nullable FactionInvitation invitePlayerToFaction(@NotNull UUID factionId, @NotNull UUID playerId, @NotNull UUID inviterId) {
+
+        String sql = "INSERT INTO faction_invitations (faction_id, player_id, inviter_id) VALUES (?, ?, ?);";
+
+        try (PreparedStatement statement = this.getPreparedStatement(sql)) {
+
+            statement.setString(1, factionId.toString());
+            statement.setString(2, playerId.toString());
+            statement.setString(3, inviterId.toString());
+
+            boolean inserted = statement.executeUpdate() > 0;
+
+            if (inserted) {
+                return new FactionInvitationImpl(factionId, playerId, inviterId, new Date());
+            }
+            return null;
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return null;
+    }
+
+    default boolean isPlayerInvitedToFaction(UUID factionId, UUID playerId) {
+
+        String sql = "SELECT count(*) AS count FROM faction_invitations WHERE faction_id = ? AND player_id = ?;";
+
+        try (PreparedStatement statement = this.getPreparedStatement(sql)) {
+
+            statement.setString(1, factionId.toString());
+            statement.setString(2, playerId.toString());
+
+            try (ResultSet rs = statement.executeQuery()) {
+                int count = rs.getInt("count");
+                return count > 0;
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return false;
+    }
+
+    default @NotNull Set<FactionInvitation> getInvitationsOfFaction(@NotNull UUID factionId) {
+        Set<FactionInvitation> invitations = new HashSet<>();
+
+        String sql = "SELECT * FROM faction_invitations WHERE faction_id = ?;";
+
+        try (PreparedStatement statement = this.getPreparedStatement(sql)) {
+
+            statement.setString(1, factionId.toString());
+
+            try (ResultSet rs = statement.executeQuery()) {
+
+                while (rs.next()) {
+                    UUID invitedPlayerId = UUID.fromString(rs.getString("player_id"));
+                    UUID inviterId = UUID.fromString(rs.getString("invited_id"));
+                    Date invitedOn = rs.getDate("date");
+                    invitations.add(new FactionInvitationImpl(factionId, invitedPlayerId, inviterId, invitedOn));
+                }
+
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return invitations;
+    }
+
+    default @NotNull Set<FactionInvitation> getInvitationsOfPlayer(@NotNull UUID playerId) {
+        Set<FactionInvitation> invitations = new HashSet<>();
+
+        String sql = "SELECT * FROM faction_invitations WHERE player_id = ?;";
+
+        try (PreparedStatement statement = this.getPreparedStatement(sql)) {
+
+            statement.setString(1, playerId.toString());
+
+            try (ResultSet rs = statement.executeQuery()) {
+
+                while (rs.next()) {
+                    UUID factionId = UUID.fromString(rs.getString("faction_id"));
+                    UUID inviterId = UUID.fromString(rs.getString("invited_id"));
+                    Date invitedOn = rs.getDate("date");
+                    invitations.add(new FactionInvitationImpl(factionId, playerId, inviterId, invitedOn));
+                }
+
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return invitations;
+    }
 }

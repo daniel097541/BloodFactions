@@ -188,6 +188,20 @@ public class DBMigrationManagerImpl implements DBMigrationManager{
         this.dbManager.executeUpdate(sql);
     }
 
+    private void loadInvitationsTable(){
+        String sql = "CREATE TABLE IF NOT EXISTS faction_invitations(" +
+                " faction_id VARCHAR[36] NOT NULL," +
+                " player_id VARCHAR[36] NOT NULL," +
+                " inviter_id VARCHAR[36] NOT NULL," +
+                " date REAL DEFAULT (datetime('now', 'localtime'))," +
+                " PRIMARY KEY (faction_id, player_id)," +
+                " FOREIGN KEY (faction_id) REFERENCES factions(id)," +
+                " FOREIGN KEY (player_id) REFERENCES players(id)," +
+                " FOREIGN KEY (inviter_id) REFERENCES players(id));";
+
+        this.dbManager.executeUpdate(sql);
+    }
+
     private void load() {
         this.loadPlayersTable();
         this.loadFactionsTable();
@@ -200,5 +214,6 @@ public class DBMigrationManagerImpl implements DBMigrationManager{
         this.loadRolesPermissionsTable();
         this.loadPlayerRoleTable();
         this.loadTeleportsTable();
+        this.loadInvitationsTable();
     }
 }
