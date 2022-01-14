@@ -471,7 +471,7 @@ public class NextGenFactionsAPI {
 
     public static void listInvitationsToOtherFactions(FPlayer player) {
         long start = System.currentTimeMillis();
-        new FPlayerDiedEvent(player);
+        new ListInvitationsToOtherFactionsEvent(player);
         long end = System.currentTimeMillis();
         logAction(start, end, APIAction.LIST_INVITATIONS_TO_OTHER_FACTIONS);
     }

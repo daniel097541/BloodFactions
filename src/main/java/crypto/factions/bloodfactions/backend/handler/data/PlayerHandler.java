@@ -345,6 +345,38 @@ public interface PlayerHandler extends DataHandler<FPlayer> {
     }
 
     @EventHandler(priority = EventPriority.HIGHEST)
+    default void handleListInvitationsFromOtherFactions(ListInvitationsToOtherFactionsEvent event){
+
+        FPlayer player = event.getPlayer();
+
+        Set<FactionInvitation> invitations = this.getFactionsManager().getInvitationsOfPlayer(player);
+
+        String header = (String) this.getLangConfig().get(LangConfigItems.COMMANDS_F_INVITE_LIST_TO_OTHER_FACTIONS_HEADER);
+        String body = (String) this.getLangConfig().get(LangConfigItems.COMMANDS_F_INVITE_LIST_ITEM);
+        StringBuilder finalMessage = new StringBuilder(header);
+
+        for (FactionInvitation invitation : invitations) {
+
+            FPlayer invitedBy = invitation.getInviter();
+            FPlayer invited = invitation.getPlayer();
+            Date date = invitation.getDate();
+            Faction faction = invitation.getFaction();
+
+            String finalBody = body
+                    .replace("{inviter_name}", invitedBy.getName())
+                    .replace("{invitation_date}", DateFormat.getDateInstance().format(date))
+                    .replace("{target_player_name}", invited.getName())
+                    .replace("{faction_name}", faction.getName());
+
+            finalMessage.append(finalBody);
+        }
+
+        MessageContext messageContext = new MessageContextImpl(player, finalMessage.toString());
+        player.sms(messageContext);
+
+    }
+
+    @EventHandler(priority = EventPriority.HIGHEST)
     default void handleListFactionInvitations(ListInvitationsToFactionEvent event) {
 
         FPlayer player = event.getPlayer();

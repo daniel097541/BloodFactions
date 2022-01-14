@@ -122,6 +122,8 @@ public class LangConfigItems {
     // Invite
 
     public static String listToMyFactionHeaderBluePrint = "\n&7----------------- &a{faction_name} &eInvitations &7-----------------\n";
+    public static String listToOtherFactions = "\n&7----------------- &eMy invitations &7-----------------\n";
+
     public static String listItemBlueprint =
             "&7-----------------------------------------------\n" +
             "   &d- &7Faction inviting: &e{faction_name}\n" +
@@ -137,6 +139,7 @@ public class LangConfigItems {
     public static ConfigItem COMMANDS_F_INVITE_ALREADY_INVITED = new ConfigItemImpl("commands.f-invite.already-invited", "&7{target_player_name} &cis already invited to your faction.");
     public static ConfigItem COMMANDS_F_INVITE_ALREADY_IN_FACTION = new ConfigItemImpl("commands.f-invite.already-in-faction", "&7{target_player_name} &cis already in your faction.");
     public static ConfigItem COMMANDS_F_INVITE_LIST_TO_MY_FACTION_HEADER = new ConfigItemImpl("commands.f-invite.list-invitations-of-my-faction-header", listToMyFactionHeaderBluePrint);
+    public static ConfigItem COMMANDS_F_INVITE_LIST_TO_OTHER_FACTIONS_HEADER = new ConfigItemImpl("commands.f-invite.list-my-invitations", listToOtherFactions);
     public static ConfigItem COMMANDS_F_INVITE_LIST_ITEM = new ConfigItemImpl("commands.f-invite.list-item", listItemBlueprint);
 
 
