@@ -547,4 +547,17 @@ public interface PlayerHandler extends DataHandler<FPlayer> {
         event.setAutoFlying(isFlying);
     }
 
+    @EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
+    default void handlePlayerHitOther(PlayerHitOtherEvent event) {
+        FPlayer player = event.getPlayer();
+        FPlayer damaged = event.getOtherPlayer();
+
+        if (player.isInFaction(damaged.getFaction())) {
+            event.setCancelled(true);
+            String message = (String) this.getLangConfig().get(LangConfigItems.ACTIONS_CANNOT_HIT_PLAYERS_IN_YOUR_FACTION);
+            MessageContext messageContext = new MessageContextImpl(player, message);
+            player.sms(messageContext);
+        }
+    }
+
 }

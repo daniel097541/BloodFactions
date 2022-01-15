@@ -18,6 +18,7 @@ public class LangConfigItems {
     // Actions messages
     public static ConfigItem ACTIONS_BREAK_NOT_YOUR_FACTION = new ConfigItemImpl("actions.block-break.not-your-faction", "&7This land is claimed by: &c{faction_name}&7, you cannot break blocks here!");
     public static ConfigItem ACTIONS_PLACE_NOT_YOUR_FACTION = new ConfigItemImpl("actions.block-place.not-your-faction", "&7This land is claimed by: &c{faction_name}&7, you cannot place blocks here!");
+    public static ConfigItem ACTIONS_CANNOT_HIT_PLAYERS_IN_YOUR_FACTION = new ConfigItemImpl("actions.cannot-hit-players-of-your-faction", "&cYou cannot damage players from your own faction!");
 
     public static ConfigItem FACTION_PERMISSIONS_NO_PERMISSION = new ConfigItemImpl("f-permissions.no-permission", "&cYour role doesn't have the required permission: &7{permission_name}");
 
@@ -150,7 +151,7 @@ public class LangConfigItems {
     public static ConfigItem COMMANDS_F_KICK_SUCCESS = new ConfigItemImpl("commands.f-kick.success", "&aYou successfully kicked: &c{target_player_name}");
     public static ConfigItem COMMANDS_F_KICK_NOT_IN_YOUR_FACTION = new ConfigItemImpl("commands.f-kick.player-not-in-your-faction", "&cThe player is not in your faction.");
     public static ConfigItem COMMANDS_F_KICK_CANNOT_KICK_PLAYER = new ConfigItemImpl("commands.f-kick.cannot-kick-player", "&cYou cannot kick that player.");
-    public static ConfigItem COMMANDS_F_KICK_NO_PLAYER= new ConfigItemImpl("commands.f-kick.player-does-not-exist", "&cThe player does not exist.");
+    public static ConfigItem COMMANDS_F_KICK_NO_PLAYER = new ConfigItemImpl("commands.f-kick.player-does-not-exist", "&cThe player does not exist.");
     public static ConfigItem COMMANDS_F_KICKED = new ConfigItemImpl("commands.f-kick.you-were-kicked", "&7You have been kicked from &c{target_faction_name} &7by &c{target_player_name}");
 
 

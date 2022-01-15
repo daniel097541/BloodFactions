@@ -26,6 +26,10 @@ public interface FPlayer extends NextGenFactionEntity {
 
     int getPower();
 
+    default boolean hit(FPlayer other){
+        return NextGenFactionsAPI.playerHitOther(this, other);
+    }
+
     default boolean isFlying() {
         return NextGenFactionsAPI.isPlayerFlying(this);
     }

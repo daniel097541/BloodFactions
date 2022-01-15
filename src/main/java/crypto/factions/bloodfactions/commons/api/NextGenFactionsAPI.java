@@ -524,4 +524,12 @@ public class NextGenFactionsAPI {
         logAction(start, end, APIAction.CHECK_AUTO_FLY_MODE);
         return event.isAutoFlying();
     }
+
+    public static boolean playerHitOther(FPlayer player, FPlayer other) {
+        long start = System.currentTimeMillis();
+        PlayerHitOtherEvent event = new PlayerHitOtherEvent(player, other);
+        long end = System.currentTimeMillis();
+        logAction(start, end, APIAction.HIT_OTHER_PLAYER);
+        return event.isCancelled();
+    }
 }

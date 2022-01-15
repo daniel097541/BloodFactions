@@ -15,14 +15,17 @@ import crypto.factions.bloodfactions.commons.model.player.FPlayer;
 import crypto.factions.bloodfactions.commons.utils.BukkitLocationUtils;
 import org.bukkit.Location;
 import org.bukkit.block.Block;
+import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockPlaceEvent;
+import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.entity.PlayerDeathEvent;
+import org.bukkit.event.player.PlayerEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerMoveEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
@@ -197,6 +200,27 @@ public interface PlayerListener extends Listener {
     @EventHandler
     default void onWeatherChange(WeatherChangeEvent event) {
         event.setCancelled(true);
+    }
+
+    @EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
+    default void onPlayerHitOther(EntityDamageByEntityEvent event){
+
+        Entity damaged = event.getEntity();
+        Entity hitter = event.getDamager();
+
+        if(damaged instanceof Player && hitter instanceof Player){
+
+            FPlayer playerHitting = NextGenFactionsAPI.getPlayer(hitter.getUniqueId());
+            FPlayer playerDamaged = NextGenFactionsAPI.getPlayer(damaged.getUniqueId());
+
+            boolean isCancelled = Objects.requireNonNull(playerHitting).hit(playerDamaged);
+
+            if(isCancelled){
+                event.setCancelled(true);
+            }
+
+        }
+
     }
 
 }
