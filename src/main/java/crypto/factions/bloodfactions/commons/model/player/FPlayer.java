@@ -2,7 +2,6 @@ package crypto.factions.bloodfactions.commons.model.player;
 
 import crypto.factions.bloodfactions.commons.api.NextGenFactionsAPI;
 import crypto.factions.bloodfactions.commons.api.PermissionNextGenFactionsAPI;
-import crypto.factions.bloodfactions.commons.logger.Logger;
 import crypto.factions.bloodfactions.commons.messages.handler.MessageContextHandler;
 import crypto.factions.bloodfactions.commons.messages.model.MessageContext;
 import crypto.factions.bloodfactions.commons.messages.model.MessageContextImpl;
@@ -21,28 +20,40 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.Objects;
+import java.util.Set;
 
 public interface FPlayer extends NextGenFactionEntity {
 
     int getPower();
 
-    boolean isFlying();
+    default boolean isFlying() {
+        return NextGenFactionsAPI.isPlayerFlying(this);
+    }
 
-    boolean isAutoFlying();
+    default boolean isAutoFlying() {
+        return NextGenFactionsAPI.isPlayerAutoFlying(this);
+    }
 
-    void setFlying(boolean flying);
+    default double distanceTo(FPlayer other) {
 
-    void setAutoFlying(boolean autoFlying);
+        FLocation location = this.getLocation();
+        FLocation othersLocation = other.getLocation();
 
-    default boolean breakBlock(Faction faction, FLocation location){
+        if (this.isOnline() && other.isOnline() && Objects.nonNull(location) && Objects.nonNull(othersLocation)) {
+            return location.getBukkitLocation().distance(othersLocation.getBukkitLocation());
+        }
+        return -1;
+    }
+
+    default boolean breakBlock(Faction faction, FLocation location) {
         return PermissionNextGenFactionsAPI.breakBlock(this, faction, location);
     }
 
-    default boolean placeBlock(Faction faction, FLocation location){
+    default boolean placeBlock(Faction faction, FLocation location) {
         return PermissionNextGenFactionsAPI.placeBlock(this, faction, location);
     }
 
-    default boolean isInFaction(Faction faction){
+    default boolean isInFaction(Faction faction) {
         Faction myFaction = this.getFaction();
         return myFaction.equals(faction);
     }
@@ -256,8 +267,22 @@ public interface FPlayer extends NextGenFactionEntity {
      * Toggles flight mode.
      */
     default void toggleFly() {
-        boolean flying = PermissionNextGenFactionsAPI.toggleFlightMode(this);
-        this.setFlying(flying);
+        // If is flying, disable
+        if (this.isFlying()) {
+            this.disableFly();
+        }
+        // If is not flying, enable
+        else {
+            this.enableFly();
+        }
+    }
+
+    default void disableFly() {
+        PermissionNextGenFactionsAPI.toggleFlightMode(this, false);
+    }
+
+    default void enableFly() {
+        PermissionNextGenFactionsAPI.toggleFlightMode(this, true);
     }
 
     /**
@@ -286,8 +311,7 @@ public interface FPlayer extends NextGenFactionEntity {
      * Toggles auto fly.
      */
     default void toggleAutoFly() {
-        boolean autoFlying = PermissionNextGenFactionsAPI.toggleAutoFly(this);
-        this.setAutoFlying(autoFlying);
+        PermissionNextGenFactionsAPI.toggleAutoFly(this);
     }
 
     /**
@@ -337,6 +361,7 @@ public interface FPlayer extends NextGenFactionEntity {
 
     /**
      * Checks if a player is in his land.
+     *
      * @return
      */
     default boolean isInHisLand() {
@@ -347,6 +372,7 @@ public interface FPlayer extends NextGenFactionEntity {
 
     /**
      * Gets the faction at location.
+     *
      * @return
      */
     default Faction getFactionAt() {
@@ -355,41 +381,56 @@ public interface FPlayer extends NextGenFactionEntity {
 
     /**
      * Handles fall damage.
+     *
      * @return
      */
     default boolean handleFallDamage() {
         return NextGenFactionsAPI.handlePlayerFallDamage(this);
     }
 
-    default void listRoles(Faction faction){
+    default void listRoles(Faction faction) {
         NextGenFactionsAPI.listRoles(faction, this);
     }
 
-    default void died(){
+    default void died() {
         NextGenFactionsAPI.playerDied(this);
     }
 
-    default boolean setRank(@NotNull FactionRank targetRank, @NotNull FPlayer playerSettingTheRank){
+    default boolean setRank(@NotNull FactionRank targetRank, @NotNull FPlayer playerSettingTheRank) {
         return PermissionNextGenFactionsAPI.changeRankOfPlayer(this, targetRank, playerSettingTheRank);
     }
 
-    default void sendTitle(String title){
-        StringUtils.sendTitle(this.getBukkitPlayer(), title, 250,250,250, ChatColor.AQUA);
+    default void sendTitle(String title) {
+        StringUtils.sendTitle(this.getBukkitPlayer(), title, 250, 250, 250, ChatColor.AQUA);
     }
 
-    default void listInvitationsOfMyFaction(){
+    default void listInvitationsOfMyFaction() {
         NextGenFactionsAPI.listInvitationsToFaction(this, this.getFaction());
     }
 
-    default void listInvitationsToOtherFactions(){
+    default void listInvitationsToOtherFactions() {
         NextGenFactionsAPI.listInvitationsToOtherFactions(this);
     }
 
-    default void acceptInvitation(Faction faction){
+    default void acceptInvitation(Faction faction) {
         NextGenFactionsAPI.acceptFactionInvitation(this, faction);
     }
 
-    default void declineInvitation(Faction faction){
+    default void declineInvitation(Faction faction) {
         NextGenFactionsAPI.declineFactionInvitation(this, faction);
     }
+
+    default Set<FPlayer> getPlayersInRadius(int radius) {
+        return NextGenFactionsAPI.getPlayersInRadius(this, radius);
+    }
+
+    default void proximityCheck() {
+        NextGenFactionsAPI.proximityCheck(this);
+    }
+
+    default void playerIsNearOther(FPlayer other, int radius) {
+        NextGenFactionsAPI.playerIsNearOther(this, other, radius);
+    }
+
+
 }

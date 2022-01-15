@@ -17,16 +17,9 @@ public class FPlayerImpl implements FPlayer {
     private final String name;
 
     @Setter
-    private boolean flying;
-
-    @Setter
-    @ColumnName("auto_flying")
-    private boolean autoFlying;
-
-    @Setter
     private int power;
 
     public static FPlayer fromPlayer(Player player) {
-        return new FPlayerImpl(player.getUniqueId(), player.getName(), false, false, 0);
+        return new FPlayerImpl(player.getUniqueId(), player.getName(), 0);
     }
 }

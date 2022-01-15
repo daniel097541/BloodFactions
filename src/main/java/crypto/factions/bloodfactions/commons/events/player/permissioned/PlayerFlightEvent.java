@@ -12,9 +12,11 @@ import lombok.Setter;
 public class PlayerFlightEvent extends PermissionEvent {
 
     private boolean flying;
+    private final boolean toggle;
 
-    public PlayerFlightEvent(Faction faction, FPlayer player) {
+    public PlayerFlightEvent(Faction faction, FPlayer player, boolean toggle) {
         super(faction, player, PermissionType.FLY);
+        this.toggle = toggle;
         this.launch();
     }
 }

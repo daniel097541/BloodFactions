@@ -8,9 +8,7 @@ import crypto.factions.bloodfactions.commons.config.NGFConfig;
 import crypto.factions.bloodfactions.commons.config.lang.LangConfigItems;
 import crypto.factions.bloodfactions.commons.config.system.SystemConfigItems;
 import crypto.factions.bloodfactions.commons.events.faction.unpermissioned.ShowFactionEvent;
-import crypto.factions.bloodfactions.commons.events.player.callback.CheckIfPlayerHasFactionEvent;
-import crypto.factions.bloodfactions.commons.events.player.callback.GetPlayerByNameEvent;
-import crypto.factions.bloodfactions.commons.events.player.callback.GetPlayerEvent;
+import crypto.factions.bloodfactions.commons.events.player.callback.*;
 import crypto.factions.bloodfactions.commons.events.player.permissioned.PlayerAutoFlyEvent;
 import crypto.factions.bloodfactions.commons.events.player.permissioned.PlayerFlightEvent;
 import crypto.factions.bloodfactions.commons.events.player.unpermissioned.*;
@@ -22,6 +20,7 @@ import crypto.factions.bloodfactions.commons.messages.model.MessageContext;
 import crypto.factions.bloodfactions.commons.messages.model.MessageContextImpl;
 import crypto.factions.bloodfactions.commons.model.faction.Faction;
 import crypto.factions.bloodfactions.commons.model.invitation.FactionInvitation;
+import crypto.factions.bloodfactions.commons.model.land.FLocation;
 import crypto.factions.bloodfactions.commons.model.player.FPlayer;
 import crypto.factions.bloodfactions.commons.model.player.FPlayerImpl;
 import crypto.factions.bloodfactions.commons.model.role.FactionRank;
@@ -74,7 +73,7 @@ public interface PlayerHandler extends DataHandler<FPlayer> {
 
             // Create the player in DB.
             OfflinePlayer offlinePlayer = Bukkit.getOfflinePlayer(playerId);
-            player = new FPlayerImpl(offlinePlayer.getUniqueId(), offlinePlayer.getName(), false, false, 0);
+            player = new FPlayerImpl(offlinePlayer.getUniqueId(), offlinePlayer.getName(), 0);
             player = this.getManager().insert(player);
 
             if (Objects.nonNull(player)) {
@@ -203,9 +202,25 @@ public interface PlayerHandler extends DataHandler<FPlayer> {
         FPlayer player = event.getPlayer();
 
         boolean flying = false;
+        boolean toggle = event.isToggle();
+        boolean updated = false;
+        String successMessage;
 
-        // Disable flight.
-        if (player.isFlying()) {
+        // Toggle on
+        if (toggle) {
+
+            player.enableBukkitFlight();
+            flying = true;
+
+            // Send message
+            successMessage = (String) this.getLangConfig().get(LangConfigItems.COMMANDS_F_FLY_SUCCESS);
+
+            updated = this.getManager().updatePlayersFlightMode(player, true);
+
+        }
+
+        // Toggle off
+        else {
             // No fall damage
             this.addNoFallPlayer(player);
 
@@ -213,21 +228,17 @@ public interface PlayerHandler extends DataHandler<FPlayer> {
             player.disableBukkitFlight();
 
             // Send message
-            String successMessage = (String) this.getLangConfig().get(LangConfigItems.COMMANDS_F_FLY_OFF);
-            MessageContext messageContext = new MessageContextImpl(player, successMessage);
-            player.sms(messageContext);
+            successMessage = (String) this.getLangConfig().get(LangConfigItems.COMMANDS_F_FLY_OFF);
+
+            updated = this.getManager().updatePlayersFlightMode(player, false);
+
         }
 
-        // Enable flight.
-        else {
-            player.enableBukkitFlight();
-            flying = true;
-            String successMessage = (String) this.getLangConfig().get(LangConfigItems.COMMANDS_F_FLY_SUCCESS);
-            MessageContext messageContext = new MessageContextImpl(player, successMessage);
-            player.sms(messageContext);
-        }
+        // Message context send
+        MessageContext messageContext = new MessageContextImpl(player, successMessage);
+        player.sms(messageContext);
 
-        boolean updated = this.getManager().updatePlayersFlightMode(player, flying);
+        // Set flying event
         event.setFlying(flying);
         event.setSuccess(updated);
     }
@@ -460,6 +471,80 @@ public interface PlayerHandler extends DataHandler<FPlayer> {
             messageContext.setFaction(faction);
             player.sms(messageContext);
         }
+    }
+
+    @EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
+    default void handleGetPlayersInRadius(FindPlayersInRadiusEvent event) {
+
+        FLocation location = event.getLocation();
+        int radius = event.getRadius();
+
+
+        Set<FPlayer> onlinePlayersInRadius = NextGenFactionsAPI.getOnlinePlayers()
+                .stream()
+                .filter(player -> {
+                    FLocation playersLocation = player.getLocation();
+                    double distance = Objects.requireNonNull(location.getBukkitLocation()).distance(Objects.requireNonNull(Objects.requireNonNull(playersLocation).getBukkitLocation()));
+                    Logger.logInfo("Distance " + distance);
+                    return distance < radius;
+                })
+                .collect(Collectors.toSet());
+        Logger.logInfo("Found " + onlinePlayersInRadius.size() + " players in a radius of: " + radius);
+        event.setNearPlayers(onlinePlayersInRadius);
+    }
+
+    @EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
+    default void handlePlayerIsNearOther(PlayerIsNearOtherEvent event) {
+
+        FPlayer player = event.getPlayer();
+        FPlayer otherPlayer = event.getOtherPlayer();
+
+        Faction factionOfPlayer = player.getFaction();
+        Faction factionOfTheOtherPlayer = otherPlayer.getFaction();
+
+        // If the faction does not allow flight near players of the other faction.
+        if (!factionOfPlayer.allowsFlightNearPlayersOfOtherFaction(factionOfTheOtherPlayer)) {
+
+            // Cancel fly if flying.
+            if (player.isFlying()) {
+                player.disableFly();
+            }
+
+            // Cancel fly if flying.
+            if (otherPlayer.isFlying()) {
+                player.disableFly();
+            }
+        }
+
+    }
+
+    @EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
+    default void handleProximityCheck(PlayerProximityCheckEvent event) {
+
+        FPlayer player = event.getPlayer();
+        Set<FPlayer> players = player.getPlayersInRadius(32);
+
+        players.forEach(p -> {
+            if (!p.equals(player)) {
+                double distance = p.distanceTo(player);
+                player.playerIsNearOther(p, (int) distance);
+            }
+        });
+
+    }
+
+    @EventHandler(priority = EventPriority.HIGHEST)
+    default void checkPlayerFlying(CheckPlayerFlyingEvent event) {
+        FPlayer player = event.getPlayer();
+        boolean isFlying = this.getManager().checkIfPlayerIsFlying(player);
+        event.setFlying(isFlying);
+    }
+
+    @EventHandler(priority = EventPriority.HIGHEST)
+    default void checkPlayerAutoFlying(CheckPlayerAutoFlyingEvent event) {
+        FPlayer player = event.getPlayer();
+        boolean isFlying = this.getManager().checkIfPlayerIsAutoFlying(player);
+        event.setAutoFlying(isFlying);
     }
 
 }

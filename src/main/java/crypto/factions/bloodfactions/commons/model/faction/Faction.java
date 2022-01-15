@@ -237,4 +237,8 @@ public interface Faction extends NextGenFactionEntity {
         return PermissionNextGenFactionsAPI.unClaimAll(player, faction);
     }
 
+    default boolean allowsFlightNearPlayersOfOtherFaction(Faction otherFaction){
+        return this.equals(otherFaction);
+    }
+
 }

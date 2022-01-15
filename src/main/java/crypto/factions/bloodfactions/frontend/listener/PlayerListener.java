@@ -12,6 +12,7 @@ import crypto.factions.bloodfactions.commons.model.land.FLocation;
 import crypto.factions.bloodfactions.commons.model.land.impl.FChunkImpl;
 import crypto.factions.bloodfactions.commons.model.land.impl.FLocationImpl;
 import crypto.factions.bloodfactions.commons.model.player.FPlayer;
+import crypto.factions.bloodfactions.commons.utils.BukkitLocationUtils;
 import org.bukkit.Location;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
@@ -55,10 +56,9 @@ public interface PlayerListener extends Listener {
                 MessageContext messageContext = new MessageContextImpl(player, message);
                 messageContext.setFaction(factionAt);
                 player.sms(messageContext);
-            }
-            else{
+            } else {
                 boolean isAllowed = player.placeBlock(factionAt, FLocationImpl.fromLocation(bukkitLocation));
-                if(!isAllowed){
+                if (!isAllowed) {
                     event.setCancelled(true);
                 }
             }
@@ -121,20 +121,32 @@ public interface PlayerListener extends Listener {
     default void handlePlayerMovement(PlayerMoveEvent event) {
         Player bukkitPlayer = event.getPlayer();
 
-        FLocation from = FLocationImpl.fromLocation(event.getFrom());
-        FChunk chunkFrom = from.getChunk();
+        Location fromLocation = event.getFrom();
+        Location toLocation = event.getTo();
 
-        FLocation to = FLocationImpl.fromLocation(Objects.requireNonNull(event.getTo()));
-        FChunk chunkTo = to.getChunk();
 
-        if (!Objects.equals(chunkFrom, chunkTo)) {
+        // Player effectively moved.
+        if (Objects.nonNull(toLocation) && !BukkitLocationUtils.sameLocation(toLocation, fromLocation)) {
+
             FPlayer player = NextGenFactionsAPI.getPlayer(bukkitPlayer);
-            Faction factionFrom = from.getFactionAt();
-            Faction factionTo = to.getFactionAt();
 
-            // Changed faction
-            if (!Objects.equals(factionTo, factionFrom)) {
-                Objects.requireNonNull(player).changedLand(factionFrom, factionTo);
+            player.proximityCheck();
+
+            FLocation from = FLocationImpl.fromLocation(fromLocation);
+            FChunk chunkFrom = from.getChunk();
+
+            FLocation to = FLocationImpl.fromLocation(toLocation);
+            FChunk chunkTo = to.getChunk();
+
+            // Chunk changed
+            if (!Objects.equals(chunkFrom, chunkTo)) {
+                Faction factionFrom = from.getFactionAt();
+                Faction factionTo = to.getFactionAt();
+
+                // Changed faction
+                if (!Objects.equals(factionTo, factionFrom)) {
+                    Objects.requireNonNull(player).changedLand(factionFrom, factionTo);
+                }
             }
         }
     }

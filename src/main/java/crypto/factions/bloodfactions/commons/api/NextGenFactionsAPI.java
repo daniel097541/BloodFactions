@@ -5,10 +5,7 @@ import crypto.factions.bloodfactions.commons.events.faction.unpermissioned.Creat
 import crypto.factions.bloodfactions.commons.events.faction.unpermissioned.ShowFactionEvent;
 import crypto.factions.bloodfactions.commons.events.land.callback.GetClaimsOfFactionEvent;
 import crypto.factions.bloodfactions.commons.events.land.callback.GetNumberOfClaimsEvent;
-import crypto.factions.bloodfactions.commons.events.player.callback.CheckIfPlayerHasFactionEvent;
-import crypto.factions.bloodfactions.commons.events.player.callback.GetPlayerByNameEvent;
-import crypto.factions.bloodfactions.commons.events.player.callback.GetPlayerEvent;
-import crypto.factions.bloodfactions.commons.events.player.callback.PlayerHasPermissionEvent;
+import crypto.factions.bloodfactions.commons.events.player.callback.*;
 import crypto.factions.bloodfactions.commons.events.player.unpermissioned.*;
 import crypto.factions.bloodfactions.commons.events.role.GetDefaultRoleOfFactionEvent;
 import crypto.factions.bloodfactions.commons.events.role.GetRoleOfPlayerEvent;
@@ -488,5 +485,43 @@ public class NextGenFactionsAPI {
         new DeclineFactionInvitationEvent(faction, player);
         long end = System.currentTimeMillis();
         logAction(start, end, APIAction.DECLINE_INVITATION);
+    }
+
+    public static Set<FPlayer> getPlayersInRadius(FPlayer player, int radius) {
+        long start = System.currentTimeMillis();
+        FindPlayersInRadiusEvent event = new FindPlayersInRadiusEvent(player.getLocation(), radius);
+        long end = System.currentTimeMillis();
+        logAction(start, end, APIAction.FIND_PLAYERS_IN_RADIUS);
+        return event.getNearPlayers();
+    }
+
+    public static void proximityCheck(FPlayer fPlayer) {
+        long start = System.currentTimeMillis();
+        new PlayerProximityCheckEvent(fPlayer);
+        long end = System.currentTimeMillis();
+        logAction(start, end, APIAction.PROXIMITY_CHECK);
+    }
+
+    public static void playerIsNearOther(FPlayer player, FPlayer other, int radius) {
+        long start = System.currentTimeMillis();
+        new PlayerIsNearOtherEvent(player, other, radius);
+        long end = System.currentTimeMillis();
+        logAction(start, end, APIAction.PLAYER_NEAR_OTHER);
+    }
+
+    public static boolean isPlayerFlying(FPlayer player) {
+        long start = System.currentTimeMillis();
+        CheckPlayerFlyingEvent event = new CheckPlayerFlyingEvent(player);
+        long end = System.currentTimeMillis();
+        logAction(start, end, APIAction.CHECK_FLIGHT_MODE);
+        return event.isFlying();
+    }
+
+    public static boolean isPlayerAutoFlying(FPlayer player) {
+        long start = System.currentTimeMillis();
+        CheckPlayerAutoFlyingEvent event = new CheckPlayerAutoFlyingEvent(player);
+        long end = System.currentTimeMillis();
+        logAction(start, end, APIAction.CHECK_AUTO_FLY_MODE);
+        return event.isAutoFlying();
     }
 }

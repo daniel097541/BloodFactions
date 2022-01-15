@@ -22,10 +22,8 @@ public interface PlayerDAO extends DAO<FPlayer> {
                 UUID id = UUID.fromString(rs.getString("id"));
                 String name = rs.getString("name");
                 int power = rs.getInt("power");
-                boolean isFlying = rs.getBoolean("flying");
-                boolean isAutoFlying = rs.getBoolean("auto_flying");
 
-                return new FPlayerImpl(id, name, isFlying, isAutoFlying, power);
+                return new FPlayerImpl(id, name, power);
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -41,9 +39,7 @@ public interface PlayerDAO extends DAO<FPlayer> {
                 UUID id = UUID.fromString(rs.getString("id"));
                 String name = rs.getString("name");
                 int power = rs.getInt("power");
-                boolean isFlying = rs.getBoolean("flying");
-                boolean isAutoFlying = rs.getBoolean("auto_flying");
-                FPlayer player = new FPlayerImpl(id, name, isFlying, isAutoFlying, power);
+                FPlayer player = new FPlayerImpl(id, name, power);
                 players.add(player);
             }
         } catch (Exception e) {
@@ -238,4 +234,43 @@ public interface PlayerDAO extends DAO<FPlayer> {
         }
         return false;
     }
+
+    default boolean isPlayerAutoFlying(UUID id) {
+
+        String sql = "SELECT auto_flying FROM players WHERE id = ?;";
+
+        try (PreparedStatement statement = this.getPreparedStatement(sql)) {
+            statement.setString(1, id.toString());
+
+            try (ResultSet rs = statement.executeQuery()) {
+                if (rs.next()) {
+                    return rs.getBoolean("auto_flying");
+                }
+                return false;
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return false;
+    }
+
+    default boolean isPlayerFlying(UUID id) {
+
+        String sql = "SELECT flying FROM players WHERE id = ?;";
+
+        try (PreparedStatement statement = this.getPreparedStatement(sql)) {
+            statement.setString(1, id.toString());
+
+            try (ResultSet rs = statement.executeQuery()) {
+                if (rs.next()) {
+                    return rs.getBoolean("flying");
+                }
+                return false;
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return false;
+    }
+
 }

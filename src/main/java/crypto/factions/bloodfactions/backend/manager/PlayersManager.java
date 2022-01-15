@@ -37,4 +37,13 @@ public interface PlayersManager extends DataManager<FPlayer> {
     default boolean checkIfPlayerHasPermission(FPlayer player, PermissionType permission){
         return this.getDAO().checkIfPlayerHasPermission(player, permission);
     }
+
+    default boolean checkIfPlayerIsAutoFlying(FPlayer player){
+        return this.getDAO().isPlayerAutoFlying(player.getId());
+    }
+
+    default boolean checkIfPlayerIsFlying(FPlayer player){
+        return this.getDAO().isPlayerFlying(player.getId());
+    }
+
 }
