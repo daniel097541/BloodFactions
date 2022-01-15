@@ -150,12 +150,12 @@ public interface PlayerHandler extends DataHandler<FPlayer> {
 
         // Cancel flight
         if (player.isFlying() && factionFrom.equals(playersFaction)) {
-            player.toggleFly();
+            player.disableFly();
         }
 
         // Enable fly if auto flying
-        if (player.isAutoFlying() && !player.isFlying() && factionTo.equals(playersFaction)) {
-            player.toggleFly();
+        if (player.isAutoFlying() && !player.isFlying() && factionTo.equals(playersFaction) && !factionTo.isSystemFaction()) {
+            player.enableFly();
         }
 
     }
@@ -182,8 +182,8 @@ public interface PlayerHandler extends DataHandler<FPlayer> {
             autoFly = true;
 
             // Enable flight mode.
-            if (player.isInHisLand() && !player.isFlying()) {
-                player.toggleFly();
+            if (player.hasFaction() && player.isInHisLand() && !player.isFlying()) {
+                player.enableFly();
             }
         }
 
@@ -349,7 +349,7 @@ public interface PlayerHandler extends DataHandler<FPlayer> {
         Faction factionTo = event.getFactionTo();
 
         if (player.isInFaction(factionTo) && player.isAutoFlying() && !player.isFlying()) {
-            player.toggleFly();
+            player.enableFly();
         }
 
     }
@@ -512,7 +512,7 @@ public interface PlayerHandler extends DataHandler<FPlayer> {
 
             // Cancel fly if flying.
             if (otherPlayer.isFlying()) {
-                player.disableFly();
+                otherPlayer.disableFly();
             }
         }
 

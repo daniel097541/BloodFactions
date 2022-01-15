@@ -1,5 +1,6 @@
 package crypto.factions.bloodfactions.backend.dao;
 
+import crypto.factions.bloodfactions.commons.logger.Logger;
 import crypto.factions.bloodfactions.commons.model.faction.Faction;
 import crypto.factions.bloodfactions.commons.model.permission.PermissionType;
 import crypto.factions.bloodfactions.commons.model.player.FPlayer;
@@ -263,7 +264,9 @@ public interface PlayerDAO extends DAO<FPlayer> {
 
             try (ResultSet rs = statement.executeQuery()) {
                 if (rs.next()) {
-                    return rs.getBoolean("flying");
+                    boolean isFlying = rs.getBoolean("flying");
+                    Logger.logInfo(isFlying + " " + id.toString());
+                    return isFlying;
                 }
                 return false;
             }
