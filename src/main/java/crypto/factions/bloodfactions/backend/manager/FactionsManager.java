@@ -130,7 +130,11 @@ public interface FactionsManager extends DataManager<Faction> {
         return this.getDAO().getInvitationsOfPlayer(player.getId());
     }
 
-    default FactionInvitation getInvitation(FPlayer player, Faction faction){
+    default @NotNull FactionInvitation getInvitation(@NotNull FPlayer player,@NotNull Faction faction){
         return this.getDAO().getInvitation(player.getId(), faction.getId());
+    }
+
+    default boolean removePlayerFromFaction(@NotNull FPlayer kicked,@NotNull Faction faction){
+        return this.getDAO().removePlayerFromFaction(kicked.getId(), faction.getId());
     }
 }

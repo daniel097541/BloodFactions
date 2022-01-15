@@ -146,6 +146,14 @@ public class LangConfigItems {
     public static ConfigItem COMMANDS_F_INVITE_DECLINED = new ConfigItemImpl("commands.f-invite.declined-invitation", "&7You declined an invitation from &c{faction_name}");
 
 
+    public static ConfigItem COMMANDS_F_KICK_NO_FACTION = new ConfigItemImpl("commands.f-kick.no-faction", "&cYou need a faction to do that!");
+    public static ConfigItem COMMANDS_F_KICK_SUCCESS = new ConfigItemImpl("commands.f-kick.success", "&aYou successfully kicked: &c{target_player_name}");
+    public static ConfigItem COMMANDS_F_KICK_NOT_IN_YOUR_FACTION = new ConfigItemImpl("commands.f-kick.player-not-in-your-faction", "&cThe player is not in your faction.");
+    public static ConfigItem COMMANDS_F_KICK_CANNOT_KICK_PLAYER = new ConfigItemImpl("commands.f-kick.cannot-kick-player", "&cYou cannot kick that player.");
+    public static ConfigItem COMMANDS_F_KICK_NO_PLAYER= new ConfigItemImpl("commands.f-kick.player-does-not-exist", "&cThe player does not exist.");
+    public static ConfigItem COMMANDS_F_KICKED = new ConfigItemImpl("commands.f-kick.you-were-kicked", "&7You have been kicked from &c{target_faction_name} &7by &c{target_player_name}");
+
+
     public static Map<String, ConfigItem> asMap() {
         Map<String, ConfigItem> items = new HashMap<>();
         Arrays.asList(LangConfigItems.class.getDeclaredFields())

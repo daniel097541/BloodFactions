@@ -228,7 +228,7 @@ public interface FactionsHandler extends DataHandler<Faction> {
             e.printStackTrace();
         }
 
-        if(Objects.isNull(faction)){
+        if (Objects.isNull(faction)) {
             faction = this.getFactionForFactionLess();
         }
 
@@ -527,13 +527,12 @@ public interface FactionsHandler extends DataHandler<Faction> {
         boolean invited = false;
 
         // Player already in faction.
-        if(invitedPlayer.isInFaction(faction)){
+        if (invitedPlayer.isInFaction(faction)) {
             String successMessage = (String) this.getLangConfig().get(LangConfigItems.COMMANDS_F_INVITE_ALREADY_IN_FACTION);
             MessageContext messageContext = new MessageContextImpl(inviter, successMessage);
             messageContext.setTargetPlayer(invitedPlayer);
             inviter.sms(messageContext);
-        }
-        else {
+        } else {
             boolean isPlayerInvitedAlready = this.getManager().isPlayerInvitedToFaction(invitedPlayer, faction);
 
             // Invite player
@@ -577,6 +576,31 @@ public interface FactionsHandler extends DataHandler<Faction> {
         boolean deInvited = this.getManager().removePlayerInvitation(player, faction);
         event.setDeInvited(deInvited);
         event.setSuccess(deInvited);
+    }
+
+    @EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
+    default void handleKickPlayer(KickPlayerFromFactionEvent event) {
+
+        FPlayer player = event.getPlayer();
+        FPlayer kicked = event.getKickedPlayer();
+        Faction faction = event.getFaction();
+
+        boolean kickedSucceed = this.getManager().removePlayerFromFaction(kicked, faction);
+        event.setKicked(kickedSucceed);
+
+        if (kickedSucceed) {
+            String message = (String) this.getLangConfig().get(LangConfigItems.COMMANDS_F_KICK_SUCCESS);
+            MessageContext messageContext = new MessageContextImpl(player, message);
+            messageContext.setTargetPlayer(kicked);
+            player.sms(messageContext);
+
+            String kickedMessage = (String) this.getLangConfig().get(LangConfigItems.COMMANDS_F_KICKED);
+            MessageContext kickedMessageContext = new MessageContextImpl(kicked, kickedMessage);
+            kickedMessageContext.setTargetPlayer(player);
+            kickedMessageContext.setTargetFaction(faction);
+            kicked.sms(kickedMessageContext);
+        }
+
     }
 
 }

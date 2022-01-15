@@ -398,7 +398,7 @@ public interface FactionsDAO extends DAO<Faction> {
 
                 while (rs.next()) {
                     FactionInvitation invitation = this.factionInvitationFromResultSet(rs);
-                    if(Objects.nonNull(invitation)){
+                    if (Objects.nonNull(invitation)) {
                         invitations.add(invitation);
                     }
                 }
@@ -425,7 +425,7 @@ public interface FactionsDAO extends DAO<Faction> {
 
                 while (rs.next()) {
                     FactionInvitation invitation = this.factionInvitationFromResultSet(rs);
-                    if(Objects.nonNull(invitation)){
+                    if (Objects.nonNull(invitation)) {
                         invitations.add(invitation);
                     }
                 }
@@ -450,26 +450,39 @@ public interface FactionsDAO extends DAO<Faction> {
         return new FactionInvitationImpl(factionId, playerId, inviterId, date.toString());
     }
 
-    default FactionInvitation getInvitation(UUID playerId, UUID factionId){
+    default FactionInvitation getInvitation(UUID playerId, UUID factionId) {
 
         String sql = "SELECT * FROM faction_invitations WHERE faction_id = ? AND player_id = ?;";
 
-        try(PreparedStatement statement = this.getPreparedStatement(sql)){
+        try (PreparedStatement statement = this.getPreparedStatement(sql)) {
 
             statement.setString(1, factionId.toString());
             statement.setString(2, playerId.toString());
 
-            try(ResultSet rs = statement.executeQuery()){
-                if(rs.next()){
+            try (ResultSet rs = statement.executeQuery()) {
+                if (rs.next()) {
                     return this.factionInvitationFromResultSet(rs);
                 }
             }
-        }
-        catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
         }
 
         return null;
     }
 
+    default boolean removePlayerFromFaction(UUID playerId, UUID factionId) {
+
+        String sql = "DELETE FROM as_faction_players WHERE faction_id = ? AND player_id = ?;";
+
+        try (PreparedStatement statement = this.getPreparedStatement(sql)) {
+            statement.setString(1, factionId.toString());
+            statement.setString(2, playerId.toString());
+
+            return statement.executeUpdate() > 0;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
 }
