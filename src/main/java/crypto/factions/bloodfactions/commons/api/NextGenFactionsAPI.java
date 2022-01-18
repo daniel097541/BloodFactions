@@ -543,4 +543,12 @@ public class NextGenFactionsAPI {
         logAction(start, end, APIAction.GET_INVITATIONS_OF_PLAYER);
         return event.getInvitations();
     }
+
+    public static boolean leaveFaction(FPlayer player, Faction faction) {
+        long start = System.currentTimeMillis();
+        PlayerLeftFactionEvent event = new PlayerLeftFactionEvent(faction, player);
+        long end = System.currentTimeMillis();
+        logAction(start, end, APIAction.LEAVE_FACTION);
+        return event.isLeft();
+    }
 }

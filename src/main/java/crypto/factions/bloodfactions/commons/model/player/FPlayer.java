@@ -442,4 +442,8 @@ public interface FPlayer extends NextGenFactionEntity {
     }
 
 
+    default boolean leaveFaction(){
+        return NextGenFactionsAPI.leaveFaction(this, this.getFaction());
+    }
+
 }

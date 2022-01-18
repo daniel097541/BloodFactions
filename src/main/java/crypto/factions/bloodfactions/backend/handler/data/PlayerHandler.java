@@ -28,6 +28,7 @@ import crypto.factions.bloodfactions.commons.tasks.handler.TasksHandler;
 import crypto.factions.bloodfactions.commons.utils.StringUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
+import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 
@@ -576,6 +577,29 @@ public interface PlayerHandler extends DataHandler<FPlayer> {
         FPlayer player = event.getPlayer();
         Set<FactionInvitation> invitations = this.getFactionsManager().getInvitationsOfPlayer(player);
         event.setInvitations(invitations);
+    }
+
+    @EventHandler(priority = EventPriority.HIGHEST)
+    default void handlePlayerLeftFaction(PlayerLeftFactionEvent event){
+        FPlayer player = event.getPlayer();
+        Faction faction = event.getFaction();
+
+        boolean left = this.getFactionsManager().removePlayerFromFaction(player, faction);
+
+        if(left) {
+            String message = (String) this.getLangConfig().get(LangConfigItems.COMMANDS_F_LEAVE_SUCCESS);
+            MessageContext messageContext = new MessageContextImpl(player, message);
+            player.sms(messageContext);
+
+            String playerLeft = (String) this.getLangConfig().get(LangConfigItems.COMMANDS_F_PLAYER_LEFT);
+            MessageContext playerLeftContext = new MessageContextImpl(faction, playerLeft);
+            playerLeftContext.setTargetPlayer(player);
+            faction.sms(playerLeftContext);
+        }
+
+
+
+        event.setLeft(left);
     }
 
 

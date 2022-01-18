@@ -17,6 +17,7 @@ public enum SubCommandType {
     CREATE(new String[]{"create", "new"}, "ngf.command.create", "commands.f-create", true, 2),
     DISBAND(new String[]{"disband", "delete", "del", "remove"}, "ngf.command.disband", "commands.f-disband", false, 1),
     INVITATIONS(new String[]{"invitations", "invite", "join", "decline"}, "ngf.command.invitations", "commands.f-invite", false, 2),
+    LEAVE(new String[]{"leave"}, "ngf.command.leave", "commands.f-leave", false, 2),
     KICK(new String[]{"kick"}, "ngf.command.kick", "commands.f-kick", true, 2);
 
 

@@ -157,6 +157,11 @@ public class LangConfigItems {
     public static ConfigItem COMMANDS_F_KICKED = new ConfigItemImpl("commands.f-kick.you-were-kicked", "&7You have been kicked from &c{target_faction_name} &7by &c{target_player_name}");
 
 
+    public static ConfigItem COMMANDS_F_LEAVE_NO_FACTION = new ConfigItemImpl("commands.f-leave.no-faction", "&cYou need a faction to do that!");
+    public static ConfigItem COMMANDS_F_LEAVE_SUCCESS = new ConfigItemImpl("commands.f-leave.success", "&aYou successfully left your faction!");
+    public static ConfigItem COMMANDS_F_PLAYER_LEFT = new ConfigItemImpl("commands.f-leave.player-left", "&7The player &c{target_player_name} &7has left your faction!");
+
+
     public static Map<String, ConfigItem> asMap() {
         Map<String, ConfigItem> items = new HashMap<>();
         Arrays.asList(LangConfigItems.class.getDeclaredFields())

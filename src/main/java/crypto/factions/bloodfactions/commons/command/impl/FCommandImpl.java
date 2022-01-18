@@ -37,7 +37,8 @@ public class FCommandImpl implements FCommand {
                         @RolesCommand FSubCommand rolesSubCommand,
                         @UnClaimAllCommand FSubCommand unClaimAllSubCommand,
                         @InviteCommand FSubCommand inviteSubCommand,
-                        @KickCommand FSubCommand kickSubCommand
+                        @KickCommand FSubCommand kickSubCommand,
+                        @LeaveCommand FSubCommand leaveSubCommand
                         ) {
 
         this.langConfig = langConfig;
@@ -62,5 +63,6 @@ public class FCommandImpl implements FCommand {
         this.addSubCommand(unClaimAllSubCommand);
         this.addSubCommand(inviteSubCommand);
         this.addSubCommand(kickSubCommand);
+        this.addSubCommand(leaveSubCommand);
     }
 }
