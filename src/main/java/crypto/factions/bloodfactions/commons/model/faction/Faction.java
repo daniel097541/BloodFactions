@@ -2,6 +2,8 @@ package crypto.factions.bloodfactions.commons.model.faction;
 
 import crypto.factions.bloodfactions.commons.api.NextGenFactionsAPI;
 import crypto.factions.bloodfactions.commons.api.PermissionNextGenFactionsAPI;
+import crypto.factions.bloodfactions.commons.messages.handler.MessageContextHandler;
+import crypto.factions.bloodfactions.commons.messages.model.MessageContext;
 import crypto.factions.bloodfactions.commons.model.NextGenFactionEntity;
 import crypto.factions.bloodfactions.commons.model.land.FChunk;
 import crypto.factions.bloodfactions.commons.model.land.FLocation;
@@ -14,12 +16,25 @@ import org.jetbrains.annotations.Nullable;
 import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 public interface Faction extends NextGenFactionEntity {
 
     boolean isSystemFaction();
 
     UUID getOwnerId();
+
+    default Set<FPlayer> getOnlineMembers() {
+        return this.getMembers()
+                .stream()
+                .filter(FPlayer::isOnline)
+                .collect(Collectors.toSet());
+    }
+
+    default void sms(MessageContext messageContext) {
+        new MessageContextHandler() {
+        }.handle(messageContext);
+    }
 
     default boolean setCore(FPlayer player, FLocation location) {
         return PermissionNextGenFactionsAPI.setCore(player, this, location);
@@ -233,11 +248,11 @@ public interface Faction extends NextGenFactionEntity {
                 .orElse(null);
     }
 
-    default boolean unClaimAll(@NotNull FPlayer player, @NotNull Faction faction){
+    default boolean unClaimAll(@NotNull FPlayer player, @NotNull Faction faction) {
         return PermissionNextGenFactionsAPI.unClaimAll(player, faction);
     }
 
-    default boolean allowsFlightNearPlayersOfOtherFaction(Faction otherFaction){
+    default boolean allowsFlightNearPlayersOfOtherFaction(Faction otherFaction) {
         return this.equals(otherFaction);
     }
 

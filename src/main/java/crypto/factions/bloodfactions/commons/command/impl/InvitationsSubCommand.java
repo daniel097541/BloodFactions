@@ -10,6 +10,7 @@ import crypto.factions.bloodfactions.commons.config.lang.LangConfigItems;
 import crypto.factions.bloodfactions.commons.messages.model.MessageContext;
 import crypto.factions.bloodfactions.commons.messages.model.MessageContextImpl;
 import crypto.factions.bloodfactions.commons.model.faction.Faction;
+import crypto.factions.bloodfactions.commons.model.invitation.FactionInvitation;
 import crypto.factions.bloodfactions.commons.model.player.FPlayer;
 
 import java.util.Objects;
@@ -22,13 +23,68 @@ public class InvitationsSubCommand extends FSubCommandImpl {
         super(SubCommandType.INVITATIONS, langConfig);
     }
 
+    private boolean declineInvitation(String factionName, FPlayer player) {
+        Faction faction = NextGenFactionsAPI.getFactionByName(factionName);
+        return player.declineInvitation(faction);
+    }
+
+    private boolean acceptInvitation(String factionName, FPlayer player) {
+        Faction faction = NextGenFactionsAPI.getFactionByName(factionName);
+        return player.acceptInvitation(faction);
+    }
+
     @Override
     public boolean execute(String[] args, FPlayer player) {
 
-        String action = args[1];
+        String subCommandName = args[0];
+
+        if (subCommandName.equalsIgnoreCase("join")) {
+
+            // Accept invitation by faction name.
+            if (args.length > 2) {
+                return this.acceptInvitation(args[2], player);
+            }
+
+            // Accept latest invitation.
+            else {
+                FactionInvitation invitation = player.getInvitations().stream().findFirst().orElse(null);
+                if (Objects.nonNull(invitation)) {
+                    return this.acceptInvitation(invitation.getFaction().getName(), player);
+                }
+            }
+
+        } else if (subCommandName.equalsIgnoreCase("decline")) {
+
+            // Decline invitation by faction name.
+            if (args.length > 2) {
+                return this.declineInvitation(args[2], player);
+            }
+            // Decline latest invitation.
+            else {
+                FactionInvitation invitation = player.getInvitations().stream().findFirst().orElse(null);
+                if (Objects.nonNull(invitation)) {
+                    return this.declineInvitation(invitation.getFaction().getName(), player);
+                }
+
+                // No invitation
+                else{
+
+                    return true;
+                }
+            }
+
+        }
+
+        String actionOrPlayer = args[1];
+        FPlayer targetPlayer = NextGenFactionsAPI.getPlayerByName(actionOrPlayer);
+
+        // Invite player if first parameter is a player name.
+        if (Objects.nonNull(targetPlayer)) {
+            return player.invitePlayerToFaction(targetPlayer);
+        }
 
         // List invitations.
-        if (action.equals("list")) {
+        if (actionOrPlayer.equals("list")) {
 
             // List invitations to my faction.
             if (player.hasFaction()) {
@@ -41,22 +97,14 @@ public class InvitationsSubCommand extends FSubCommandImpl {
             }
 
             return true;
-        }
-
-        else if(action.equals("accept")){
-            String factionName = args[2];
-            Faction faction = NextGenFactionsAPI.getFactionByName(factionName);
-            player.acceptInvitation(faction);
-        }
-
-        else if(action.equals("decline")){
-            String factionName = args[2];
-            Faction faction = NextGenFactionsAPI.getFactionByName(factionName);
-            player.declineInvitation(faction);
+        } else if (actionOrPlayer.equals("accept")) {
+            return acceptInvitation(args[2], player);
+        } else if (actionOrPlayer.equals("decline")) {
+            return declineInvitation(args[2], player);
         }
 
         // Add invitation.
-        else if (action.equals("add")) {
+        else if (actionOrPlayer.equals("add")) {
 
             // Invite player
             if (args.length >= 3) {
@@ -64,7 +112,7 @@ public class InvitationsSubCommand extends FSubCommandImpl {
                 String playerName = args[2];
                 FPlayer invitedPlayer = NextGenFactionsAPI.getPlayerByName(playerName);
 
-                if (Objects.nonNull(invitedPlayer) && invitedPlayer.isOnline()) {
+                if (Objects.nonNull(invitedPlayer)) {
                     return player.invitePlayerToFaction(invitedPlayer);
                 } else {
                     String successMessage = (String) this.getLangConfig().get(LangConfigItems.COMMANDS_F_INVITE_PLAYER_DOES_NOT_EXIST);
@@ -80,7 +128,7 @@ public class InvitationsSubCommand extends FSubCommandImpl {
         }
 
         // De-Invite
-        else if (action.equals("remove")) {
+        else if (actionOrPlayer.equals("remove")) {
             // Invite player
             if (args.length >= 3) {
 

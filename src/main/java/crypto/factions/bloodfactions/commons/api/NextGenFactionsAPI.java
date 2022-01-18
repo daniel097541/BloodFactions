@@ -15,6 +15,7 @@ import crypto.factions.bloodfactions.commons.events.shared.callback.GetFactionOf
 import crypto.factions.bloodfactions.commons.events.shared.callback.GetPlayersInFactionEvent;
 import crypto.factions.bloodfactions.commons.logger.Logger;
 import crypto.factions.bloodfactions.commons.model.faction.Faction;
+import crypto.factions.bloodfactions.commons.model.invitation.FactionInvitation;
 import crypto.factions.bloodfactions.commons.model.land.FChunk;
 import crypto.factions.bloodfactions.commons.model.land.FLocation;
 import crypto.factions.bloodfactions.commons.model.permission.Action;
@@ -473,18 +474,20 @@ public class NextGenFactionsAPI {
         logAction(start, end, APIAction.LIST_INVITATIONS_TO_OTHER_FACTIONS);
     }
 
-    public static void acceptFactionInvitation(FPlayer player, Faction faction) {
+    public static boolean acceptFactionInvitation(FPlayer player, Faction faction) {
         long start = System.currentTimeMillis();
-        new AcceptFactionInvitationEvent(faction, player);
+        AcceptFactionInvitationEvent event = new AcceptFactionInvitationEvent(faction, player);
         long end = System.currentTimeMillis();
         logAction(start, end, APIAction.ACCEPT_INVITATION);
+        return !event.isCancelled();
     }
 
-    public static void declineFactionInvitation(FPlayer player, Faction faction) {
+    public static boolean declineFactionInvitation(FPlayer player, Faction faction) {
         long start = System.currentTimeMillis();
-        new DeclineFactionInvitationEvent(faction, player);
+        DeclineFactionInvitationEvent event = new DeclineFactionInvitationEvent(faction, player);
         long end = System.currentTimeMillis();
         logAction(start, end, APIAction.DECLINE_INVITATION);
+        return !event.isCancelled();
     }
 
     public static Set<FPlayer> getPlayersInRadius(FPlayer player, int radius) {
@@ -531,5 +534,13 @@ public class NextGenFactionsAPI {
         long end = System.currentTimeMillis();
         logAction(start, end, APIAction.HIT_OTHER_PLAYER);
         return event.isCancelled();
+    }
+
+    public static Set<FactionInvitation> getInvitations(FPlayer player) {
+        long start = System.currentTimeMillis();
+        GetInvitationsOfPlayerEvent event = new GetInvitationsOfPlayerEvent(player);
+        long end = System.currentTimeMillis();
+        logAction(start, end, APIAction.GET_INVITATIONS_OF_PLAYER);
+        return event.getInvitations();
     }
 }

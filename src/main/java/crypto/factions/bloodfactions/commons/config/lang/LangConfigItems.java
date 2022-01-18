@@ -145,6 +145,8 @@ public class LangConfigItems {
     public static ConfigItem COMMANDS_F_INVITE_NOT_INVITED_BY_FACTION = new ConfigItemImpl("commands.f-invite.not-invited-by-faction", "&cYou dont have any invitation of: &7{faction_name}");
     public static ConfigItem COMMANDS_F_INVITE_ACCEPTED = new ConfigItemImpl("commands.f-invite.accepted-invitation", "&7You successfully joined: &a{faction_name}");
     public static ConfigItem COMMANDS_F_INVITE_DECLINED = new ConfigItemImpl("commands.f-invite.declined-invitation", "&7You declined an invitation from &c{faction_name}");
+    public static ConfigItem COMMANDS_F_INVITATION_DECLINED = new ConfigItemImpl("commands.f-invite.player-declined-invitation", "&7The player &c{target_player_name} &7declined the invitation to your faction.");
+    public static ConfigItem COMMANDS_F_INVITATION_ACCEPTED = new ConfigItemImpl("commands.f-invite.player-accepted-invitation", "&aThe player &e{target_player_name} &ahas joined to your faction!");
 
 
     public static ConfigItem COMMANDS_F_KICK_NO_FACTION = new ConfigItemImpl("commands.f-kick.no-faction", "&cYou need a faction to do that!");

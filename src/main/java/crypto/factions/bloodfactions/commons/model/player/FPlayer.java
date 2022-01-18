@@ -7,6 +7,7 @@ import crypto.factions.bloodfactions.commons.messages.model.MessageContext;
 import crypto.factions.bloodfactions.commons.messages.model.MessageContextImpl;
 import crypto.factions.bloodfactions.commons.model.NextGenFactionEntity;
 import crypto.factions.bloodfactions.commons.model.faction.Faction;
+import crypto.factions.bloodfactions.commons.model.invitation.FactionInvitation;
 import crypto.factions.bloodfactions.commons.model.land.FChunk;
 import crypto.factions.bloodfactions.commons.model.land.FLocation;
 import crypto.factions.bloodfactions.commons.model.land.impl.FChunkImpl;
@@ -36,6 +37,10 @@ public interface FPlayer extends NextGenFactionEntity {
 
     default boolean isAutoFlying() {
         return NextGenFactionsAPI.isPlayerAutoFlying(this);
+    }
+
+    default Set<FactionInvitation> getInvitations(){
+        return NextGenFactionsAPI.getInvitations(this);
     }
 
     default double distanceTo(FPlayer other) {
@@ -416,12 +421,12 @@ public interface FPlayer extends NextGenFactionEntity {
         NextGenFactionsAPI.listInvitationsToOtherFactions(this);
     }
 
-    default void acceptInvitation(Faction faction) {
-        NextGenFactionsAPI.acceptFactionInvitation(this, faction);
+    default boolean acceptInvitation(Faction faction) {
+        return NextGenFactionsAPI.acceptFactionInvitation(this, faction);
     }
 
-    default void declineInvitation(Faction faction) {
-        NextGenFactionsAPI.declineFactionInvitation(this, faction);
+    default boolean declineInvitation(Faction faction) {
+        return NextGenFactionsAPI.declineFactionInvitation(this, faction);
     }
 
     default Set<FPlayer> getPlayersInRadius(int radius) {

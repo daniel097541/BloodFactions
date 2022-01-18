@@ -424,18 +424,23 @@ public interface PlayerHandler extends DataHandler<FPlayer> {
         FPlayer player = event.getPlayer();
         Faction faction = event.getFaction();
 
-        boolean isInvited = this.getFactionsManager().isPlayerInvitedToFaction(player, faction);
+        FactionInvitation invitation = this.getFactionsManager().getInvitation(player, faction);
 
         // Player is invited
-        if (isInvited) {
+        if (Objects.nonNull(invitation)) {
 
             // Remove
             this.getFactionsManager().removePlayerInvitation(player, faction);
 
-            String notInvited = (String) this.getLangConfig().get(LangConfigItems.COMMANDS_F_INVITE_NOT_INVITED_BY_FACTION);
+            String notInvited = (String) this.getLangConfig().get(LangConfigItems.COMMANDS_F_INVITE_DECLINED);
             MessageContext messageContext = new MessageContextImpl(player, notInvited);
             messageContext.setFaction(faction);
             player.sms(messageContext);
+
+            String playerDeclined = (String) this.getLangConfig().get(LangConfigItems.COMMANDS_F_INVITATION_DECLINED);
+            MessageContext declinedMessage = new MessageContextImpl(faction, playerDeclined);
+            declinedMessage.setTargetPlayer(invitation.getPlayer());
+            faction.sms(declinedMessage);
         }
 
         // Player is not invited
@@ -460,10 +465,16 @@ public interface PlayerHandler extends DataHandler<FPlayer> {
             // Remove invitation and add player.
             this.getFactionsManager().removePlayerInvitation(player, faction);
             this.getFactionsManager().addPlayerToFaction(invitation.getPlayer(), invitation.getFaction(), invitation.getInviter());
-            String notInvited = (String) this.getLangConfig().get(LangConfigItems.COMMANDS_F_INVITE_ACCEPTED);
-            MessageContext messageContext = new MessageContextImpl(player, notInvited);
+
+            String accepted = (String) this.getLangConfig().get(LangConfigItems.COMMANDS_F_INVITE_ACCEPTED);
+            MessageContext messageContext = new MessageContextImpl(player, accepted);
             messageContext.setFaction(faction);
             player.sms(messageContext);
+
+            String joined = (String) this.getLangConfig().get(LangConfigItems.COMMANDS_F_INVITATION_ACCEPTED);
+            MessageContext joinedMessage = new MessageContextImpl(faction, joined);
+            joinedMessage.setTargetPlayer(player);
+            faction.sms(joinedMessage);
 
         } else {
             String notInvited = (String) this.getLangConfig().get(LangConfigItems.COMMANDS_F_INVITE_NOT_INVITED_BY_FACTION);
@@ -559,5 +570,13 @@ public interface PlayerHandler extends DataHandler<FPlayer> {
             player.sms(messageContext);
         }
     }
+
+    @EventHandler(priority = EventPriority.HIGHEST)
+    default void handleGetInvitationsOfPlayer(GetInvitationsOfPlayerEvent event){
+        FPlayer player = event.getPlayer();
+        Set<FactionInvitation> invitations = this.getFactionsManager().getInvitationsOfPlayer(player);
+        event.setInvitations(invitations);
+    }
+
 
 }

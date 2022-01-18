@@ -27,6 +27,12 @@ public class MessageContextImpl implements MessageContext {
         this.message = message;
     }
 
+    public MessageContextImpl(@NotNull Faction faction, @NotNull String message){
+        this.faction = faction;
+        this.players = faction.getOnlineMembers();
+        this.message = message;
+    }
+
     @NotNull
     private final Set<FPlayer> players;
 
