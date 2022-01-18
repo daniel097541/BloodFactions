@@ -8,6 +8,8 @@ import org.bukkit.Chunk;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.HashSet;
+import java.util.Set;
 import java.util.UUID;
 
 @Getter
@@ -19,6 +21,7 @@ public class FChunkImpl implements FChunk {
 
     private final int x;
     private final int z;
+
 
     public static @Nullable FChunk fromString(String id) {
         String[] split = id.split("_");
@@ -33,6 +36,18 @@ public class FChunkImpl implements FChunk {
             return new FChunkImpl(worldId, x, z);
         }
         return null;
+    }
+
+    public Set<FChunk> getChunksInRadius(int radius) {
+        UUID worldId = this.getWorldId();
+        int length = (radius * 2) + 1;
+        Set<FChunk> chunks = new HashSet<>(length * length);
+        for (int x = -radius; x <= radius; x++) {
+            for (int z = -radius; z <= radius; z++) {
+                chunks.add(new FChunkImpl(worldId, x, z));
+            }
+        }
+        return chunks;
     }
 
     public static @NotNull FChunk fromChunk(@NotNull Chunk chunk) {

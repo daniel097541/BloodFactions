@@ -1,9 +1,9 @@
 package crypto.factions.bloodfactions.commons.command.impl;
 
-import crypto.factions.bloodfactions.commons.config.lang.LangConfigItems;
 import crypto.factions.bloodfactions.commons.annotation.config.LangConfiguration;
 import crypto.factions.bloodfactions.commons.command.SubCommandType;
 import crypto.factions.bloodfactions.commons.config.NGFConfig;
+import crypto.factions.bloodfactions.commons.config.lang.LangConfigItems;
 import crypto.factions.bloodfactions.commons.messages.model.MessageContext;
 import crypto.factions.bloodfactions.commons.messages.model.MessageContextImpl;
 import crypto.factions.bloodfactions.commons.model.faction.Faction;
@@ -35,58 +35,16 @@ public class ClaimSubCommand extends FSubCommandImpl {
         }
 
         Faction faction = player.getFaction();
-        FChunk chunk = player.getChunk();
-        Faction factionAt = Objects.requireNonNull(chunk).getFactionAt();
 
-        // Already claimed this land.
-        if (factionAt.equals(faction)) {
-            String successMessage = (String) this.getLangConfig().get(LangConfigItems.COMMANDS_F_CLAIM_ALREADY_OWNED);
-            MessageContext messageContext = new MessageContextImpl(player, successMessage);
-            player.sms(messageContext);
-            return false;
-        }
+        if (args.length > 1) {
 
-        // Need more pow
-        if (!faction.canClaim() && !player.isOp()) {
-            String successMessage = (String) this.getLangConfig().get(LangConfigItems.COMMANDS_F_CLAIM_NOT_ENOUGH_POWER);
-            MessageContext messageContext = new MessageContextImpl(player, successMessage);
-            player.sms(messageContext);
-            return false;
-        }
-
-        // Cannot over-claim faction
-        if (!factionAt.canBeOverClaimed() && !player.isOp()) {
-            String successMessage = (String) this.getLangConfig().get(LangConfigItems.COMMANDS_F_CLAIM_FACTION_IS_STRONG_TO_KEEP);
-            MessageContext messageContext = new MessageContextImpl(player, successMessage);
-            messageContext.setFaction(factionAt);
-            player.sms(messageContext);
-            return false;
-        }
-
-        boolean claimed = false;
-        // Over-Claim
-        if (!factionAt.isSystemFaction()) {
-            claimed = faction.overClaim(chunk, player, factionAt);
-        }
-        // Simple claim
-        else {
-            claimed = faction.claim(chunk, player);
-        }
-
-        // Success
-        if (claimed) {
-            String successMessage = (String) this.getLangConfig().get(LangConfigItems.COMMANDS_F_CLAIM_SUCCESS);
-            MessageContext messageContext = new MessageContextImpl(player, successMessage);
-            messageContext.setFaction(factionAt);
-            player.sms(messageContext);
             return true;
         }
-        // Failed
+
+        // Claim this chunk
         else {
-            String successMessage = (String) this.getLangConfig().get(LangConfigItems.COMMANDS_F_CLAIM_FAIL);
-            MessageContext messageContext = new MessageContextImpl(player, successMessage);
-            player.sms(messageContext);
-            return false;
+            FChunk chunk = player.getChunk();
+            return faction.claim(chunk, player);
         }
     }
 }

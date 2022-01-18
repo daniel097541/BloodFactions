@@ -2,6 +2,7 @@ package crypto.factions.bloodfactions.commons.model.land;
 
 import crypto.factions.bloodfactions.commons.api.NextGenFactionsAPI;
 import crypto.factions.bloodfactions.commons.model.faction.Faction;
+import crypto.factions.bloodfactions.commons.model.land.impl.FChunkImpl;
 import crypto.factions.bloodfactions.commons.model.player.FPlayer;
 import org.bukkit.Bukkit;
 import org.bukkit.Chunk;
@@ -9,12 +10,15 @@ import org.bukkit.World;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.HashSet;
 import java.util.Objects;
 import java.util.Set;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
 public interface FChunk {
+
+    Set<FChunk> getChunksInRadius(int radius);
 
     default @NotNull String getId() {
         return "FCHUNK_" + this.getWorldId().toString() + "_" + this.getX() + "_" + this.getZ();
@@ -52,7 +56,7 @@ public interface FChunk {
         return NextGenFactionsAPI.getFactionAtChunk(this);
     }
 
-    default @NotNull Set<FPlayer> getPlayersAtChunk(){
+    default @NotNull Set<FPlayer> getPlayersAtChunk() {
         return NextGenFactionsAPI
                 .getOnlinePlayers()
                 .stream()

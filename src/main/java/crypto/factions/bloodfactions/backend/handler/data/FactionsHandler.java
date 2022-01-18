@@ -268,13 +268,66 @@ public interface FactionsHandler extends DataHandler<Faction> {
 
     @EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
     default void handleClaim(ClaimEvent event) {
+
         Faction faction = event.getFaction();
         FPlayer player = event.getPlayer();
         FChunk chunk = event.getChunk();
         Faction factionAt = chunk.getFactionAt();
 
+        // Already claimed this land.
+        if (factionAt.equals(faction)) {
+            String successMessage = (String) this.getLangConfig().get(LangConfigItems.COMMANDS_F_CLAIM_ALREADY_OWNED);
+            MessageContext messageContext = new MessageContextImpl(player, successMessage);
+            player.sms(messageContext);
+            event.setSuccess(false);
+            return;
+        }
+
+        // Need more pow
+        if (!faction.canClaim() && !player.isOp()) {
+            String successMessage = (String) this.getLangConfig().get(LangConfigItems.COMMANDS_F_CLAIM_NOT_ENOUGH_POWER);
+            MessageContext messageContext = new MessageContextImpl(player, successMessage);
+            player.sms(messageContext);
+            event.setSuccess(false);
+            return;
+        }
+
+        // Cannot over-claim faction
+        if (!factionAt.canBeOverClaimed() && !player.isOp()) {
+            String successMessage = (String) this.getLangConfig().get(LangConfigItems.COMMANDS_F_CLAIM_FACTION_IS_STRONG_TO_KEEP);
+            MessageContext messageContext = new MessageContextImpl(player, successMessage);
+            messageContext.setFaction(factionAt);
+            player.sms(messageContext);
+            event.setSuccess(false);
+            return;
+        }
+
+        boolean claimed;
+
+        // Over-Claim
+        if (!factionAt.isSystemFaction()) {
+            claimed = faction.overClaim(chunk, player, factionAt);
+        }
+        // Simple claim
+        else {
+            claimed = this.getManager().claimForFaction(faction, chunk, player);
+        }
+
+        // Success
+        if (claimed) {
+            String successMessage = (String) this.getLangConfig().get(LangConfigItems.COMMANDS_F_CLAIM_SUCCESS);
+            MessageContext messageContext = new MessageContextImpl(player, successMessage);
+            messageContext.setFaction(factionAt);
+            player.sms(messageContext);
+        }
+        // Failed
+        else {
+            String successMessage = (String) this.getLangConfig().get(LangConfigItems.COMMANDS_F_CLAIM_FAIL);
+            MessageContext messageContext = new MessageContextImpl(player, successMessage);
+            player.sms(messageContext);
+        }
+
         Logger.logInfo("Player &d" + player.getName() + " &7is claiming for faction: &d" + faction.getName() + " &7at: &d" + chunk.getId());
-        boolean claimed = this.getManager().claimForFaction(faction, chunk, player);
 
         if (claimed) {
             chunk

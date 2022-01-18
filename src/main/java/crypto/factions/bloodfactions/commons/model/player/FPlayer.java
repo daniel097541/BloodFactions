@@ -20,6 +20,7 @@ import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.HashSet;
 import java.util.Objects;
 import java.util.Set;
 
@@ -441,9 +442,17 @@ public interface FPlayer extends NextGenFactionEntity {
         NextGenFactionsAPI.playerIsNearOther(this, other, radius);
     }
 
-
     default boolean leaveFaction(){
         return NextGenFactionsAPI.leaveFaction(this, this.getFaction());
+    }
+
+    default @NotNull Set<FChunk> getChunksInRadius(int radius){
+        if(this.isOnline()) {
+            return Objects.requireNonNull(this.getChunk()).getChunksInRadius(radius);
+        }
+        else{
+            return new HashSet<>();
+        }
     }
 
 }
