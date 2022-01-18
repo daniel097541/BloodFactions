@@ -8,7 +8,7 @@ import java.sql.PreparedStatement;
 import java.sql.SQLException;
 
 @Singleton
-public class DBMigrationManagerImpl implements DBMigrationManager{
+public class DBMigrationManagerImpl implements DBMigrationManager {
 
     private final DBManager dbManager;
 
@@ -171,7 +171,7 @@ public class DBMigrationManagerImpl implements DBMigrationManager{
         this.dbManager.executeUpdate(sql);
     }
 
-    private void loadTeleportsTable(){
+    private void loadTeleportsTable() {
 
         String sql = "CREATE TABLE IF NOT EXISTS factions_tps(" +
                 " faction_id VARCHAR[36] NOT NULL," +
@@ -188,7 +188,7 @@ public class DBMigrationManagerImpl implements DBMigrationManager{
         this.dbManager.executeUpdate(sql);
     }
 
-    private void loadInvitationsTable(){
+    private void loadInvitationsTable() {
         String sql = "CREATE TABLE IF NOT EXISTS faction_invitations(" +
                 " faction_id VARCHAR[36] NOT NULL," +
                 " player_id VARCHAR[36] NOT NULL," +
@@ -200,6 +200,31 @@ public class DBMigrationManagerImpl implements DBMigrationManager{
                 " FOREIGN KEY (inviter_id) REFERENCES players(id));";
 
         this.dbManager.executeUpdate(sql);
+    }
+
+    private void loadRelationsTable() {
+
+        String sql = "CREATE TABLE IF NOT EXISTS faction_relations(" +
+                " id VARCHAR[36] NOT NULL," +
+                " name VARCHAR[255] NOT NULL," +
+                " color VARCHAR[5] NOT NULL," +
+                " default_relation BOOLEAN DEFAULT 0," +
+                " PRIMARY KEY (id)," +
+                " UNIQUE (name));";
+
+        this.dbManager.executeUpdate(sql);
+    }
+
+    private void loadAsFactionRelationsTable(){
+        String sql = "CREATE TABLE IF NOT EXISTS as_faction_relations(" +
+                " faction_id VARCHAR[36] NOT NULL," +
+                " other_faction_id VARCHAR[36] NOT NULL, " +
+                " relation_id VARCHAR[36] NOT NULL, " +
+                " PRIMARY KEY (faction_id, other_faction_id, relation_id)," +
+                " FOREIGN KEY (faction_id) REFERENCES factions(id), " +
+                " FOREIGN KEY (other_faction_id) REFERENCES factions(id)," +
+                " FOREIGN KEY (relation_id) REFERENCES faction_relations(id));";
+        boolean created = this.dbManager.executeUpdate(sql);
     }
 
     private void load() {
@@ -215,5 +240,6 @@ public class DBMigrationManagerImpl implements DBMigrationManager{
         this.loadPlayerRoleTable();
         this.loadTeleportsTable();
         this.loadInvitationsTable();
+        this.loadAsFactionRelationsTable();
     }
 }

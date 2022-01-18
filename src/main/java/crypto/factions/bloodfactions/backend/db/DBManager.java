@@ -3,7 +3,10 @@ package crypto.factions.bloodfactions.backend.db;
 import lombok.SneakyThrows;
 
 import javax.inject.Singleton;
-import java.sql.*;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.PreparedStatement;
+import java.sql.Statement;
 
 @Singleton
 public class DBManager {
@@ -15,6 +18,7 @@ public class DBManager {
     public DBManager() {
         Class.forName("org.sqlite.JDBC").newInstance();
         this.connection = DriverManager.getConnection(URL);
+//        this.connection.setAutoCommit(false);
     }
 
     @SneakyThrows
@@ -27,12 +31,13 @@ public class DBManager {
         return this.connection.prepareStatement(sql);
     }
 
-    public void executeUpdate(String sql) {
+    public boolean executeUpdate(String sql) {
         try (Statement statement = this.getStatement()) {
-            statement.executeUpdate(sql);
+            return statement.executeUpdate(sql) > 0;
         } catch (Exception e) {
             e.printStackTrace();
         }
+        return false;
     }
 
 
