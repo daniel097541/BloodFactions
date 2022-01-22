@@ -32,9 +32,7 @@ public class DisbandSubCommand extends FSubCommandImpl {
             return false;
         }
 
-
         Faction faction = player.getFaction();
-
         return faction.disband(player);
     }
 }

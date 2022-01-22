@@ -143,11 +143,15 @@ public interface FactionsManager extends DataManager<Faction> {
     }
 
     default boolean multiClaimForFaction(Faction faction, Set<FChunk> chunks, FPlayer player) {
-        MultiClaimResponse response = this.getDAO().multiClaimForFaction(faction.getId(), chunks, player.getId());
+
+        Map<String, Faction> chunksThatCanBeClaimed = chunks
+                .stream()
+                .filter(c -> c.getFactionAt().canBeOverClaimed())
+                .collect(Collectors.toMap(FChunk::getId, FChunk::getFactionAt));
+
+        MultiClaimResponse response = this.getDAO().multiClaimForFaction(faction.getId(), chunksThatCanBeClaimed, player.getId());
         if (Objects.nonNull(response)) {
             Logger.logInfo("Success multi-claim response from DAO, claimed: " + response.getClaimedChunks().size() + ", unclaimed: " + response.getRemovedChunks().size());
-//            this.getChunkFactionsCache().invalidateAll(response.getRemovedChunks().keySet());
-//            this.getChunkFactionsCache().putAll(response.getClaimedChunks());
             return true;
         } else {
             return false;
