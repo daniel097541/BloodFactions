@@ -1,9 +1,9 @@
 package crypto.factions.bloodfactions.commons.command.impl;
 
-import crypto.factions.bloodfactions.commons.config.lang.LangConfigItems;
 import crypto.factions.bloodfactions.commons.annotation.config.LangConfiguration;
 import crypto.factions.bloodfactions.commons.command.SubCommandType;
 import crypto.factions.bloodfactions.commons.config.NGFConfig;
+import crypto.factions.bloodfactions.commons.config.lang.LangConfigItems;
 import crypto.factions.bloodfactions.commons.messages.model.MessageContext;
 import crypto.factions.bloodfactions.commons.messages.model.MessageContextImpl;
 import crypto.factions.bloodfactions.commons.model.faction.Faction;
@@ -25,7 +25,7 @@ public class DisbandSubCommand extends FSubCommandImpl {
 
         boolean hasFaction = player.hasFaction();
 
-        if(!hasFaction){
+        if (!hasFaction) {
             String successMessage = (String) this.getLangConfig().get(LangConfigItems.COMMANDS_F_DISBAND_NO_FACTION);
             MessageContext messageContext = new MessageContextImpl(player, successMessage);
             player.sms(messageContext);
@@ -34,19 +34,7 @@ public class DisbandSubCommand extends FSubCommandImpl {
 
 
         Faction faction = player.getFaction();
-        boolean disbanded = faction.disband(player);
 
-        if(disbanded) {
-            String successMessage = (String) this.getLangConfig().get(LangConfigItems.COMMANDS_F_DISBAND_SUCCESS);
-            MessageContext messageContext = new MessageContextImpl(player, successMessage);
-            player.sms(messageContext);
-            return true;
-        }
-        else{
-            String successMessage = (String) this.getLangConfig().get(LangConfigItems.COMMANDS_F_DISBAND_FAIL);
-            MessageContext messageContext = new MessageContextImpl(player, successMessage);
-            player.sms(messageContext);
-            return false;
-        }
+        return faction.disband(player);
     }
 }

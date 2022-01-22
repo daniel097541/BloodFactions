@@ -12,7 +12,7 @@ import crypto.factions.bloodfactions.commons.model.player.FPlayer;
 
 import javax.inject.Inject;
 import javax.inject.Singleton;
-import java.util.Objects;
+import java.util.Set;
 
 @Singleton
 public class ClaimSubCommand extends FSubCommandImpl {
@@ -37,6 +37,17 @@ public class ClaimSubCommand extends FSubCommandImpl {
         Faction faction = player.getFaction();
 
         if (args.length > 1) {
+
+            String radiusStr = args[1];
+
+            try {
+                int radius = Integer.parseInt(radiusStr);
+                Set<FChunk> chunks = player.getChunksInRadius(radius);
+                faction.multiClaim(chunks, player);
+
+            } catch (Exception ignored) {
+                ignored.printStackTrace();
+            }
 
             return true;
         }

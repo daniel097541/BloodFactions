@@ -2,10 +2,13 @@ package crypto.factions.bloodfactions.backend.db;
 
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
+import crypto.factions.bloodfactions.commons.logger.Logger;
 import crypto.factions.bloodfactions.commons.model.permission.PermissionType;
 
 import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Statement;
 
 @Singleton
 public class DBMigrationManagerImpl implements DBMigrationManager {
@@ -227,7 +230,23 @@ public class DBMigrationManagerImpl implements DBMigrationManager {
         boolean created = this.dbManager.executeUpdate(sql);
     }
 
+    private void loadVersion(){
+        String sql = "SELECT sqlite_version() AS version;";
+        try (Statement statement = this.dbManager.getStatement()){
+            try(ResultSet rs = statement.executeQuery(sql)){
+                if(rs.next()){
+                    String version = rs.getString("version");
+                    Logger.logInfo("SQLite version: " + version);
+                }
+            }
+        }
+        catch (Exception e){
+            e.printStackTrace();
+        }
+    }
+
     private void load() {
+        this.loadVersion();
         this.loadPlayersTable();
         this.loadFactionsTable();
         this.loadClaimsTable();

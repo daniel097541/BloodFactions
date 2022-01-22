@@ -4,15 +4,18 @@ import com.google.common.cache.LoadingCache;
 import crypto.factions.bloodfactions.backend.dao.FactionsDAO;
 import crypto.factions.bloodfactions.backend.dao.PlayerDAO;
 import crypto.factions.bloodfactions.backend.dao.RolesDAO;
+import crypto.factions.bloodfactions.commons.logger.Logger;
 import crypto.factions.bloodfactions.commons.model.faction.Faction;
 import crypto.factions.bloodfactions.commons.model.invitation.FactionInvitation;
 import crypto.factions.bloodfactions.commons.model.land.FChunk;
 import crypto.factions.bloodfactions.commons.model.land.FLocation;
+import crypto.factions.bloodfactions.commons.model.land.MultiClaimResponse;
 import crypto.factions.bloodfactions.commons.model.player.FPlayer;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.Map;
+import java.util.Objects;
 import java.util.Set;
 import java.util.UUID;
 import java.util.stream.Collectors;
@@ -25,7 +28,7 @@ public interface FactionsManager extends DataManager<Faction> {
 
     RolesDAO getRolesDAO();
 
-    LoadingCache<String, Faction> getChunkFactionsCache();
+//    LoadingCache<String, Faction> getChunkFactionsCache();
 
     LoadingCache<String, Faction> getNameFactionsCache();
 
@@ -38,17 +41,17 @@ public interface FactionsManager extends DataManager<Faction> {
 
     default boolean removeClaim(@NotNull Faction faction, @NotNull FChunk chunk) {
         boolean unClaimed = this.getDAO().removeClaim(faction.getId(), chunk.getId());
-        if (unClaimed) {
-            this.getChunkFactionsCache().invalidate(chunk.getId());
-        }
+//        if (unClaimed) {
+//            this.getChunkFactionsCache().invalidate(chunk.getId());
+//        }
         return unClaimed;
     }
 
     default boolean claimForFaction(@NotNull Faction faction, @NotNull FChunk chunk, @NotNull FPlayer player) {
         boolean claimed = this.getDAO().claimForFaction(faction.getId(), chunk, player.getId());
-        if (claimed) {
-            this.getChunkFactionsCache().put(chunk.getId(), faction);
-        }
+//        if (claimed) {
+//            this.getChunkFactionsCache().put(chunk.getId(), faction);
+//        }
         return claimed;
     }
 
@@ -66,15 +69,15 @@ public interface FactionsManager extends DataManager<Faction> {
 
     default boolean removeAllClaimsOfFaction(@NotNull Faction faction) {
         // Invalidate all cache keys.
-        Set<String> keys = this.getChunkFactionsCache()
-                .asMap()
-                .entrySet()
-                .stream()
-                .filter(entry -> entry.getValue().getId().equals(faction.getId()))
-                .map(Map.Entry::getKey)
-                .collect(Collectors.toSet());
-
-        this.getChunkFactionsCache().invalidateAll(keys);
+//        Set<String> keys = this.getChunkFactionsCache()
+//                .asMap()
+//                .entrySet()
+//                .stream()
+//                .filter(entry -> entry.getValue().getId().equals(faction.getId()))
+//                .map(Map.Entry::getKey)
+//                .collect(Collectors.toSet());
+//
+//        this.getChunkFactionsCache().invalidateAll(keys);
 
         // Remove from db.
         return this.getDAO().removeAllClaimsOfFaction(faction.getId());
@@ -85,7 +88,8 @@ public interface FactionsManager extends DataManager<Faction> {
     }
 
     default @Nullable Faction getFactionAtChunk(@NotNull FChunk chunk) throws Exception {
-        return this.getChunkFactionsCache().get(chunk.getId());
+//        return this.getChunkFactionsCache().get(chunk.getId());
+        return this.getDAO().getFactionAtChunk(chunk.getId());
     }
 
     default boolean checkIfPlayerHasFaction(@NotNull FPlayer player) {
@@ -106,7 +110,7 @@ public interface FactionsManager extends DataManager<Faction> {
 
     default @NotNull Set<FChunk> getAllClaims(@NotNull Faction faction) {
         Set<FChunk> claims = this.getDAO().getAllClaimsOfFaction(faction.getId());
-        claims.forEach(c -> this.getChunkFactionsCache().put(c.getId(), faction));
+//        claims.forEach(c -> this.getChunkFactionsCache().put(c.getId(), faction));
         return claims;
     }
 
@@ -130,11 +134,23 @@ public interface FactionsManager extends DataManager<Faction> {
         return this.getDAO().getInvitationsOfPlayer(player.getId());
     }
 
-    default @Nullable FactionInvitation getInvitation(@NotNull FPlayer player,@NotNull Faction faction){
+    default @Nullable FactionInvitation getInvitation(@NotNull FPlayer player, @NotNull Faction faction) {
         return this.getDAO().getInvitation(player.getId(), faction.getId());
     }
 
-    default boolean removePlayerFromFaction(@NotNull FPlayer kicked,@NotNull Faction faction){
+    default boolean removePlayerFromFaction(@NotNull FPlayer kicked, @NotNull Faction faction) {
         return this.getDAO().removePlayerFromFaction(kicked.getId(), faction.getId());
+    }
+
+    default boolean multiClaimForFaction(Faction faction, Set<FChunk> chunks, FPlayer player) {
+        MultiClaimResponse response = this.getDAO().multiClaimForFaction(faction.getId(), chunks, player.getId());
+        if (Objects.nonNull(response)) {
+            Logger.logInfo("Success multi-claim response from DAO, claimed: " + response.getClaimedChunks().size() + ", unclaimed: " + response.getRemovedChunks().size());
+//            this.getChunkFactionsCache().invalidateAll(response.getRemovedChunks().keySet());
+//            this.getChunkFactionsCache().putAll(response.getClaimedChunks());
+            return true;
+        } else {
+            return false;
+        }
     }
 }

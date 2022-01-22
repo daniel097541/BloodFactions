@@ -33,8 +33,8 @@ public class LangConfigItems {
 
     // Disband command
     public static ConfigItem COMMANDS_F_DISBAND_NO_FACTION = new ConfigItemImpl("commands.f-disband.no-faction", "&cYou are not in a faction.");
-    public static ConfigItem COMMANDS_F_DISBAND_SUCCESS = new ConfigItemImpl("commands.f-disband.success", "&aFaction successfully disbanded.");
-    public static ConfigItem COMMANDS_F_DISBAND_FAIL = new ConfigItemImpl("commands.f-disband.fail", "&cFailed to disband faction.");
+    public static ConfigItem COMMANDS_F_DISBAND_SUCCESS = new ConfigItemImpl("commands.f-disband.success", "&eYour faction was &cdisbanded");
+    public static ConfigItem COMMANDS_F_DISBAND_CONFIRMATION_REQUIRED = new ConfigItemImpl("commands.f-disband.confirmation-required", "&eTo confirm the disband, type again: &7/f disband");
 
     // Claim command
     public static ConfigItem COMMANDS_F_CLAIM_ALREADY_OWNED = new ConfigItemImpl("commands.f-claim.already-owned", "&7Your faction already owns this land.");

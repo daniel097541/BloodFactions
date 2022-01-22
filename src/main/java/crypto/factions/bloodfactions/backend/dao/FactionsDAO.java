@@ -8,6 +8,7 @@ import crypto.factions.bloodfactions.commons.model.invitation.FactionInvitation;
 import crypto.factions.bloodfactions.commons.model.invitation.FactionInvitationImpl;
 import crypto.factions.bloodfactions.commons.model.land.FChunk;
 import crypto.factions.bloodfactions.commons.model.land.FLocation;
+import crypto.factions.bloodfactions.commons.model.land.MultiClaimResponse;
 import crypto.factions.bloodfactions.commons.model.land.impl.FChunkImpl;
 import crypto.factions.bloodfactions.commons.model.land.impl.FLocationImpl;
 import org.jetbrains.annotations.NotNull;
@@ -484,5 +485,63 @@ public interface FactionsDAO extends DAO<Faction> {
             e.printStackTrace();
             return false;
         }
+    }
+
+    default MultiClaimResponse multiClaimForFaction(UUID factionId, Set<FChunk> chunks, UUID playerId) {
+        boolean failed = false;
+        Map<String, Faction> removedChunks = new HashMap<>();
+        Map<String, Faction> claimedChunks = new HashMap<>();
+
+        for (FChunk chunk : chunks) {
+            Faction factionAt = this.getFactionAtChunk(chunk.getId());
+            if (Objects.nonNull(factionAt)) {
+                boolean removed = this.removeClaim(factionAt.getId(), chunk.getId());
+                if (removed) {
+                    removedChunks.put(chunk.getId(), factionAt);
+                } else {
+                    failed = true;
+                    break;
+                }
+            }
+            boolean claimed = this.claimForFaction(factionId, chunk, playerId);
+            if (!claimed) {
+                failed = true;
+                break;
+            } else {
+                claimedChunks.put(chunk.getId(), factionAt);
+            }
+        }
+        if (!failed) {
+            return new MultiClaimResponse(removedChunks, claimedChunks);
+        }
+        return null;
+
+//        StringBuilder sql = new StringBuilder("INSERT INTO as_faction_claims (faction_id, claim_id, claimed_by) VALUES ");
+//
+//        for (int i = 0; i < chunks.size(); i++) {
+//            sql.append("(?,?,?),");
+//        }
+//
+//        String query = sql.substring(0, sql.toString().length() - 1) + ";";
+//        Logger.logInfo(query);
+//
+//        try (PreparedStatement statement = this.getPreparedStatement(query)) {
+//            int i = 1;
+//            for(FChunk chunk : chunks){
+//                statement.setString(i, factionId.toString());
+//                i++;
+//                statement.setString(i, chunk.getId());
+//                i++;
+//                statement.setString(i, playerId.toString());
+//                i++;
+//            }
+//
+//            return statement.executeUpdate() > 0;
+//
+//        } catch (Exception e) {
+//            e.printStackTrace();
+//        }
+//
+//        return false;
     }
 }

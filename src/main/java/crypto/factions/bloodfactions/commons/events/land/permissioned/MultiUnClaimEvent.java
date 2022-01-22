@@ -12,5 +12,6 @@ public class MultiUnClaimEvent extends MultiLandEvent {
 
     public MultiUnClaimEvent(Faction faction, FPlayer player, Set<FChunk> chunks) {
         super(faction, player, PermissionType.MULTI_UN_CLAIM, chunks);
+        this.launch();
     }
 }

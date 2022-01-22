@@ -17,7 +17,8 @@ public class DBManager {
     @SneakyThrows
     public DBManager() {
         Class.forName("org.sqlite.JDBC").newInstance();
-        this.connection = DriverManager.getConnection(URL);
+
+        this.connection = DriverManager.getConnection(this.URL);
 //        this.connection.setAutoCommit(false);
     }
 

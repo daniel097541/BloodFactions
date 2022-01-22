@@ -41,10 +41,12 @@ public class FChunkImpl implements FChunk {
     public Set<FChunk> getChunksInRadius(int radius) {
         UUID worldId = this.getWorldId();
         int length = (radius * 2) + 1;
+        int chunkX = this.getX();
+        int chunkZ = this.getZ();
         Set<FChunk> chunks = new HashSet<>(length * length);
         for (int x = -radius; x <= radius; x++) {
             for (int z = -radius; z <= radius; z++) {
-                chunks.add(new FChunkImpl(worldId, x, z));
+                chunks.add(new FChunkImpl(worldId, chunkX + x, chunkZ + z));
             }
         }
         return chunks;

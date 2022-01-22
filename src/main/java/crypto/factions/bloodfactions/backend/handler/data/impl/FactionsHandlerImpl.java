@@ -30,6 +30,7 @@ public class FactionsHandlerImpl implements FactionsHandler {
     private final NGFConfig langConfig;
     private final TasksHandler tasksHandler;
     private final Map<UUID, FPlayer> unClaimingAllPlayers = new ConcurrentHashMap<>();
+    private final Map<UUID, FPlayer> disbandingPlayers = new ConcurrentHashMap<>();
 
     @Inject
     public FactionsHandlerImpl(JavaPlugin plugin,
