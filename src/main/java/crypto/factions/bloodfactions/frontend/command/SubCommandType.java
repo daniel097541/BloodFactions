@@ -1,4 +1,4 @@
-package crypto.factions.bloodfactions.commons.command;
+package crypto.factions.bloodfactions.frontend.command;
 
 import lombok.Getter;
 import org.jetbrains.annotations.Nullable;

@@ -1,8 +1,8 @@
-package crypto.factions.bloodfactions.commons.command.impl;
+package crypto.factions.bloodfactions.frontend.command.impl;
 
 import crypto.factions.bloodfactions.commons.config.lang.LangConfigItems;
 import crypto.factions.bloodfactions.commons.annotation.config.LangConfiguration;
-import crypto.factions.bloodfactions.commons.command.SubCommandType;
+import crypto.factions.bloodfactions.frontend.command.SubCommandType;
 import crypto.factions.bloodfactions.commons.config.NGFConfig;
 import crypto.factions.bloodfactions.commons.messages.model.MessageContext;
 import crypto.factions.bloodfactions.commons.messages.model.MessageContextImpl;
@@ -15,11 +15,11 @@ import javax.inject.Singleton;
 import java.util.Objects;
 
 @Singleton
-public class UnClaimSubCommand extends FSubCommandImpl {
+public class FlySubCommand extends FSubCommandImpl {
 
     @Inject
-    public UnClaimSubCommand(@LangConfiguration NGFConfig langConfig) {
-        super(SubCommandType.UN_CLAIM, langConfig);
+    public FlySubCommand(@LangConfiguration NGFConfig langConfig) {
+        super(SubCommandType.FLY, langConfig);
     }
 
     @Override
@@ -28,7 +28,7 @@ public class UnClaimSubCommand extends FSubCommandImpl {
 
         // Player is not in a faction.
         if (!hasFaction) {
-            String successMessage = (String) this.getLangConfig().get(LangConfigItems.COMMANDS_F_UN_CLAIM_NO_FACTION);
+            String successMessage = (String) this.getLangConfig().get(LangConfigItems.COMMANDS_F_FLY_NO_FACTION);
             MessageContext messageContext = new MessageContextImpl(player, successMessage);
             player.sms(messageContext);
             return false;
@@ -40,29 +40,13 @@ public class UnClaimSubCommand extends FSubCommandImpl {
 
         // Already claimed this land.
         if (!factionAt.equals(faction)) {
-            String successMessage = (String) this.getLangConfig().get(LangConfigItems.COMMANDS_F_UN_CLAIM_NOT_YOUR_LAND);
+            String successMessage = (String) this.getLangConfig().get(LangConfigItems.COMMANDS_F_FLY_NOT_IN_YOUR_FACTION);
             MessageContext messageContext = new MessageContextImpl(player, successMessage);
             player.sms(messageContext);
             return false;
         }
 
-        boolean unClaimed = faction.unClaim(chunk, player);
-
-
-        // Success
-        if (unClaimed) {
-            String successMessage = (String) this.getLangConfig().get(LangConfigItems.COMMANDS_F_UN_CLAIM_SUCCESS);
-            MessageContext messageContext = new MessageContextImpl(player, successMessage);
-            messageContext.setFaction(factionAt);
-            player.sms(messageContext);
-            return true;
-        }
-        // Failed
-        else {
-            String successMessage = (String) this.getLangConfig().get(LangConfigItems.COMMANDS_F_UN_CLAIM_FAIL);
-            MessageContext messageContext = new MessageContextImpl(player, successMessage);
-            player.sms(messageContext);
-            return false;
-        }
+        player.toggleFly();
+        return true;
     }
 }

@@ -1,4 +1,4 @@
-package crypto.factions.bloodfactions.commons.command;
+package crypto.factions.bloodfactions.frontend.command;
 
 import crypto.factions.bloodfactions.commons.config.lang.LangConfigItems;
 import crypto.factions.bloodfactions.commons.config.NGFConfig;

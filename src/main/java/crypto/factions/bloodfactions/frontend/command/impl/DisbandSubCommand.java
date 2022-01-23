@@ -1,7 +1,7 @@
-package crypto.factions.bloodfactions.commons.command.impl;
+package crypto.factions.bloodfactions.frontend.command.impl;
 
 import crypto.factions.bloodfactions.commons.annotation.config.LangConfiguration;
-import crypto.factions.bloodfactions.commons.command.SubCommandType;
+import crypto.factions.bloodfactions.frontend.command.SubCommandType;
 import crypto.factions.bloodfactions.commons.config.NGFConfig;
 import crypto.factions.bloodfactions.commons.config.lang.LangConfigItems;
 import crypto.factions.bloodfactions.commons.messages.model.MessageContext;

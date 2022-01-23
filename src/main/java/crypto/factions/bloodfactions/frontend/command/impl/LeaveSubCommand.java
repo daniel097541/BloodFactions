@@ -1,9 +1,9 @@
-package crypto.factions.bloodfactions.commons.command.impl;
+package crypto.factions.bloodfactions.frontend.command.impl;
 
-import crypto.factions.bloodfactions.commons.config.lang.LangConfigItems;
 import crypto.factions.bloodfactions.commons.annotation.config.LangConfiguration;
-import crypto.factions.bloodfactions.commons.command.SubCommandType;
+import crypto.factions.bloodfactions.frontend.command.SubCommandType;
 import crypto.factions.bloodfactions.commons.config.NGFConfig;
+import crypto.factions.bloodfactions.commons.config.lang.LangConfigItems;
 import crypto.factions.bloodfactions.commons.messages.model.MessageContext;
 import crypto.factions.bloodfactions.commons.messages.model.MessageContextImpl;
 import crypto.factions.bloodfactions.commons.model.faction.Faction;
@@ -13,11 +13,11 @@ import javax.inject.Inject;
 import javax.inject.Singleton;
 
 @Singleton
-public class UnClaimAllSubCommand extends FSubCommandImpl {
+public class LeaveSubCommand extends FSubCommandImpl {
 
     @Inject
-    public UnClaimAllSubCommand(@LangConfiguration NGFConfig langConfig) {
-        super(SubCommandType.UN_CLAIM_ALL, langConfig);
+    public LeaveSubCommand(@LangConfiguration NGFConfig langConfig) {
+        super(SubCommandType.LEAVE, langConfig);
     }
 
     @Override
@@ -26,14 +26,16 @@ public class UnClaimAllSubCommand extends FSubCommandImpl {
 
         // Player is not in a faction.
         if (!hasFaction) {
-            String successMessage = (String) this.getLangConfig().get(LangConfigItems.COMMANDS_F_UN_CLAIM_ALL_NO_FACTION);
+            String successMessage = (String) this.getLangConfig().get(LangConfigItems.COMMANDS_F_LEAVE_NO_FACTION);
             MessageContext messageContext = new MessageContextImpl(player, successMessage);
             player.sms(messageContext);
             return false;
         }
 
-        // Un-Claim all
         Faction faction = player.getFaction();
-        return faction.unClaimAll(player, faction);
+
+        player.leaveFaction();
+
+        return false;
     }
 }

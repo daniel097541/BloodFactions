@@ -1,4 +1,4 @@
-package crypto.factions.bloodfactions.commons.command;
+package crypto.factions.bloodfactions.frontend.command;
 
 import crypto.factions.bloodfactions.commons.contex.ContextHandler;
 import crypto.factions.bloodfactions.commons.model.player.ConsolePlayerImpl;

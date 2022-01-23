@@ -1,6 +1,6 @@
 package crypto.factions.bloodfactions.backend.handler.command;
 
-import crypto.factions.bloodfactions.commons.command.FCommand;
+import crypto.factions.bloodfactions.frontend.command.FCommand;
 import lombok.Getter;
 import org.bukkit.Bukkit;
 

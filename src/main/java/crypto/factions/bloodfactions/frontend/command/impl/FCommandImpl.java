@@ -1,9 +1,9 @@
-package crypto.factions.bloodfactions.commons.command.impl;
+package crypto.factions.bloodfactions.frontend.command.impl;
 
 import crypto.factions.bloodfactions.commons.annotation.command.*;
 import crypto.factions.bloodfactions.commons.annotation.config.LangConfiguration;
-import crypto.factions.bloodfactions.commons.command.FCommand;
-import crypto.factions.bloodfactions.commons.command.FSubCommand;
+import crypto.factions.bloodfactions.frontend.command.FCommand;
+import crypto.factions.bloodfactions.frontend.command.FSubCommand;
 import crypto.factions.bloodfactions.commons.config.NGFConfig;
 import lombok.Getter;
 import org.bukkit.Bukkit;
