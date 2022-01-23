@@ -16,10 +16,8 @@ import crypto.factions.bloodfactions.backend.db.DBMigrationManager;
 import crypto.factions.bloodfactions.backend.db.DBMigrationManagerImpl;
 import crypto.factions.bloodfactions.backend.handler.command.CommandHandler;
 import crypto.factions.bloodfactions.backend.handler.command.CommandHandlerImpl;
-import crypto.factions.bloodfactions.backend.handler.data.AlertsHandler;
 import crypto.factions.bloodfactions.backend.handler.data.FactionsHandler;
 import crypto.factions.bloodfactions.backend.handler.data.PlayerHandler;
-import crypto.factions.bloodfactions.backend.handler.data.impl.AlertsHandlerImpl;
 import crypto.factions.bloodfactions.backend.handler.data.impl.FactionsHandlerImpl;
 import crypto.factions.bloodfactions.backend.handler.data.impl.PlayerHandlerImpl;
 import crypto.factions.bloodfactions.backend.handler.permissions.PermissionsHandler;
@@ -109,7 +107,5 @@ public class NGFBinder extends AbstractModule {
         this.bind(FactionsHandler.class).to(FactionsHandlerImpl.class);
         this.bind(PlayerHandler.class).to(PlayerHandlerImpl.class);
         this.bind(PermissionsHandler.class).to(PermissionsHandlerImpl.class);
-        this.bind(AlertsHandler.class).to(AlertsHandlerImpl.class);
-
     }
 }

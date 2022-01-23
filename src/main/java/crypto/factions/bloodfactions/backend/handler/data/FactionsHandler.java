@@ -15,6 +15,7 @@ import crypto.factions.bloodfactions.commons.events.faction.unpermissioned.Creat
 import crypto.factions.bloodfactions.commons.events.land.callback.GetClaimsOfFactionEvent;
 import crypto.factions.bloodfactions.commons.events.land.callback.GetNumberOfClaimsEvent;
 import crypto.factions.bloodfactions.commons.events.land.permissioned.*;
+import crypto.factions.bloodfactions.commons.events.player.unpermissioned.PlayerChangedLandEvent;
 import crypto.factions.bloodfactions.commons.events.role.*;
 import crypto.factions.bloodfactions.commons.events.shared.callback.GetFactionOfPlayerEvent;
 import crypto.factions.bloodfactions.commons.exceptions.NoFactionForFactionLessException;
@@ -33,6 +34,7 @@ import crypto.factions.bloodfactions.commons.model.role.FactionRank;
 import crypto.factions.bloodfactions.commons.model.role.FactionRoleImpl;
 import crypto.factions.bloodfactions.commons.tasks.handler.TasksHandler;
 import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
 import org.bukkit.block.Block;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
@@ -169,6 +171,29 @@ public interface FactionsHandler extends DataHandler<Faction> {
         Faction faction = event.getFaction();
         int count = this.getManager().getCountOfClaims(faction.getId());
         event.setNumberOfClaims(count);
+    }
+
+    @EventHandler(priority = EventPriority.HIGHEST)
+    default void handlePlayerEnteredFaction(PlayerChangedLandEvent event) {
+
+        Faction factionTo = event.getFactionTo();
+        FPlayer player = event.getPlayer();
+        Faction playersFaction = player.getFaction();
+
+        String color = "&a";
+
+        if (factionTo.isSystemFaction()) {
+            SystemFactionImpl systemFaction = (SystemFactionImpl) factionTo;
+            color = systemFaction.getColor();
+        } else {
+            if (!factionTo.equals(playersFaction)) {
+                color = "&c";
+            }
+        }
+
+        // Send title
+        String title = ChatColor.translateAlternateColorCodes('&', color + factionTo.getName());
+        player.sendTitle(title);
     }
 
     @EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)

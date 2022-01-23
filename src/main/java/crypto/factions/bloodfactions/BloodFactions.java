@@ -3,7 +3,6 @@ package crypto.factions.bloodfactions;
 import com.google.inject.Inject;
 import com.google.inject.Injector;
 import crypto.factions.bloodfactions.backend.handler.command.CommandHandler;
-import crypto.factions.bloodfactions.backend.handler.data.AlertsHandler;
 import crypto.factions.bloodfactions.backend.handler.data.FactionsHandler;
 import crypto.factions.bloodfactions.backend.handler.data.PlayerHandler;
 import crypto.factions.bloodfactions.backend.handler.permissions.PermissionsHandler;
