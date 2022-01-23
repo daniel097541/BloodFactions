@@ -1,6 +1,6 @@
 package crypto.factions.bloodfactions.frontend.listener;
 
-import crypto.factions.bloodfactions.commons.api.NextGenFactionsAPI;
+import crypto.factions.bloodfactions.commons.contex.ContextHandler;
 import crypto.factions.bloodfactions.commons.config.NGFConfig;
 import crypto.factions.bloodfactions.commons.config.lang.LangConfigItems;
 import crypto.factions.bloodfactions.commons.logger.Logger;
@@ -25,7 +25,6 @@ import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.entity.PlayerDeathEvent;
-import org.bukkit.event.player.PlayerEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerMoveEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
@@ -45,7 +44,7 @@ public interface PlayerListener extends Listener {
         Location bukkitLocation = bukkitBlock.getLocation();
 
         FChunk chunk = FChunkImpl.fromChunk(bukkitLocation.getChunk());
-        FPlayer player = NextGenFactionsAPI.getPlayer(bukkitPlayer);
+        FPlayer player = ContextHandler.getPlayer(bukkitPlayer);
         Faction playersFaction = player.getFaction();
         Faction factionAt = chunk.getFactionAt();
 
@@ -85,7 +84,7 @@ public interface PlayerListener extends Listener {
         Location bukkitLocation = bukkitBlock.getLocation();
 
         FChunk chunk = FChunkImpl.fromChunk(bukkitLocation.getChunk());
-        FPlayer player = NextGenFactionsAPI.getPlayer(bukkitPlayer);
+        FPlayer player = ContextHandler.getPlayer(bukkitPlayer);
         Faction playersFaction = player.getFaction();
         Faction factionAt = chunk.getFactionAt();
 
@@ -131,7 +130,7 @@ public interface PlayerListener extends Listener {
         // Player effectively moved.
         if (Objects.nonNull(toLocation) && !BukkitLocationUtils.sameLocation(toLocation, fromLocation)) {
 
-            FPlayer player = NextGenFactionsAPI.getPlayer(bukkitPlayer);
+            FPlayer player = ContextHandler.getPlayer(bukkitPlayer);
 
             player.proximityCheck();
 
@@ -157,14 +156,14 @@ public interface PlayerListener extends Listener {
     @EventHandler(priority = EventPriority.HIGHEST)
     default void handleLogin(PlayerJoinEvent event) {
         Player player = event.getPlayer();
-        FPlayer fPlayer = NextGenFactionsAPI.getPlayer(player);
+        FPlayer fPlayer = ContextHandler.getPlayer(player);
         Objects.requireNonNull(fPlayer).logIn();
     }
 
     @EventHandler(priority = EventPriority.HIGHEST)
     default void handleLogin(PlayerQuitEvent event) {
         Player player = event.getPlayer();
-        FPlayer fPlayer = NextGenFactionsAPI.getPlayer(player);
+        FPlayer fPlayer = ContextHandler.getPlayer(player);
         Objects.requireNonNull(fPlayer).logOut();
     }
 
@@ -173,7 +172,7 @@ public interface PlayerListener extends Listener {
     default void handleDamage(EntityDamageEvent event) {
         if (event.getEntity() instanceof Player) {
             Player bukkitPlayer = (Player) event.getEntity();
-            FPlayer player = NextGenFactionsAPI.getPlayer(bukkitPlayer.getUniqueId());
+            FPlayer player = ContextHandler.getPlayer(bukkitPlayer.getUniqueId());
             EntityDamageEvent.DamageCause cause = event.getCause();
             Logger.logInfo(cause.name());
             if (cause.equals(EntityDamageEvent.DamageCause.FALL)) {
@@ -192,7 +191,7 @@ public interface PlayerListener extends Listener {
     default void handlePlayerDeath(PlayerDeathEvent event) {
 
         Player bukkitPlayer = event.getEntity();
-        FPlayer player = NextGenFactionsAPI.getPlayer(bukkitPlayer.getUniqueId());
+        FPlayer player = ContextHandler.getPlayer(bukkitPlayer.getUniqueId());
 
         player.died();
     }
@@ -210,8 +209,8 @@ public interface PlayerListener extends Listener {
 
         if(damaged instanceof Player && hitter instanceof Player){
 
-            FPlayer playerHitting = NextGenFactionsAPI.getPlayer(hitter.getUniqueId());
-            FPlayer playerDamaged = NextGenFactionsAPI.getPlayer(damaged.getUniqueId());
+            FPlayer playerHitting = ContextHandler.getPlayer(hitter.getUniqueId());
+            FPlayer playerDamaged = ContextHandler.getPlayer(damaged.getUniqueId());
 
             boolean isCancelled = Objects.requireNonNull(playerHitting).hit(playerDamaged);
 

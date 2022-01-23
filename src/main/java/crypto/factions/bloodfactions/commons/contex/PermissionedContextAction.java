@@ -1,6 +1,6 @@
-package crypto.factions.bloodfactions.commons.api;
+package crypto.factions.bloodfactions.commons.contex;
 
-public enum PermissionedAPIAction {
+public enum PermissionedContextAction {
 
     CLAIM,
     UN_CLAIM,

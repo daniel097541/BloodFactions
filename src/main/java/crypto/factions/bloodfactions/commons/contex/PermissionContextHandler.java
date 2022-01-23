@@ -1,4 +1,4 @@
-package crypto.factions.bloodfactions.commons.api;
+package crypto.factions.bloodfactions.commons.contex;
 
 import crypto.factions.bloodfactions.commons.events.faction.SetCoreEvent;
 import crypto.factions.bloodfactions.commons.events.faction.permissioned.*;
@@ -20,14 +20,14 @@ import org.jetbrains.annotations.NotNull;
 import java.util.Map;
 import java.util.Set;
 
-public class PermissionNextGenFactionsAPI {
+public class PermissionContextHandler {
 
-    private static void logAction(long start, long end, PermissionedAPIAction action) {
+    private static void logAction(long start, long end, PermissionedContextAction action) {
         String message = "Time to perform permission action {action}: {time} ms";
         message = message
                 .replace("{action}", action.name())
                 .replace("{time}", String.valueOf(end - start));
-        Logger.logInfo("&bPERMISSIONS API", message);
+        Logger.logInfo("&bPERMISSIONS CONTEXT", message);
     }
 
     /**
@@ -43,7 +43,7 @@ public class PermissionNextGenFactionsAPI {
         MultiUnClaimEvent event = new MultiUnClaimEvent(faction, player, chunks);
         Map<FChunk, Boolean> result = event.getResult();
         long end = System.currentTimeMillis();
-        logAction(start, end, PermissionedAPIAction.MULTI_UN_CLAIM);
+        logAction(start, end, PermissionedContextAction.MULTI_UN_CLAIM);
         return result;
     }
 
@@ -60,7 +60,7 @@ public class PermissionNextGenFactionsAPI {
         UnClaimEvent event = new UnClaimEvent(faction, player, chunk);
         boolean result = event.isSuccess();
         long end = System.currentTimeMillis();
-        logAction(start, end, PermissionedAPIAction.UN_CLAIM);
+        logAction(start, end, PermissionedContextAction.UN_CLAIM);
         return result;
     }
 
@@ -77,7 +77,7 @@ public class PermissionNextGenFactionsAPI {
         MultiClaimEvent event = new MultiClaimEvent(faction, player, chunks);
         Map<FChunk, Boolean> result = event.getResult();
         long end = System.currentTimeMillis();
-        logAction(start, end, PermissionedAPIAction.MULTI_CLAIM);
+        logAction(start, end, PermissionedContextAction.MULTI_CLAIM);
         return result;
     }
 
@@ -94,7 +94,7 @@ public class PermissionNextGenFactionsAPI {
         ClaimEvent claimEvent = new ClaimEvent(faction, player, chunk);
         boolean claimed = claimEvent.isSuccess();
         long end = System.currentTimeMillis();
-        logAction(start, end, PermissionedAPIAction.CLAIM);
+        logAction(start, end, PermissionedContextAction.CLAIM);
         return claimed;
     }
 
@@ -109,7 +109,7 @@ public class PermissionNextGenFactionsAPI {
         DisbandFactionEvent event = new DisbandFactionEvent(player, faction);
         boolean disbanded = event.isDisbanded();
         long end = System.currentTimeMillis();
-        logAction(start, end, PermissionedAPIAction.DISBAND);
+        logAction(start, end, PermissionedContextAction.DISBAND);
         return disbanded;
     }
 
@@ -126,7 +126,7 @@ public class PermissionNextGenFactionsAPI {
         InvitePlayerToFactionEvent event = new InvitePlayerToFactionEvent(faction, memberThatInvites, invitedPlayer);
         boolean invited = event.isInvited();
         long end = System.currentTimeMillis();
-        logAction(start, end, PermissionedAPIAction.INVITE);
+        logAction(start, end, PermissionedContextAction.INVITE);
         return invited;
     }
 
@@ -143,7 +143,7 @@ public class PermissionNextGenFactionsAPI {
         KickPlayerFromFactionEvent event = new KickPlayerFromFactionEvent(faction, playerThatKicks, kickedPlayer);
         boolean kicked = event.isKicked();
         long end = System.currentTimeMillis();
-        logAction(start, end, PermissionedAPIAction.KICK);
+        logAction(start, end, PermissionedContextAction.KICK);
         return kicked;
     }
 
@@ -163,7 +163,7 @@ public class PermissionNextGenFactionsAPI {
             changed = event.isChanged();
         }
         long end = System.currentTimeMillis();
-        logAction(start, end, PermissionedAPIAction.CHANGE_ROLE);
+        logAction(start, end, PermissionedContextAction.CHANGE_ROLE);
         return changed;
     }
 
@@ -172,7 +172,7 @@ public class PermissionNextGenFactionsAPI {
         OverClaimEvent overClaimEvent = new OverClaimEvent(faction, overClaimedFaction, player, chunk);
         boolean overClaimed = overClaimEvent.isSuccess();
         long end = System.currentTimeMillis();
-        logAction(start, end, PermissionedAPIAction.OVER_CLAIM);
+        logAction(start, end, PermissionedContextAction.OVER_CLAIM);
         return overClaimed;
     }
 
@@ -181,7 +181,7 @@ public class PermissionNextGenFactionsAPI {
         SetCoreEvent event = new SetCoreEvent(faction, player, location);
         boolean success = event.isSuccess();
         long end = System.currentTimeMillis();
-        logAction(start, end, PermissionedAPIAction.SET_CORE);
+        logAction(start, end, PermissionedContextAction.SET_CORE);
         return success;
     }
 
@@ -190,7 +190,7 @@ public class PermissionNextGenFactionsAPI {
         PlayerFlightEvent event = new PlayerFlightEvent(player.getFaction(), player, toggle);
         boolean flying = event.isFlying();
         long end = System.currentTimeMillis();
-        logAction(start, end, PermissionedAPIAction.FLY);
+        logAction(start, end, PermissionedContextAction.FLY);
         return flying;
     }
 
@@ -199,7 +199,7 @@ public class PermissionNextGenFactionsAPI {
         PlayerAutoFlyEvent event = new PlayerAutoFlyEvent(player.getFaction(), player);
         boolean success = event.isAutoFlying();
         long end = System.currentTimeMillis();
-        logAction(start, end, PermissionedAPIAction.AUTO_FLY);
+        logAction(start, end, PermissionedContextAction.AUTO_FLY);
         return success;
     }
 
@@ -207,7 +207,7 @@ public class PermissionNextGenFactionsAPI {
         long start = System.currentTimeMillis();
         CreateRankEvent event = new CreateRankEvent(faction, player, rankName, permissions);
         long end = System.currentTimeMillis();
-        logAction(start, end, PermissionedAPIAction.CREATE_ROLE);
+        logAction(start, end, PermissionedContextAction.CREATE_ROLE);
         return event.getRole();
     }
 
@@ -215,7 +215,7 @@ public class PermissionNextGenFactionsAPI {
         long start = System.currentTimeMillis();
         DeleteRankEvent event = new DeleteRankEvent(faction, player, rankName);
         long end = System.currentTimeMillis();
-        logAction(start, end, PermissionedAPIAction.DELETE_ROLE);
+        logAction(start, end, PermissionedContextAction.DELETE_ROLE);
         return event.isSuccess();
     }
 
@@ -223,7 +223,7 @@ public class PermissionNextGenFactionsAPI {
         long start = System.currentTimeMillis();
         UnClaimAllEvent event = new UnClaimAllEvent(faction, player);
         long end = System.currentTimeMillis();
-        logAction(start, end, PermissionedAPIAction.UN_CLAIM_ALL);
+        logAction(start, end, PermissionedContextAction.UN_CLAIM_ALL);
         return event.isSuccess();
     }
 
@@ -231,7 +231,7 @@ public class PermissionNextGenFactionsAPI {
         long start = System.currentTimeMillis();
         PlayerBreakBlockInFactionEvent event = new PlayerBreakBlockInFactionEvent(faction, player, location);
         long end = System.currentTimeMillis();
-        logAction(start, end, PermissionedAPIAction.BREAK_BLOCK);
+        logAction(start, end, PermissionedContextAction.BREAK_BLOCK);
         return event.isSuccess();
     }
 
@@ -239,7 +239,7 @@ public class PermissionNextGenFactionsAPI {
         long start = System.currentTimeMillis();
         PlayerPlaceBlockInFactionEvent event = new PlayerPlaceBlockInFactionEvent(faction, player, location);
         long end = System.currentTimeMillis();
-        logAction(start, end, PermissionedAPIAction.PLACE_BLOCK);
+        logAction(start, end, PermissionedContextAction.PLACE_BLOCK);
         return event.isSuccess();
     }
 }

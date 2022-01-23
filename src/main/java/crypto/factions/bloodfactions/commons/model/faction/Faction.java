@@ -1,7 +1,7 @@
 package crypto.factions.bloodfactions.commons.model.faction;
 
-import crypto.factions.bloodfactions.commons.api.NextGenFactionsAPI;
-import crypto.factions.bloodfactions.commons.api.PermissionNextGenFactionsAPI;
+import crypto.factions.bloodfactions.commons.contex.ContextHandler;
+import crypto.factions.bloodfactions.commons.contex.PermissionContextHandler;
 import crypto.factions.bloodfactions.commons.messages.handler.MessageContextHandler;
 import crypto.factions.bloodfactions.commons.messages.model.MessageContext;
 import crypto.factions.bloodfactions.commons.model.NextGenFactionEntity;
@@ -37,15 +37,15 @@ public interface Faction extends NextGenFactionEntity {
     }
 
     default boolean setCore(FPlayer player, FLocation location) {
-        return PermissionNextGenFactionsAPI.setCore(player, this, location);
+        return PermissionContextHandler.setCore(player, this, location);
     }
 
     default FLocation getCore() {
-        return NextGenFactionsAPI.getCoreOfFaction(this);
+        return ContextHandler.getCoreOfFaction(this);
     }
 
     default boolean isFactionLessFaction() {
-        Faction factionLessFaction = NextGenFactionsAPI.getFactionLessFaction();
+        Faction factionLessFaction = ContextHandler.getFactionLessFaction();
         return factionLessFaction.equals(this);
     }
 
@@ -65,7 +65,7 @@ public interface Faction extends NextGenFactionEntity {
      * @return
      */
     default Set<FChunk> getAllAClaims() {
-        return NextGenFactionsAPI.getAllClaims(this);
+        return ContextHandler.getAllClaims(this);
     }
 
     /**
@@ -74,7 +74,7 @@ public interface Faction extends NextGenFactionEntity {
      * @return
      */
     default int getAmountOfClaims() {
-        return NextGenFactionsAPI.getNumberOfClaimsOfFaction(this);
+        return ContextHandler.getNumberOfClaimsOfFaction(this);
     }
 
     /**
@@ -85,7 +85,7 @@ public interface Faction extends NextGenFactionEntity {
      * @return
      */
     default Map<FChunk, Boolean> multiUnClaim(Set<FChunk> chunks, FPlayer player) {
-        return PermissionNextGenFactionsAPI.multiUnClaim(this, chunks, player);
+        return PermissionContextHandler.multiUnClaim(this, chunks, player);
     }
 
     /**
@@ -96,7 +96,7 @@ public interface Faction extends NextGenFactionEntity {
      * @return
      */
     default boolean unClaim(FChunk chunk, FPlayer player) {
-        return PermissionNextGenFactionsAPI.unClaim(this, chunk, player);
+        return PermissionContextHandler.unClaim(this, chunk, player);
     }
 
     /**
@@ -107,7 +107,7 @@ public interface Faction extends NextGenFactionEntity {
      * @return
      */
     default Map<FChunk, Boolean> multiClaim(Set<FChunk> chunks, FPlayer player) {
-        return PermissionNextGenFactionsAPI.multiClaim(this, chunks, player);
+        return PermissionContextHandler.multiClaim(this, chunks, player);
     }
 
     /**
@@ -118,7 +118,7 @@ public interface Faction extends NextGenFactionEntity {
      * @return
      */
     default boolean claim(FChunk chunk, FPlayer player) {
-        return PermissionNextGenFactionsAPI.claim(this, chunk, player);
+        return PermissionContextHandler.claim(this, chunk, player);
     }
 
     /**
@@ -129,7 +129,7 @@ public interface Faction extends NextGenFactionEntity {
      * @return
      */
     default boolean overClaim(FChunk chunk, FPlayer player, Faction otherFaction) {
-        return PermissionNextGenFactionsAPI.overClaim(this, otherFaction, chunk, player);
+        return PermissionContextHandler.overClaim(this, otherFaction, chunk, player);
     }
 
     /**
@@ -138,7 +138,7 @@ public interface Faction extends NextGenFactionEntity {
      * @return
      */
     default Set<FPlayer> getMembers() {
-        return NextGenFactionsAPI.getPlayersInFaction(this);
+        return ContextHandler.getPlayersInFaction(this);
     }
 
     /**
@@ -149,7 +149,7 @@ public interface Faction extends NextGenFactionEntity {
      * @return
      */
     default boolean kickPlayer(FPlayer kickedPlayer, FPlayer playerKicking) {
-        return PermissionNextGenFactionsAPI.kickPlayerFromFaction(kickedPlayer, this, playerKicking);
+        return PermissionContextHandler.kickPlayerFromFaction(kickedPlayer, this, playerKicking);
     }
 
     /**
@@ -160,7 +160,7 @@ public interface Faction extends NextGenFactionEntity {
      * @return
      */
     default boolean invitePlayer(FPlayer invitedPlayer, FPlayer playerInviting) {
-        return PermissionNextGenFactionsAPI.invitePlayerToFaction(invitedPlayer, this, playerInviting);
+        return PermissionContextHandler.invitePlayerToFaction(invitedPlayer, this, playerInviting);
     }
 
     /**
@@ -170,7 +170,7 @@ public interface Faction extends NextGenFactionEntity {
      * @return
      */
     default boolean disband(FPlayer playerDisbanding) {
-        return PermissionNextGenFactionsAPI.disbandFaction(this, playerDisbanding);
+        return PermissionContextHandler.disbandFaction(this, playerDisbanding);
     }
 
     /**
@@ -179,7 +179,7 @@ public interface Faction extends NextGenFactionEntity {
      * @return
      */
     default FactionRank getDefaultRole() {
-        return NextGenFactionsAPI.getDefaultRoleOfFaction(this);
+        return ContextHandler.getDefaultRoleOfFaction(this);
     }
 
     /**
@@ -188,7 +188,7 @@ public interface Faction extends NextGenFactionEntity {
      * @return
      */
     default Set<FactionRank> getRoles() {
-        return NextGenFactionsAPI.getRolesOfFaction(this);
+        return ContextHandler.getRolesOfFaction(this);
     }
 
     /**
@@ -232,15 +232,15 @@ public interface Faction extends NextGenFactionEntity {
 
 
     default FPlayer getOwner() {
-        return NextGenFactionsAPI.getPlayer(this.getOwnerId());
+        return ContextHandler.getPlayer(this.getOwnerId());
     }
 
     default FactionRank createRank(String roleName, FPlayer player, Set<PermissionType> permissions) {
-        return PermissionNextGenFactionsAPI.createRank(roleName, player, this, permissions);
+        return PermissionContextHandler.createRank(roleName, player, this, permissions);
     }
 
     default boolean deleteRank(String roleName, FPlayer player) {
-        return PermissionNextGenFactionsAPI.deleteRank(roleName, player, this);
+        return PermissionContextHandler.deleteRank(roleName, player, this);
     }
 
     default @Nullable FactionRank getRankByName(@NotNull String rankName) {
@@ -252,7 +252,7 @@ public interface Faction extends NextGenFactionEntity {
     }
 
     default boolean unClaimAll(@NotNull FPlayer player, @NotNull Faction faction) {
-        return PermissionNextGenFactionsAPI.unClaimAll(player, faction);
+        return PermissionContextHandler.unClaimAll(player, faction);
     }
 
     default boolean allowsFlightNearPlayersOfOtherFaction(Faction otherFaction) {

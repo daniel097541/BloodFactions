@@ -1,14 +1,13 @@
 package crypto.factions.bloodfactions.commons.command.impl;
 
 import crypto.factions.bloodfactions.commons.annotation.config.LangConfiguration;
-import crypto.factions.bloodfactions.commons.api.NextGenFactionsAPI;
+import crypto.factions.bloodfactions.commons.contex.ContextHandler;
 import crypto.factions.bloodfactions.commons.command.SubCommandType;
 import crypto.factions.bloodfactions.commons.config.NGFConfig;
 import crypto.factions.bloodfactions.commons.config.lang.LangConfigItems;
 import crypto.factions.bloodfactions.commons.messages.model.MessageContext;
 import crypto.factions.bloodfactions.commons.messages.model.MessageContextImpl;
 import crypto.factions.bloodfactions.commons.model.faction.Faction;
-import crypto.factions.bloodfactions.commons.model.land.FChunk;
 import crypto.factions.bloodfactions.commons.model.player.FPlayer;
 
 import javax.inject.Inject;
@@ -39,7 +38,7 @@ public class KickSubCommand extends FSubCommandImpl {
 
         if(args.length >= 2){
             String playerName = args[1];
-            FPlayer kicked = NextGenFactionsAPI.getPlayerByName(playerName);
+            FPlayer kicked = ContextHandler.getPlayerByName(playerName);
 
             if(Objects.nonNull(kicked)) {
                 return faction.kickPlayer(kicked, player);

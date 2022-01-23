@@ -3,7 +3,7 @@ package crypto.factions.bloodfactions.backend.handler.data;
 import crypto.factions.bloodfactions.backend.manager.FactionsManager;
 import crypto.factions.bloodfactions.backend.manager.PlayersManager;
 import crypto.factions.bloodfactions.backend.manager.RanksManager;
-import crypto.factions.bloodfactions.commons.api.NextGenFactionsAPI;
+import crypto.factions.bloodfactions.commons.contex.ContextHandler;
 import crypto.factions.bloodfactions.commons.config.NGFConfig;
 import crypto.factions.bloodfactions.commons.config.lang.LangConfigItems;
 import crypto.factions.bloodfactions.commons.config.system.SystemConfigItems;
@@ -59,6 +59,11 @@ public interface FactionsHandler extends DataHandler<Faction> {
 
     Map<UUID, FPlayer> getDisbandingPlayers();
 
+    /**
+     * Gets the faction-less faction.
+     * @param event
+     * @throws NoFactionForFactionLessException
+     */
     @EventHandler(priority = EventPriority.HIGHEST)
     default void handleGetFactionLessFaction(GetFactionLessFactionEvent event) throws NoFactionForFactionLessException {
         Faction factionLessFaction = this.getFactionForFactionLess();
@@ -155,6 +160,10 @@ public interface FactionsHandler extends DataHandler<Faction> {
         return faction;
     }
 
+    /**
+     * Gets count of claims of a faction.
+     * @param event
+     */
     @EventHandler(priority = EventPriority.HIGHEST)
     default void handleGetCountOfClaims(GetNumberOfClaimsEvent event) {
         Faction faction = event.getFaction();
@@ -324,7 +333,7 @@ public interface FactionsHandler extends DataHandler<Faction> {
                 event.setSuccess(true);
 
                 // Send change land to all players in the claimed chunks.
-                Set<FPlayer> onlinePlayers = NextGenFactionsAPI.getOnlinePlayers();
+                Set<FPlayer> onlinePlayers = ContextHandler.getOnlinePlayers();
 
                 Logger.logInfo("Warning " + onlinePlayers.size() + " players about multi-claim.");
                 onlinePlayers

@@ -1,6 +1,6 @@
 package crypto.factions.bloodfactions.commons.command;
 
-import crypto.factions.bloodfactions.commons.api.NextGenFactionsAPI;
+import crypto.factions.bloodfactions.commons.contex.ContextHandler;
 import crypto.factions.bloodfactions.commons.model.player.ConsolePlayerImpl;
 import crypto.factions.bloodfactions.commons.model.player.FPlayer;
 import org.bukkit.Bukkit;
@@ -43,7 +43,7 @@ public interface FCommand extends CommandExecutor {
 
         // The sender is a player.
         if (sender instanceof Player) {
-            player = NextGenFactionsAPI.getPlayer((Player) sender);
+            player = ContextHandler.getPlayer((Player) sender);
         }
 
         // The sender is the console.

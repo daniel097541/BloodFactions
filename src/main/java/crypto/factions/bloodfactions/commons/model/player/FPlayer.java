@@ -1,7 +1,7 @@
 package crypto.factions.bloodfactions.commons.model.player;
 
-import crypto.factions.bloodfactions.commons.api.NextGenFactionsAPI;
-import crypto.factions.bloodfactions.commons.api.PermissionNextGenFactionsAPI;
+import crypto.factions.bloodfactions.commons.contex.ContextHandler;
+import crypto.factions.bloodfactions.commons.contex.PermissionContextHandler;
 import crypto.factions.bloodfactions.commons.messages.handler.MessageContextHandler;
 import crypto.factions.bloodfactions.commons.messages.model.MessageContext;
 import crypto.factions.bloodfactions.commons.messages.model.MessageContextImpl;
@@ -29,19 +29,19 @@ public interface FPlayer extends NextGenFactionEntity {
     int getPower();
 
     default boolean hit(FPlayer other){
-        return NextGenFactionsAPI.playerHitOther(this, other);
+        return ContextHandler.playerHitOther(this, other);
     }
 
     default boolean isFlying() {
-        return NextGenFactionsAPI.isPlayerFlying(this);
+        return ContextHandler.isPlayerFlying(this);
     }
 
     default boolean isAutoFlying() {
-        return NextGenFactionsAPI.isPlayerAutoFlying(this);
+        return ContextHandler.isPlayerAutoFlying(this);
     }
 
     default Set<FactionInvitation> getInvitations(){
-        return NextGenFactionsAPI.getInvitations(this);
+        return ContextHandler.getInvitations(this);
     }
 
     default double distanceTo(FPlayer other) {
@@ -56,11 +56,11 @@ public interface FPlayer extends NextGenFactionEntity {
     }
 
     default boolean breakBlock(Faction faction, FLocation location) {
-        return PermissionNextGenFactionsAPI.breakBlock(this, faction, location);
+        return PermissionContextHandler.breakBlock(this, faction, location);
     }
 
     default boolean placeBlock(Faction faction, FLocation location) {
-        return PermissionNextGenFactionsAPI.placeBlock(this, faction, location);
+        return PermissionContextHandler.placeBlock(this, faction, location);
     }
 
     default boolean isInFaction(Faction faction) {
@@ -126,7 +126,7 @@ public interface FPlayer extends NextGenFactionEntity {
      * @return
      */
     default @NotNull Faction getFaction() {
-        return NextGenFactionsAPI.getFactionOfPlayer(this);
+        return ContextHandler.getFactionOfPlayer(this);
     }
 
     /**
@@ -135,7 +135,7 @@ public interface FPlayer extends NextGenFactionEntity {
      * @return
      */
     default boolean hasFaction() {
-        return NextGenFactionsAPI.checkIfPlayerHasFaction(this);
+        return ContextHandler.checkIfPlayerHasFaction(this);
     }
 
     /**
@@ -167,7 +167,7 @@ public interface FPlayer extends NextGenFactionEntity {
      * @return
      */
     default boolean hasPermission(@NotNull Action action) {
-        return NextGenFactionsAPI.checkIfPlayerHasPermission(this, action);
+        return ContextHandler.checkIfPlayerHasPermission(this, action);
     }
 
     /**
@@ -187,7 +187,7 @@ public interface FPlayer extends NextGenFactionEntity {
      * @return
      */
     default @Nullable FactionRank getRole() {
-        return NextGenFactionsAPI.getRoleOfPlayer(this);
+        return ContextHandler.getRoleOfPlayer(this);
     }
 
     /**
@@ -198,7 +198,7 @@ public interface FPlayer extends NextGenFactionEntity {
      * @return
      */
     default boolean changeRole(FactionRank role, FPlayer playerChangingTheRole) {
-        return PermissionNextGenFactionsAPI.changeRankOfPlayer(this, role, playerChangingTheRole);
+        return PermissionContextHandler.changeRankOfPlayer(this, role, playerChangingTheRole);
     }
 
     /**
@@ -270,7 +270,7 @@ public interface FPlayer extends NextGenFactionEntity {
      * @param faction
      */
     default void showFaction(Faction faction) {
-        NextGenFactionsAPI.showFactionToPlayer(this, faction);
+        ContextHandler.showFactionToPlayer(this, faction);
     }
 
     /**
@@ -288,11 +288,11 @@ public interface FPlayer extends NextGenFactionEntity {
     }
 
     default void disableFly() {
-        PermissionNextGenFactionsAPI.toggleFlightMode(this, false);
+        PermissionContextHandler.toggleFlightMode(this, false);
     }
 
     default void enableFly() {
-        PermissionNextGenFactionsAPI.toggleFlightMode(this, true);
+        PermissionContextHandler.toggleFlightMode(this, true);
     }
 
     /**
@@ -321,7 +321,7 @@ public interface FPlayer extends NextGenFactionEntity {
      * Toggles auto fly.
      */
     default void toggleAutoFly() {
-        PermissionNextGenFactionsAPI.toggleAutoFly(this);
+        PermissionContextHandler.toggleAutoFly(this);
     }
 
     /**
@@ -331,7 +331,7 @@ public interface FPlayer extends NextGenFactionEntity {
      * @param to
      */
     default void changedLand(Faction from, Faction to) {
-        NextGenFactionsAPI.changedLand(this, from, to);
+        ContextHandler.changedLand(this, from, to);
     }
 
     void setPower(int power);
@@ -343,7 +343,7 @@ public interface FPlayer extends NextGenFactionEntity {
      * @return
      */
     default void updatePower(int increment) {
-        NextGenFactionsAPI.updatePlayersPower(this, increment);
+        ContextHandler.updatePlayersPower(this, increment);
     }
 
     /**
@@ -359,14 +359,14 @@ public interface FPlayer extends NextGenFactionEntity {
      * Player logged in.
      */
     default void logIn() {
-        NextGenFactionsAPI.playerLoggedIn(this);
+        ContextHandler.playerLoggedIn(this);
     }
 
     /**
      * Player logged out.
      */
     default void logOut() {
-        NextGenFactionsAPI.playerLoggedOut(this);
+        ContextHandler.playerLoggedOut(this);
     }
 
     /**
@@ -395,19 +395,19 @@ public interface FPlayer extends NextGenFactionEntity {
      * @return
      */
     default boolean handleFallDamage() {
-        return NextGenFactionsAPI.handlePlayerFallDamage(this);
+        return ContextHandler.handlePlayerFallDamage(this);
     }
 
     default void listRoles(Faction faction) {
-        NextGenFactionsAPI.listRoles(faction, this);
+        ContextHandler.listRoles(faction, this);
     }
 
     default void died() {
-        NextGenFactionsAPI.playerDied(this);
+        ContextHandler.playerDied(this);
     }
 
     default boolean setRank(@NotNull FactionRank targetRank, @NotNull FPlayer playerSettingTheRank) {
-        return PermissionNextGenFactionsAPI.changeRankOfPlayer(this, targetRank, playerSettingTheRank);
+        return PermissionContextHandler.changeRankOfPlayer(this, targetRank, playerSettingTheRank);
     }
 
     default void sendTitle(String title) {
@@ -415,35 +415,35 @@ public interface FPlayer extends NextGenFactionEntity {
     }
 
     default void listInvitationsOfMyFaction() {
-        NextGenFactionsAPI.listInvitationsToFaction(this, this.getFaction());
+        ContextHandler.listInvitationsToFaction(this, this.getFaction());
     }
 
     default void listInvitationsToOtherFactions() {
-        NextGenFactionsAPI.listInvitationsToOtherFactions(this);
+        ContextHandler.listInvitationsToOtherFactions(this);
     }
 
     default boolean acceptInvitation(Faction faction) {
-        return NextGenFactionsAPI.acceptFactionInvitation(this, faction);
+        return ContextHandler.acceptFactionInvitation(this, faction);
     }
 
     default boolean declineInvitation(Faction faction) {
-        return NextGenFactionsAPI.declineFactionInvitation(this, faction);
+        return ContextHandler.declineFactionInvitation(this, faction);
     }
 
     default Set<FPlayer> getPlayersInRadius(int radius) {
-        return NextGenFactionsAPI.getPlayersInRadius(this, radius);
+        return ContextHandler.getPlayersInRadius(this, radius);
     }
 
     default void proximityCheck() {
-        NextGenFactionsAPI.proximityCheck(this);
+        ContextHandler.proximityCheck(this);
     }
 
     default void playerIsNearOther(FPlayer other, int radius) {
-        NextGenFactionsAPI.playerIsNearOther(this, other, radius);
+        ContextHandler.playerIsNearOther(this, other, radius);
     }
 
     default boolean leaveFaction(){
-        return NextGenFactionsAPI.leaveFaction(this, this.getFaction());
+        return ContextHandler.leaveFaction(this, this.getFaction());
     }
 
     default @NotNull Set<FChunk> getChunksInRadius(int radius){

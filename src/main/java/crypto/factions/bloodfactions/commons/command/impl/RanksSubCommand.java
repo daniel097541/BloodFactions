@@ -2,7 +2,7 @@ package crypto.factions.bloodfactions.commons.command.impl;
 
 import crypto.factions.bloodfactions.commons.config.lang.LangConfigItems;
 import crypto.factions.bloodfactions.commons.annotation.config.LangConfiguration;
-import crypto.factions.bloodfactions.commons.api.NextGenFactionsAPI;
+import crypto.factions.bloodfactions.commons.contex.ContextHandler;
 import crypto.factions.bloodfactions.commons.command.SubCommandType;
 import crypto.factions.bloodfactions.commons.config.NGFConfig;
 import crypto.factions.bloodfactions.commons.logger.Logger;
@@ -56,7 +56,7 @@ public class RanksSubCommand extends FSubCommandImpl {
                     String playerName = args[2];
                     String rankName = args[3];
 
-                    FPlayer targetPlayer = NextGenFactionsAPI.getPlayerByName(playerName);
+                    FPlayer targetPlayer = ContextHandler.getPlayerByName(playerName);
 
                     if (Objects.nonNull(targetPlayer)) {
                         FactionRank targetRank = faction.getRankByName(rankName);

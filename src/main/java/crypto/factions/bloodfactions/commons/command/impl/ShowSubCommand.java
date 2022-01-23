@@ -2,7 +2,7 @@ package crypto.factions.bloodfactions.commons.command.impl;
 
 import crypto.factions.bloodfactions.commons.config.lang.LangConfigItems;
 import crypto.factions.bloodfactions.commons.annotation.config.LangConfiguration;
-import crypto.factions.bloodfactions.commons.api.NextGenFactionsAPI;
+import crypto.factions.bloodfactions.commons.contex.ContextHandler;
 import crypto.factions.bloodfactions.commons.command.SubCommandType;
 import crypto.factions.bloodfactions.commons.config.NGFConfig;
 import crypto.factions.bloodfactions.commons.messages.model.MessageContext;
@@ -46,7 +46,7 @@ public class ShowSubCommand extends FSubCommandImpl {
         else {
 
             String factionName = args[1];
-            Faction faction = NextGenFactionsAPI.getFactionByName(factionName);
+            Faction faction = ContextHandler.getFactionByName(factionName);
             if(Objects.nonNull(faction)){
                 player.showFaction(faction);
                 return true;

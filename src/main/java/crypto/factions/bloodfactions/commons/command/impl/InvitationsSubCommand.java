@@ -3,7 +3,7 @@ package crypto.factions.bloodfactions.commons.command.impl;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import crypto.factions.bloodfactions.commons.annotation.config.LangConfiguration;
-import crypto.factions.bloodfactions.commons.api.NextGenFactionsAPI;
+import crypto.factions.bloodfactions.commons.contex.ContextHandler;
 import crypto.factions.bloodfactions.commons.command.SubCommandType;
 import crypto.factions.bloodfactions.commons.config.NGFConfig;
 import crypto.factions.bloodfactions.commons.config.lang.LangConfigItems;
@@ -24,12 +24,12 @@ public class InvitationsSubCommand extends FSubCommandImpl {
     }
 
     private boolean declineInvitation(String factionName, FPlayer player) {
-        Faction faction = NextGenFactionsAPI.getFactionByName(factionName);
+        Faction faction = ContextHandler.getFactionByName(factionName);
         return player.declineInvitation(faction);
     }
 
     private boolean acceptInvitation(String factionName, FPlayer player) {
-        Faction faction = NextGenFactionsAPI.getFactionByName(factionName);
+        Faction faction = ContextHandler.getFactionByName(factionName);
         return player.acceptInvitation(faction);
     }
 
@@ -76,7 +76,7 @@ public class InvitationsSubCommand extends FSubCommandImpl {
         }
 
         String actionOrPlayer = args[1];
-        FPlayer targetPlayer = NextGenFactionsAPI.getPlayerByName(actionOrPlayer);
+        FPlayer targetPlayer = ContextHandler.getPlayerByName(actionOrPlayer);
 
         // Invite player if first parameter is a player name.
         if (Objects.nonNull(targetPlayer)) {
@@ -110,7 +110,7 @@ public class InvitationsSubCommand extends FSubCommandImpl {
             if (args.length >= 3) {
 
                 String playerName = args[2];
-                FPlayer invitedPlayer = NextGenFactionsAPI.getPlayerByName(playerName);
+                FPlayer invitedPlayer = ContextHandler.getPlayerByName(playerName);
 
                 if (Objects.nonNull(invitedPlayer)) {
                     return player.invitePlayerToFaction(invitedPlayer);
@@ -133,7 +133,7 @@ public class InvitationsSubCommand extends FSubCommandImpl {
             if (args.length >= 3) {
 
                 String playerName = args[2];
-                FPlayer invitedPlayer = NextGenFactionsAPI.getPlayerByName(playerName);
+                FPlayer invitedPlayer = ContextHandler.getPlayerByName(playerName);
 
                 if (Objects.nonNull(invitedPlayer) && invitedPlayer.isOnline()) {
                     return player.invitePlayerToFaction(invitedPlayer);

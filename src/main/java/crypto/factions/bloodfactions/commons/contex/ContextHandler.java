@@ -1,4 +1,4 @@
-package crypto.factions.bloodfactions.commons.api;
+package crypto.factions.bloodfactions.commons.contex;
 
 import crypto.factions.bloodfactions.commons.events.faction.callback.*;
 import crypto.factions.bloodfactions.commons.events.faction.unpermissioned.CreateFactionByNameEvent;
@@ -31,25 +31,25 @@ import java.util.Set;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
-public class NextGenFactionsAPI {
+public class ContextHandler {
 
 
-    private static void logAction(long start, long end, APIAction action) {
+    private static void logAction(long start, long end, ContextAction action) {
         String message = "Time to perform action {action}: {time} ms";
         message = message
                 .replace("{action}", action.name())
                 .replace("{time}", String.valueOf(end - start));
-        Logger.logInfo("&dAPI", message);
+        Logger.logInfo("&dCONTEXT", message);
     }
 
     public static Set<FPlayer> getOnlinePlayers() {
         long start = System.currentTimeMillis();
         Set<FPlayer> onlinePlayers = Bukkit.getOnlinePlayers()
                 .stream()
-                .map(NextGenFactionsAPI::getPlayer)
+                .map(ContextHandler::getPlayer)
                 .collect(Collectors.toSet());
         long end = System.currentTimeMillis();
-        logAction(start, end, APIAction.GET_ONLINE_PLAYERS);
+        logAction(start, end, ContextAction.GET_ONLINE_PLAYERS);
         return onlinePlayers;
     }
 
@@ -67,7 +67,7 @@ public class NextGenFactionsAPI {
             faction = getFactionAtChunk(chunk);
         }
         long end = System.currentTimeMillis();
-        logAction(start, end, APIAction.GET_FACTION_AT_LOCATION);
+        logAction(start, end, ContextAction.GET_FACTION_AT_LOCATION);
         return faction;
     }
 
@@ -82,7 +82,7 @@ public class NextGenFactionsAPI {
         GetFactionAtChunkEvent event = new GetFactionAtChunkEvent(chunk);
         Faction faction = event.getFaction();
         long end = System.currentTimeMillis();
-        logAction(start, end, APIAction.GET_FACTION_AT_CHUNK);
+        logAction(start, end, ContextAction.GET_FACTION_AT_CHUNK);
         return faction;
     }
 
@@ -97,7 +97,7 @@ public class NextGenFactionsAPI {
         GetPlayersInFactionEvent event = new GetPlayersInFactionEvent(faction);
         Set<FPlayer> players = event.getPlayers();
         long end = System.currentTimeMillis();
-        logAction(start, end, APIAction.GET_PLAYERS_OF_FACTION);
+        logAction(start, end, ContextAction.GET_PLAYERS_OF_FACTION);
         return players;
     }
 
@@ -110,7 +110,7 @@ public class NextGenFactionsAPI {
         long start = System.currentTimeMillis();
         new SavePlayerEvent(player);
         long end = System.currentTimeMillis();
-        logAction(start, end, APIAction.SAVE_PLAYER);
+        logAction(start, end, ContextAction.SAVE_PLAYER);
     }
 
     /**
@@ -124,7 +124,7 @@ public class NextGenFactionsAPI {
         CreateFactionByNameEvent event = new CreateFactionByNameEvent(name, player);
         Faction faction = event.getFaction();
         long end = System.currentTimeMillis();
-        logAction(start, end, APIAction.CREATE_FACTION);
+        logAction(start, end, ContextAction.CREATE_FACTION);
         return faction;
     }
 
@@ -140,7 +140,7 @@ public class NextGenFactionsAPI {
         PlayerHasPermissionEvent event = new PlayerHasPermissionEvent(player, action);
         boolean hasPermission = event.isHasPermission();
         long end = System.currentTimeMillis();
-        logAction(start, end, APIAction.CHECK_IF_PLAYER_HAS_PERMISSION);
+        logAction(start, end, ContextAction.CHECK_IF_PLAYER_HAS_PERMISSION);
         return hasPermission;
     }
 
@@ -155,7 +155,7 @@ public class NextGenFactionsAPI {
         CheckIfPlayerHasFactionEvent event = new CheckIfPlayerHasFactionEvent(player);
         boolean hasFaction = event.isHasFaction();
         long end = System.currentTimeMillis();
-        logAction(start, end, APIAction.CHECK_IF_PLAYER_HAS_FACTION);
+        logAction(start, end, ContextAction.CHECK_IF_PLAYER_HAS_FACTION);
         return hasFaction;
     }
 
@@ -170,7 +170,7 @@ public class NextGenFactionsAPI {
         GetPlayerEvent event = new GetPlayerEvent(id);
         FPlayer player = event.getPlayer();
         long end = System.currentTimeMillis();
-        logAction(start, end, APIAction.GET_PLAYER);
+        logAction(start, end, ContextAction.GET_PLAYER);
         return player;
     }
 
@@ -195,7 +195,7 @@ public class NextGenFactionsAPI {
         GetPlayerByNameEvent event = new GetPlayerByNameEvent(name);
         FPlayer player = event.getPlayer();
         long end = System.currentTimeMillis();
-        logAction(start, end, APIAction.GET_PLAYER_BY_NAME);
+        logAction(start, end, ContextAction.GET_PLAYER_BY_NAME);
         return player;
     }
 
@@ -210,7 +210,7 @@ public class NextGenFactionsAPI {
         GetFactionEvent event = new GetFactionEvent(id);
         Faction faction = event.getFaction();
         long end = System.currentTimeMillis();
-        logAction(start, end, APIAction.GET_PLAYER_BY_NAME);
+        logAction(start, end, ContextAction.GET_PLAYER_BY_NAME);
         return faction;
     }
 
@@ -225,7 +225,7 @@ public class NextGenFactionsAPI {
         CheckIfFactionExistsByNameEvent event = new CheckIfFactionExistsByNameEvent(name);
         boolean exists = event.isExists();
         long end = System.currentTimeMillis();
-        logAction(start, end, APIAction.CHECK_IF_FACTION_EXISTS_BY_NAME);
+        logAction(start, end, ContextAction.CHECK_IF_FACTION_EXISTS_BY_NAME);
         return exists;
     }
 
@@ -239,7 +239,7 @@ public class NextGenFactionsAPI {
         GetFactionLessFactionEvent event = new GetFactionLessFactionEvent();
         Faction faction = event.getFaction();
         long end = System.currentTimeMillis();
-        logAction(start, end, APIAction.GET_FACTION_BY_NAME);
+        logAction(start, end, ContextAction.GET_FACTION_BY_NAME);
         return faction;
     }
 
@@ -254,7 +254,7 @@ public class NextGenFactionsAPI {
         GetFactionByNameEvent event = new GetFactionByNameEvent(name);
         Faction faction = event.getFaction();
         long end = System.currentTimeMillis();
-        logAction(start, end, APIAction.GET_FACTION_BY_NAME);
+        logAction(start, end, ContextAction.GET_FACTION_BY_NAME);
         return faction;
     }
 
@@ -269,7 +269,7 @@ public class NextGenFactionsAPI {
         GetFactionOfPlayerEvent event = new GetFactionOfPlayerEvent(player);
         Faction faction = event.getFaction();
         long end = System.currentTimeMillis();
-        logAction(start, end, APIAction.GET_FACTION_OF_PLAYER);
+        logAction(start, end, ContextAction.GET_FACTION_OF_PLAYER);
         return faction;
     }
 
@@ -284,7 +284,7 @@ public class NextGenFactionsAPI {
         GetClaimsOfFactionEvent event = new GetClaimsOfFactionEvent(faction);
         Set<FChunk> chunks = event.getChunks();
         long end = System.currentTimeMillis();
-        logAction(start, end, APIAction.GET_CLAIMS_OF_FACTION);
+        logAction(start, end, ContextAction.GET_CLAIMS_OF_FACTION);
         return chunks;
     }
 
@@ -302,7 +302,7 @@ public class NextGenFactionsAPI {
             role = event.getRole();
         }
         long end = System.currentTimeMillis();
-        logAction(start, end, APIAction.GET_ROLE_OF_PLAYER);
+        logAction(start, end, ContextAction.GET_ROLE_OF_PLAYER);
         return role;
     }
 
@@ -317,7 +317,7 @@ public class NextGenFactionsAPI {
         GetDefaultRoleOfFactionEvent event = new GetDefaultRoleOfFactionEvent(faction);
         FactionRank role = event.getDefaultRole();
         long end = System.currentTimeMillis();
-        logAction(start, end, APIAction.GET_DEFAULT_ROLE_OF_FACTION);
+        logAction(start, end, ContextAction.GET_DEFAULT_ROLE_OF_FACTION);
         return role;
     }
 
@@ -332,7 +332,7 @@ public class NextGenFactionsAPI {
         GetRolesOfFactionEvent event = new GetRolesOfFactionEvent(faction);
         Set<FactionRank> roles = event.getRoles();
         long end = System.currentTimeMillis();
-        logAction(start, end, APIAction.GET_ROLES_OF_FACTION);
+        logAction(start, end, ContextAction.GET_ROLES_OF_FACTION);
         return roles;
     }
 
@@ -347,7 +347,7 @@ public class NextGenFactionsAPI {
         GetNumberOfClaimsEvent event = new GetNumberOfClaimsEvent(faction);
         int count = event.getNumberOfClaims();
         long end = System.currentTimeMillis();
-        logAction(start, end, APIAction.GET_NUMBER_OF_CLAIMS);
+        logAction(start, end, ContextAction.GET_NUMBER_OF_CLAIMS);
         return count;
     }
 
@@ -362,7 +362,7 @@ public class NextGenFactionsAPI {
         GetCoreEvent event = new GetCoreEvent(faction);
         FLocation core = event.getCore();
         long end = System.currentTimeMillis();
-        logAction(start, end, APIAction.GET_FACTIONS_CORE);
+        logAction(start, end, ContextAction.GET_FACTIONS_CORE);
         return core;
     }
 
@@ -376,7 +376,7 @@ public class NextGenFactionsAPI {
         long start = System.currentTimeMillis();
         new ShowFactionEvent(faction, player);
         long end = System.currentTimeMillis();
-        logAction(start, end, APIAction.SHOW_FACTION);
+        logAction(start, end, ContextAction.SHOW_FACTION);
     }
 
     /**
@@ -390,7 +390,7 @@ public class NextGenFactionsAPI {
         long start = System.currentTimeMillis();
         new PlayerChangedLandEvent(player, from, to);
         long end = System.currentTimeMillis();
-        logAction(start, end, APIAction.CHANGED_LAND);
+        logAction(start, end, ContextAction.CHANGED_LAND);
     }
 
     /**
@@ -404,7 +404,7 @@ public class NextGenFactionsAPI {
         long start = System.currentTimeMillis();
         new PlayerPowerChangeEvent(player, increment);
         long end = System.currentTimeMillis();
-        logAction(start, end, APIAction.UPDATE_POWER);
+        logAction(start, end, ContextAction.UPDATE_POWER);
         return player.getPower();
     }
 
@@ -417,7 +417,7 @@ public class NextGenFactionsAPI {
         long start = System.currentTimeMillis();
         new FPlayerLoginEvent(player);
         long end = System.currentTimeMillis();
-        logAction(start, end, APIAction.LOGGED_IN);
+        logAction(start, end, ContextAction.LOGGED_IN);
     }
 
     /**
@@ -429,7 +429,7 @@ public class NextGenFactionsAPI {
         long start = System.currentTimeMillis();
         new FPlayerLogOutEvent(player);
         long end = System.currentTimeMillis();
-        logAction(start, end, APIAction.LOGGED_OUT);
+        logAction(start, end, ContextAction.LOGGED_OUT);
     }
 
     /**
@@ -442,7 +442,7 @@ public class NextGenFactionsAPI {
         long start = System.currentTimeMillis();
         FPlayerFallDamageEvent event = new FPlayerFallDamageEvent(player);
         long end = System.currentTimeMillis();
-        logAction(start, end, APIAction.HANDLE_FALL_DAMAGE);
+        logAction(start, end, ContextAction.HANDLE_FALL_DAMAGE);
         return !event.isCancelled();
     }
 
@@ -450,35 +450,35 @@ public class NextGenFactionsAPI {
         long start = System.currentTimeMillis();
         new ListRolesEvent(faction, player);
         long end = System.currentTimeMillis();
-        logAction(start, end, APIAction.LIST_ROLES);
+        logAction(start, end, ContextAction.LIST_ROLES);
     }
 
     public static void playerDied(FPlayer player) {
         long start = System.currentTimeMillis();
         new FPlayerDiedEvent(player);
         long end = System.currentTimeMillis();
-        logAction(start, end, APIAction.PLAYER_DIED);
+        logAction(start, end, ContextAction.PLAYER_DIED);
     }
 
     public static void listInvitationsToFaction(FPlayer player, Faction faction) {
         long start = System.currentTimeMillis();
         new ListInvitationsToFactionEvent(faction, player);
         long end = System.currentTimeMillis();
-        logAction(start, end, APIAction.LIST_INVITATIONS_TO_FACTION);
+        logAction(start, end, ContextAction.LIST_INVITATIONS_TO_FACTION);
     }
 
     public static void listInvitationsToOtherFactions(FPlayer player) {
         long start = System.currentTimeMillis();
         new ListInvitationsToOtherFactionsEvent(player);
         long end = System.currentTimeMillis();
-        logAction(start, end, APIAction.LIST_INVITATIONS_TO_OTHER_FACTIONS);
+        logAction(start, end, ContextAction.LIST_INVITATIONS_TO_OTHER_FACTIONS);
     }
 
     public static boolean acceptFactionInvitation(FPlayer player, Faction faction) {
         long start = System.currentTimeMillis();
         AcceptFactionInvitationEvent event = new AcceptFactionInvitationEvent(faction, player);
         long end = System.currentTimeMillis();
-        logAction(start, end, APIAction.ACCEPT_INVITATION);
+        logAction(start, end, ContextAction.ACCEPT_INVITATION);
         return !event.isCancelled();
     }
 
@@ -486,7 +486,7 @@ public class NextGenFactionsAPI {
         long start = System.currentTimeMillis();
         DeclineFactionInvitationEvent event = new DeclineFactionInvitationEvent(faction, player);
         long end = System.currentTimeMillis();
-        logAction(start, end, APIAction.DECLINE_INVITATION);
+        logAction(start, end, ContextAction.DECLINE_INVITATION);
         return !event.isCancelled();
     }
 
@@ -494,7 +494,7 @@ public class NextGenFactionsAPI {
         long start = System.currentTimeMillis();
         FindPlayersInRadiusEvent event = new FindPlayersInRadiusEvent(player.getLocation(), radius);
         long end = System.currentTimeMillis();
-        logAction(start, end, APIAction.FIND_PLAYERS_IN_RADIUS);
+        logAction(start, end, ContextAction.FIND_PLAYERS_IN_RADIUS);
         return event.getNearPlayers();
     }
 
@@ -502,21 +502,21 @@ public class NextGenFactionsAPI {
         long start = System.currentTimeMillis();
         new PlayerProximityCheckEvent(fPlayer);
         long end = System.currentTimeMillis();
-        logAction(start, end, APIAction.PROXIMITY_CHECK);
+        logAction(start, end, ContextAction.PROXIMITY_CHECK);
     }
 
     public static void playerIsNearOther(FPlayer player, FPlayer other, int radius) {
         long start = System.currentTimeMillis();
         new PlayerIsNearOtherEvent(player, other, radius);
         long end = System.currentTimeMillis();
-        logAction(start, end, APIAction.PLAYER_NEAR_OTHER);
+        logAction(start, end, ContextAction.PLAYER_NEAR_OTHER);
     }
 
     public static boolean isPlayerFlying(FPlayer player) {
         long start = System.currentTimeMillis();
         CheckPlayerFlyingEvent event = new CheckPlayerFlyingEvent(player);
         long end = System.currentTimeMillis();
-        logAction(start, end, APIAction.CHECK_FLIGHT_MODE);
+        logAction(start, end, ContextAction.CHECK_FLIGHT_MODE);
         return event.isFlying();
     }
 
@@ -524,7 +524,7 @@ public class NextGenFactionsAPI {
         long start = System.currentTimeMillis();
         CheckPlayerAutoFlyingEvent event = new CheckPlayerAutoFlyingEvent(player);
         long end = System.currentTimeMillis();
-        logAction(start, end, APIAction.CHECK_AUTO_FLY_MODE);
+        logAction(start, end, ContextAction.CHECK_AUTO_FLY_MODE);
         return event.isAutoFlying();
     }
 
@@ -532,7 +532,7 @@ public class NextGenFactionsAPI {
         long start = System.currentTimeMillis();
         PlayerHitOtherEvent event = new PlayerHitOtherEvent(player, other);
         long end = System.currentTimeMillis();
-        logAction(start, end, APIAction.HIT_OTHER_PLAYER);
+        logAction(start, end, ContextAction.HIT_OTHER_PLAYER);
         return event.isCancelled();
     }
 
@@ -540,7 +540,7 @@ public class NextGenFactionsAPI {
         long start = System.currentTimeMillis();
         GetInvitationsOfPlayerEvent event = new GetInvitationsOfPlayerEvent(player);
         long end = System.currentTimeMillis();
-        logAction(start, end, APIAction.GET_INVITATIONS_OF_PLAYER);
+        logAction(start, end, ContextAction.GET_INVITATIONS_OF_PLAYER);
         return event.getInvitations();
     }
 
@@ -548,7 +548,7 @@ public class NextGenFactionsAPI {
         long start = System.currentTimeMillis();
         PlayerLeftFactionEvent event = new PlayerLeftFactionEvent(faction, player);
         long end = System.currentTimeMillis();
-        logAction(start, end, APIAction.LEAVE_FACTION);
+        logAction(start, end, ContextAction.LEAVE_FACTION);
         return event.isLeft();
     }
 }

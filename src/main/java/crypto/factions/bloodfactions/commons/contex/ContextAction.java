@@ -1,6 +1,6 @@
-package crypto.factions.bloodfactions.commons.api;
+package crypto.factions.bloodfactions.commons.contex;
 
-public enum APIAction {
+public enum ContextAction {
 
     GET_FACTION,
     GET_FACTION_BY_NAME,

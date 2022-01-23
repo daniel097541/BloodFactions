@@ -3,7 +3,7 @@ package crypto.factions.bloodfactions.backend.handler.data;
 import crypto.factions.bloodfactions.backend.manager.FactionsManager;
 import crypto.factions.bloodfactions.backend.manager.PlayersManager;
 import crypto.factions.bloodfactions.backend.manager.RanksManager;
-import crypto.factions.bloodfactions.commons.api.NextGenFactionsAPI;
+import crypto.factions.bloodfactions.commons.contex.ContextHandler;
 import crypto.factions.bloodfactions.commons.config.NGFConfig;
 import crypto.factions.bloodfactions.commons.config.lang.LangConfigItems;
 import crypto.factions.bloodfactions.commons.config.system.SystemConfigItems;
@@ -28,7 +28,6 @@ import crypto.factions.bloodfactions.commons.tasks.handler.TasksHandler;
 import crypto.factions.bloodfactions.commons.utils.StringUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
-import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 
@@ -80,7 +79,7 @@ public interface PlayerHandler extends DataHandler<FPlayer> {
             if (Objects.nonNull(player)) {
                 Logger.logInfo("New player inserted");
                 // Add the player to the faction-less faction.
-                Faction factionLessFaction = NextGenFactionsAPI.getFactionLessFaction();
+                Faction factionLessFaction = ContextHandler.getFactionLessFaction();
                 this.getFactionsManager().addPlayerToFaction(player, factionLessFaction, player);
             }
         }
@@ -492,7 +491,7 @@ public interface PlayerHandler extends DataHandler<FPlayer> {
         int radius = event.getRadius();
 
 
-        Set<FPlayer> onlinePlayersInRadius = NextGenFactionsAPI.getOnlinePlayers()
+        Set<FPlayer> onlinePlayersInRadius = ContextHandler.getOnlinePlayers()
                 .stream()
                 .filter(player -> {
                     FLocation playersLocation = player.getLocation();

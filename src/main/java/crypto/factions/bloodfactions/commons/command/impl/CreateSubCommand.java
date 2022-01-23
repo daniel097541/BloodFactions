@@ -2,7 +2,7 @@ package crypto.factions.bloodfactions.commons.command.impl;
 
 import crypto.factions.bloodfactions.commons.config.lang.LangConfigItems;
 import crypto.factions.bloodfactions.commons.annotation.config.LangConfiguration;
-import crypto.factions.bloodfactions.commons.api.NextGenFactionsAPI;
+import crypto.factions.bloodfactions.commons.contex.ContextHandler;
 import crypto.factions.bloodfactions.commons.command.SubCommandType;
 import crypto.factions.bloodfactions.commons.config.NGFConfig;
 import crypto.factions.bloodfactions.commons.messages.model.MessageContext;
@@ -36,11 +36,11 @@ public class CreateSubCommand extends FSubCommandImpl {
         }
 
         String name = args[1];
-        boolean exists = NextGenFactionsAPI.checkIfFactionExistsByName(name);
+        boolean exists = ContextHandler.checkIfFactionExistsByName(name);
 
         // No faction with name.
         if (!exists) {
-            Faction faction = NextGenFactionsAPI.createFaction(name, player);
+            Faction faction = ContextHandler.createFaction(name, player);
 
             // Faction created successfully.
             if (Objects.nonNull(faction)) {
