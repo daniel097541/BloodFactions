@@ -487,14 +487,9 @@ public interface FactionsDAO extends DAO<Faction> {
         }
     }
 
-    default MultiClaimResponse multiClaimForFaction(UUID factionId, Map<String, Faction> chunksFactionsMap, UUID playerId) {
-        boolean failed = false;
-        Map<String, Faction> removedChunks = new HashMap<>();
-        Map<String, Faction> claimedChunks = new HashMap<>();
-
-        for (Map.Entry<String, Faction> entry :
-
-
+    default boolean multiClaimForFaction(UUID factionId, Map<FChunk, Faction> chunksFactionsMap, UUID playerId) {
+        chunksFactionsMap.forEach((key, value) -> this.claimForFaction(factionId, key, playerId));
+        return true;
 //        StringBuilder sql = new StringBuilder("INSERT INTO as_faction_claims (faction_id, claim_id, claimed_by) VALUES ");
 //
 //        for (int i = 0; i < chunks.size(); i++) {

@@ -1,1 +1,1 @@
-cp build/libs/*.jar ~/Desktop/server/plugins
+cp build/libs/*.jar ~/Desktop/MC/server/plugins

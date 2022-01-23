@@ -197,6 +197,9 @@ public interface Faction extends NextGenFactionEntity {
      * @return
      */
     default boolean canBeOverClaimed() {
+        if (this.isFactionLessFaction()) {
+            return true;
+        }
         int power = this.getPower();
         int claimsCount = this.getAmountOfClaims();
         return claimsCount > power;

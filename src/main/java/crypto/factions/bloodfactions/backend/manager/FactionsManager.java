@@ -9,13 +9,12 @@ import crypto.factions.bloodfactions.commons.model.faction.Faction;
 import crypto.factions.bloodfactions.commons.model.invitation.FactionInvitation;
 import crypto.factions.bloodfactions.commons.model.land.FChunk;
 import crypto.factions.bloodfactions.commons.model.land.FLocation;
-import crypto.factions.bloodfactions.commons.model.land.MultiClaimResponse;
 import crypto.factions.bloodfactions.commons.model.player.FPlayer;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.AbstractMap;
 import java.util.Map;
-import java.util.Objects;
 import java.util.Set;
 import java.util.UUID;
 import java.util.stream.Collectors;
@@ -144,14 +143,29 @@ public interface FactionsManager extends DataManager<Faction> {
 
     default boolean multiClaimForFaction(Faction faction, Set<FChunk> chunks, FPlayer player) {
 
-        Map<String, Faction> chunksThatCanBeClaimed = chunks
+        Map<FChunk, Faction> chunksThatCanBeClaimed = chunks
                 .stream()
                 .filter(c -> c.getFactionAt().canBeOverClaimed())
-                .collect(Collectors.toMap(FChunk::getId, FChunk::getFactionAt));
+                .map(c -> new AbstractMap.SimpleEntry<>(c, c.getFactionAt()))
+                .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
 
-        MultiClaimResponse response = this.getDAO().multiClaimForFaction(faction.getId(), chunksThatCanBeClaimed, player.getId());
-        if (Objects.nonNull(response)) {
-            Logger.logInfo("Success multi-claim response from DAO, claimed: " + response.getClaimedChunks().size() + ", unclaimed: " + response.getRemovedChunks().size());
+        int removed = 0;
+        for (Map.Entry<FChunk, Faction> entry : chunksThatCanBeClaimed.entrySet()) {
+            Faction fAt = entry.getValue();
+            FChunk chunk = entry.getKey();
+
+            if (!fAt.isFactionLessFaction()) {
+                this.getDAO().removeClaim(fAt.getId(), chunk.getId());
+                removed++;
+            }
+        }
+
+        Logger.logInfo("Removed: " + removed + " claims from other factions.");
+
+        Logger.logInfo("Claiming chunks.");
+        boolean response = this.getDAO().multiClaimForFaction(faction.getId(), chunksThatCanBeClaimed, player.getId());
+        if (response) {
+            Logger.logInfo("Success multi-claim response from DAO, claimed: " + chunksThatCanBeClaimed.size());
             return true;
         } else {
             return false;

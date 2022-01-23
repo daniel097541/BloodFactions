@@ -1,5 +1,6 @@
 package crypto.factions.bloodfactions.commons.model.land.impl;
 
+import crypto.factions.bloodfactions.commons.logger.Logger;
 import crypto.factions.bloodfactions.commons.model.land.FChunk;
 import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
