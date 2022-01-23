@@ -28,6 +28,7 @@ public class SystemConfigItems {
     public static String systemFactionAllowFlightSection = ".allow-flight";
     public static String systemFactionColorSection = ".color";
     public static String systemFactionDefaultFaction = ".is-for-faction-less";
+    public static String multiClaimMaxRadius = ".multi-claim-max-radius";
 
 
     public static ConfigItem DEFAULT_FACTIONS_FACTION_LESS_ID = new ConfigItemImpl(factionLessPath + systemFactionIdSection, "00000000-0000-0000-0000-000000000000");
@@ -50,6 +51,7 @@ public class SystemConfigItems {
     public static ConfigItem DEFAULT_FACTIONS_PEACE_ZONE_ALLOW_FLY = new ConfigItemImpl(peaceZonePath + ".allow-flight", true);
     public static ConfigItem DEFAULT_FACTIONS_PEACE_ZONE_COLOR = new ConfigItemImpl(peaceZonePath + ".color", "&d");
     public static ConfigItem DEFAULT_FACTIONS_PEACE_ZONE_IS_FOR_FACTION_LESS = new ConfigItemImpl(peaceZonePath + systemFactionDefaultFaction, false);
+    public static ConfigItem MULTI_CLAIM_MAX_RADIUS = new ConfigItemImpl(settings + multiClaimMaxRadius, 10);
 
 
     public static String defaultRolesPath = "default-roles";

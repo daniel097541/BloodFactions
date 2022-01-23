@@ -43,6 +43,7 @@ public class LangConfigItems {
     public static ConfigItem COMMANDS_F_CLAIM_FACTION_IS_STRONG_TO_KEEP = new ConfigItemImpl("commands.f-claim.faction-is-strong-to-keep", "&7The faction &c{faction_name} &7is strong enough to keep this land.");
     public static ConfigItem COMMANDS_F_CLAIM_SUCCESS = new ConfigItemImpl("commands.f-claim.success", "&aYou successfully claimed this chunk from &7{faction_name}.");
     public static ConfigItem COMMANDS_F_CLAIM_FAIL = new ConfigItemImpl("commands.f-claim.fail", "&cFailed to claim this chunk.");
+    public static ConfigItem COMMANDS_F_CLAIM_MAX_RADIUS = new ConfigItemImpl("commands.f-claim.max-radius", "&cThe max radius for multi-claim is: &7{radius}");
 
 
     // Un-Claim command

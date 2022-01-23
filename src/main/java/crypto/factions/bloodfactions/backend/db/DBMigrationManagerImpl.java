@@ -55,7 +55,6 @@ public class DBMigrationManagerImpl implements DBMigrationManager {
                 " player_id VARCHAR[36], " +
                 " invited_by VARCHAR[36], " +
                 " joined_date REAL DEFAULT (datetime('now', 'localtime')), " +
-//                " UNIQUE (faction_id, player_id), " +
                 " FOREIGN KEY (player_id) REFERENCES players(id), " +
                 " FOREIGN KEY (faction_id) REFERENCES factions(id), " +
                 " FOREIGN KEY (invited_by) REFERENCES players(id), " +
@@ -65,27 +64,17 @@ public class DBMigrationManagerImpl implements DBMigrationManager {
         this.dbManager.executeUpdate(sql);
     }
 
-    private void loadClaimsTable() {
-        String sql = "CREATE TABLE IF NOT EXISTS claims ( " +
-                " id VARCHAR[255] PRIMARY KEY, " +
-                " world_id VARCHAR[36] NOT NULL, " +
-                " x BIGINT NOT NULL, " +
-                " z BIGINT NOT NULL " +
-                ");";
-
-        this.dbManager.executeUpdate(sql);
-    }
-
     private void loadFactionClaimsTable() {
 
-        String sql = "CREATE TABLE IF NOT EXISTS as_faction_claims(" +
+        String sql = "CREATE TABLE IF NOT EXISTS faction_claims(" +
                 " faction_id VARCHAR[36], " +
                 " claim_id VARCHAR[255], " +
+                " world_id VARCHAR[36] NOT NULL," +
+                " x INTEGER NOT NULL," +
+                " z INTEGER NOT NULL," +
                 " claimed_date REAL DEFAULT (datetime('now', 'localtime'))," +
                 " claimed_by VARCHAR[36], " +
-//                " UNIQUE (faction_id, claim_id), " +
                 " FOREIGN KEY (faction_id) REFERENCES factions(id)," +
-                " FOREIGN KEY (claim_id) REFERENCES claims(id)," +
                 " FOREIGN KEY (claimed_by) REFERENCES players(id), " +
                 " PRIMARY KEY(faction_id, claim_id) " +
                 ");";
@@ -218,7 +207,7 @@ public class DBMigrationManagerImpl implements DBMigrationManager {
         this.dbManager.executeUpdate(sql);
     }
 
-    private void loadAsFactionRelationsTable(){
+    private void loadAsFactionRelationsTable() {
         String sql = "CREATE TABLE IF NOT EXISTS as_faction_relations(" +
                 " faction_id VARCHAR[36] NOT NULL," +
                 " other_faction_id VARCHAR[36] NOT NULL, " +
@@ -230,17 +219,16 @@ public class DBMigrationManagerImpl implements DBMigrationManager {
         boolean created = this.dbManager.executeUpdate(sql);
     }
 
-    private void loadVersion(){
+    private void loadVersion() {
         String sql = "SELECT sqlite_version() AS version;";
-        try (Statement statement = this.dbManager.getStatement()){
-            try(ResultSet rs = statement.executeQuery(sql)){
-                if(rs.next()){
+        try (Statement statement = this.dbManager.getStatement()) {
+            try (ResultSet rs = statement.executeQuery(sql)) {
+                if (rs.next()) {
                     String version = rs.getString("version");
                     Logger.logInfo("SQLite version: " + version);
                 }
             }
-        }
-        catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }
@@ -249,7 +237,6 @@ public class DBMigrationManagerImpl implements DBMigrationManager {
         this.loadVersion();
         this.loadPlayersTable();
         this.loadFactionsTable();
-        this.loadClaimsTable();
         this.loadFactionPlayersTable();
         this.loadFactionClaimsTable();
         this.loadPermissionsTable();

@@ -301,6 +301,11 @@ public interface FactionsHandler extends DataHandler<Faction> {
         event.setRoles(roles);
     }
 
+    /**
+     * Handles multi claim.
+     * @param event
+     * @throws NoFactionForFactionLessException
+     */
     @EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
     default void handleMultiClaim(MultiClaimEvent event) throws NoFactionForFactionLessException {
         Faction faction = event.getFaction();

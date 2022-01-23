@@ -1,9 +1,11 @@
 package crypto.factions.bloodfactions.commons.command.impl;
 
 import crypto.factions.bloodfactions.commons.annotation.config.LangConfiguration;
+import crypto.factions.bloodfactions.commons.annotation.config.SystemConfiguration;
 import crypto.factions.bloodfactions.commons.command.SubCommandType;
 import crypto.factions.bloodfactions.commons.config.NGFConfig;
 import crypto.factions.bloodfactions.commons.config.lang.LangConfigItems;
+import crypto.factions.bloodfactions.commons.config.system.SystemConfigItems;
 import crypto.factions.bloodfactions.commons.messages.model.MessageContext;
 import crypto.factions.bloodfactions.commons.messages.model.MessageContextImpl;
 import crypto.factions.bloodfactions.commons.model.faction.Faction;
@@ -17,9 +19,13 @@ import java.util.Set;
 @Singleton
 public class ClaimSubCommand extends FSubCommandImpl {
 
+    private final NGFConfig sysConfig;
+
     @Inject
-    public ClaimSubCommand(@LangConfiguration NGFConfig langConfig) {
+    public ClaimSubCommand(@LangConfiguration NGFConfig langConfig,
+                           @SystemConfiguration NGFConfig sysConfig) {
         super(SubCommandType.CLAIM, langConfig);
+        this.sysConfig = sysConfig;
     }
 
     @Override
@@ -42,11 +48,20 @@ public class ClaimSubCommand extends FSubCommandImpl {
 
             try {
                 int radius = Integer.parseInt(radiusStr);
-                Set<FChunk> chunks = player.getChunksInRadius(radius);
-                faction.multiClaim(chunks, player);
+                int maxRadius = (int) this.sysConfig.get(SystemConfigItems.MULTI_CLAIM_MAX_RADIUS);
+
+                if (radius <= maxRadius) {
+                    Set<FChunk> chunks = player.getChunksInRadius(radius);
+                    faction.multiClaim(chunks, player);
+                }
+                else{
+                    String message = (String) this.getLangConfig().get(LangConfigItems.COMMANDS_F_CLAIM_MAX_RADIUS);
+                    message = message.replace("{radius}", "" + maxRadius);
+                    MessageContext messageContext = new MessageContextImpl(player, message);
+                    player.sms(messageContext);
+                }
 
             } catch (Exception ignored) {
-                ignored.printStackTrace();
             }
 
             return true;
