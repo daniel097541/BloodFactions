@@ -132,7 +132,7 @@ public interface PlayerListener extends Listener {
 
             FPlayer player = ContextHandler.getPlayer(bukkitPlayer);
 
-            player.proximityCheck();
+            Objects.requireNonNull(player).proximityCheck();
 
             FLocation from = FLocationImpl.fromLocation(fromLocation);
             FChunk chunkFrom = from.getChunk();

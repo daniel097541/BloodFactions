@@ -73,7 +73,7 @@ public interface Faction extends NextGenFactionEntity {
      *
      * @return
      */
-    default int getAmountOfClaims() {
+    default int getCountOfClaims() {
         return ContextHandler.getNumberOfClaimsOfFaction(this);
     }
 
@@ -201,7 +201,7 @@ public interface Faction extends NextGenFactionEntity {
             return true;
         }
         int power = this.getPower();
-        int claimsCount = this.getAmountOfClaims();
+        int claimsCount = this.getCountOfClaims();
         return claimsCount > power;
     }
 
@@ -212,7 +212,7 @@ public interface Faction extends NextGenFactionEntity {
      */
     default boolean canClaim() {
         int power = this.getPower();
-        int claimsCount = this.getAmountOfClaims();
+        int claimsCount = this.getCountOfClaims();
         return claimsCount < power;
     }
 

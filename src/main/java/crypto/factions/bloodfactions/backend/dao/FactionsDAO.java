@@ -275,7 +275,7 @@ public interface FactionsDAO extends DAO<Faction> {
 
     default Set<FChunk> getAllClaimsOfFaction(UUID factionId) {
 
-        String sql = "SELECT * FROM faction_claims WHERE rel.faction_id = ?;";
+        String sql = "SELECT * FROM faction_claims WHERE faction_id = ?;";
 
         Set<FChunk> claims = new HashSet<>();
 

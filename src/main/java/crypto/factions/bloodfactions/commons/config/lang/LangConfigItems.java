@@ -57,6 +57,7 @@ public class LangConfigItems {
     public static ConfigItem COMMANDS_F_UN_CLAIM_ALL_SUCCESS = new ConfigItemImpl("commands.f-unclaimall.success", "&aYou successfully un-claimed all the claims from &7{faction_name}.");
     public static ConfigItem COMMANDS_F_UN_CLAIM_ALL_FAIL = new ConfigItemImpl("commands.f-unclaimall.fail", "&cFailed to un-claim all.");
     public static ConfigItem COMMANDS_F_UN_CLAIM_ALL_CONFIRMATION = new ConfigItemImpl("commands.f-unclaimall.confirmation", "&eUn-claim all command requires confirmation, type the command again before 30s.");
+    public static ConfigItem COMMANDS_F_UN_CLAIM_ALL_NO_CLAIMS= new ConfigItemImpl("commands.f-unclaimall.no-claims", "&cYour faction does not have any claim.");
 
     // Home
     public static ConfigItem COMMANDS_F_HOME_NO_FACTION = new ConfigItemImpl("commands.f-home.no-faction", "&cYou need a faction to do that.");

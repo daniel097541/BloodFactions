@@ -285,7 +285,7 @@ public interface PlayerHandler extends DataHandler<FPlayer> {
         placeHolders.put("{faction_name}", faction.getName());
         placeHolders.put("{faction_members}", members.stream().map(FPlayer::getName).collect(Collectors.joining(", ")));
         placeHolders.put("{faction_owner}", owner.getName());
-        placeHolders.put("{faction_claims}", String.valueOf(faction.getAmountOfClaims()));
+        placeHolders.put("{faction_claims}", String.valueOf(faction.getCountOfClaims()));
         placeHolders.put("{can_be_over_claimed}", String.valueOf(faction.canBeOverClaimed()).toUpperCase(Locale.ROOT));
 
         String message = (String) this.getLangConfig().get(LangConfigItems.COMMANDS_F_SHOW_SUCCESS);

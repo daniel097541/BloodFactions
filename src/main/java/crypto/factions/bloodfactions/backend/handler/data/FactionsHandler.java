@@ -361,11 +361,12 @@ public interface FactionsHandler extends DataHandler<Faction> {
                 Set<FPlayer> onlinePlayers = ContextHandler.getOnlinePlayers();
 
                 Logger.logInfo("Warning " + onlinePlayers.size() + " players about multi-claim.");
-                onlinePlayers
+
+                Bukkit.getScheduler().runTask(this.getPlugin(), () -> onlinePlayers
                         .stream()
                         .filter(p -> chunks.contains(p.getChunk()))
                         .map(p -> new AbstractMap.SimpleEntry<>(p, p.getChunk()))
-                        .forEach(entry -> entry.getKey().changedLand(entry.getValue().getFactionAt(), faction));
+                        .forEach(entry -> entry.getKey().changedLand(entry.getValue().getFactionAt(), faction)));
 
             }
         });
@@ -641,6 +642,17 @@ public interface FactionsHandler extends DataHandler<Faction> {
 
         FPlayer player = event.getPlayer();
         Faction faction = event.getFaction();
+
+        int countOfClaims = faction.getCountOfClaims();
+
+        if(countOfClaims == 0){
+            String successMessage = (String) this.getLangConfig().get(LangConfigItems.COMMANDS_F_UN_CLAIM_ALL_NO_CLAIMS);
+            MessageContext messageContext = new MessageContextImpl(player, successMessage);
+            player.sms(messageContext);
+            event.setSuccess(false);
+            return;
+        }
+
         boolean isUnClaimingAll = this.isUnClaimingAll(player);
 
         if (!isUnClaimingAll) {
@@ -658,6 +670,7 @@ public interface FactionsHandler extends DataHandler<Faction> {
             this.sendExitLandToAllPlayers(faction);
 
             this.removeUnClaimingAll(player);
+
             boolean removed = this.getManager().removeAllClaimsOfFaction(faction);
             event.setSuccess(removed);
 
