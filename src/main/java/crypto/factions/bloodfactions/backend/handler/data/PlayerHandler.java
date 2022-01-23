@@ -583,6 +583,15 @@ public interface PlayerHandler extends DataHandler<FPlayer> {
         FPlayer player = event.getPlayer();
         Faction faction = event.getFaction();
 
+        if(player.isOwner()){
+            String message = (String) this.getLangConfig().get(LangConfigItems.COMMANDS_F_LEAVE_OWNER_CANNOT_LEAVE);
+            MessageContext messageContext = new MessageContextImpl(player, message);
+            player.sms(messageContext);
+
+            event.setLeft(false);
+            return;
+        }
+
         boolean left = this.getFactionsManager().removePlayerFromFaction(player, faction);
 
         if(left) {
@@ -595,8 +604,6 @@ public interface PlayerHandler extends DataHandler<FPlayer> {
             playerLeftContext.setTargetPlayer(player);
             faction.sms(playerLeftContext);
         }
-
-
 
         event.setLeft(left);
     }

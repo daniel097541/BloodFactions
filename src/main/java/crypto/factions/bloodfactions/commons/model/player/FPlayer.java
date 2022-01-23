@@ -28,7 +28,7 @@ public interface FPlayer extends NextGenFactionEntity {
 
     int getPower();
 
-    default boolean hit(FPlayer other){
+    default boolean hit(FPlayer other) {
         return ContextHandler.playerHitOther(this, other);
     }
 
@@ -40,7 +40,7 @@ public interface FPlayer extends NextGenFactionEntity {
         return ContextHandler.isPlayerAutoFlying(this);
     }
 
-    default Set<FactionInvitation> getInvitations(){
+    default Set<FactionInvitation> getInvitations() {
         return ContextHandler.getInvitations(this);
     }
 
@@ -442,17 +442,20 @@ public interface FPlayer extends NextGenFactionEntity {
         ContextHandler.playerIsNearOther(this, other, radius);
     }
 
-    default boolean leaveFaction(){
+    default boolean leaveFaction() {
         return ContextHandler.leaveFaction(this, this.getFaction());
     }
 
-    default @NotNull Set<FChunk> getChunksInRadius(int radius){
-        if(this.isOnline()) {
+    default @NotNull Set<FChunk> getChunksInRadius(int radius) {
+        if (this.isOnline()) {
             return Objects.requireNonNull(this.getChunk()).getChunksInRadius(radius);
-        }
-        else{
+        } else {
             return new HashSet<>();
         }
+    }
+
+    default boolean isOwner() {
+        return this.getFaction().getOwner().equals(this);
     }
 
 }

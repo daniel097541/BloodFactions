@@ -189,11 +189,9 @@ public interface PlayerListener extends Listener {
 
     @EventHandler(priority = EventPriority.HIGHEST)
     default void handlePlayerDeath(PlayerDeathEvent event) {
-
         Player bukkitPlayer = event.getEntity();
         FPlayer player = ContextHandler.getPlayer(bukkitPlayer.getUniqueId());
-
-        player.died();
+        Objects.requireNonNull(player).died();
     }
 
     @EventHandler

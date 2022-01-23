@@ -161,6 +161,7 @@ public class LangConfigItems {
     public static ConfigItem COMMANDS_F_LEAVE_NO_FACTION = new ConfigItemImpl("commands.f-leave.no-faction", "&cYou need a faction to do that!");
     public static ConfigItem COMMANDS_F_LEAVE_SUCCESS = new ConfigItemImpl("commands.f-leave.success", "&aYou successfully left your faction!");
     public static ConfigItem COMMANDS_F_PLAYER_LEFT = new ConfigItemImpl("commands.f-leave.player-left", "&7The player &c{target_player_name} &7has left your faction!");
+    public static ConfigItem COMMANDS_F_LEAVE_OWNER_CANNOT_LEAVE = new ConfigItemImpl("commands.f-leave.you-are-the-owner", "&cYou are the owner of the faction, you cannot leave it!");
 
 
     public static Map<String, ConfigItem> asMap() {

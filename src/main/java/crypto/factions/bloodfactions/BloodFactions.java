@@ -30,9 +30,6 @@ public class BloodFactions extends JavaPlugin {
     private PermissionsHandler permissionsHandler;
 
     @Inject
-    private AlertsHandler alertsHandler;
-
-    @Inject
     private PlayerHandler playerHandler;
 
     @Inject

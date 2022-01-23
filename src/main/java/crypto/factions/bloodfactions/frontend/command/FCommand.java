@@ -64,7 +64,7 @@ public interface FCommand extends CommandExecutor {
 
         // Send not found message.
         String notFound = "";
-        player.sms(notFound);
+        Objects.requireNonNull(player).sms(notFound);
 
         // If not found, return false.
         return false;
