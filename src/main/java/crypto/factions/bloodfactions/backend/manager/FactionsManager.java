@@ -55,11 +55,8 @@ public interface FactionsManager extends DataManager<Faction> {
     }
 
     default boolean setHome(@NotNull Faction faction, @NotNull FLocation location, @NotNull FPlayer player) {
-        boolean deleted = this.removeHome(faction);
-        if (deleted) {
-            return this.getDAO().setCore(faction.getId(), player.getId(), location);
-        }
-        return false;
+        this.removeHome(faction);
+        return this.getDAO().setCore(faction.getId(), player.getId(), location);
     }
 
     default boolean removeHome(@NotNull Faction faction) {

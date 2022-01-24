@@ -27,12 +27,11 @@ public class FChunkImpl implements FChunk {
     public static @Nullable FChunk fromString(String id) {
         String[] split = id.split("_");
 
-
         String identifier = split[0];
         if (split.length == 4 && identifier.equals("FCHUNK")) {
             UUID worldId = UUID.fromString(split[1]);
-            int x = Integer.getInteger(split[2]);
-            int z = Integer.getInteger(split[3]);
+            int x = Integer.parseInt(split[2]);
+            int z = Integer.parseInt(split[3]);
 
             return new FChunkImpl(worldId, x, z);
         }

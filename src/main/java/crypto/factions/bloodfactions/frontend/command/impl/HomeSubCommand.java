@@ -58,7 +58,7 @@ public class HomeSubCommand extends FSubCommandImpl {
             if (secondArg.equalsIgnoreCase("set")) {
                 FLocation location = player.getLocation();
 
-                if (location.getFactionAt().equals(faction)){
+                if (Objects.equals(Objects.requireNonNull(location).getFactionAt(), faction)){
                     boolean success = faction.setCore(player, location);
                     if (success) {
                         String successMessage = (String) this.getLangConfig().get(LangConfigItems.COMMANDS_F_HOME_SET_SUCCESS);

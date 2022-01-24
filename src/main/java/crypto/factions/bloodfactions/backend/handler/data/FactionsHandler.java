@@ -3,10 +3,10 @@ package crypto.factions.bloodfactions.backend.handler.data;
 import crypto.factions.bloodfactions.backend.manager.FactionsManager;
 import crypto.factions.bloodfactions.backend.manager.PlayersManager;
 import crypto.factions.bloodfactions.backend.manager.RanksManager;
-import crypto.factions.bloodfactions.commons.contex.ContextHandler;
 import crypto.factions.bloodfactions.commons.config.NGFConfig;
 import crypto.factions.bloodfactions.commons.config.lang.LangConfigItems;
 import crypto.factions.bloodfactions.commons.config.system.SystemConfigItems;
+import crypto.factions.bloodfactions.commons.contex.ContextHandler;
 import crypto.factions.bloodfactions.commons.events.faction.SetCoreEvent;
 import crypto.factions.bloodfactions.commons.events.faction.callback.*;
 import crypto.factions.bloodfactions.commons.events.faction.permissioned.*;
@@ -63,6 +63,7 @@ public interface FactionsHandler extends DataHandler<Faction> {
 
     /**
      * Gets the faction-less faction.
+     *
      * @param event
      * @throws NoFactionForFactionLessException
      */
@@ -164,6 +165,7 @@ public interface FactionsHandler extends DataHandler<Faction> {
 
     /**
      * Gets count of claims of a faction.
+     *
      * @param event
      */
     @EventHandler(priority = EventPriority.HIGHEST)
@@ -337,6 +339,7 @@ public interface FactionsHandler extends DataHandler<Faction> {
 
     /**
      * Handles multi claim.
+     *
      * @param event
      * @throws NoFactionForFactionLessException
      */
@@ -362,11 +365,11 @@ public interface FactionsHandler extends DataHandler<Faction> {
 
                 Logger.logInfo("Warning " + onlinePlayers.size() + " players about multi-claim.");
 
-                Bukkit.getScheduler().runTask(this.getPlugin(), () -> onlinePlayers
+                onlinePlayers
                         .stream()
                         .filter(p -> chunks.contains(p.getChunk()))
                         .map(p -> new AbstractMap.SimpleEntry<>(p, p.getChunk()))
-                        .forEach(entry -> entry.getKey().changedLand(entry.getValue().getFactionAt(), faction)));
+                        .forEach(entry -> entry.getKey().changedLand(entry.getValue().getFactionAt(), faction));
 
             }
         });
@@ -445,12 +448,7 @@ public interface FactionsHandler extends DataHandler<Faction> {
         event.setSuccess(claimed);
     }
 
-    @EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
-    default void handleUnClaim(UnClaimEvent event) throws NoFactionForFactionLessException {
-        Faction faction = event.getFaction();
-        FPlayer player = event.getPlayer();
-        FChunk chunk = event.getChunk();
-
+    default void unClaim(FPlayer player, FChunk chunk, Faction faction) {
         Logger.logInfo("Player &d" + player.getName() + " &7is un-claiming for faction: &d" + faction.getName() + " &7at: &d" + chunk.getId());
         boolean unClaimed = this.getManager().removeClaim(faction, chunk);
 
@@ -465,8 +463,15 @@ public interface FactionsHandler extends DataHandler<Faction> {
                         }
                     });
         }
+    }
 
-        event.setSuccess(unClaimed);
+    @EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
+    default void handleUnClaim(UnClaimEvent event) throws NoFactionForFactionLessException {
+        Faction faction = event.getFaction();
+        FPlayer player = event.getPlayer();
+        FChunk chunk = event.getChunk();
+        Bukkit.getScheduler().runTaskAsynchronously(this.getPlugin(), () -> this.unClaim(player, chunk, faction));
+        event.setSuccess(true);
     }
 
     @EventHandler(priority = EventPriority.HIGH, ignoreCancelled = true)
@@ -629,12 +634,28 @@ public interface FactionsHandler extends DataHandler<Faction> {
         Set<FChunk> chunks = faction.getAllAClaims();
         Faction factionLess = this.getFactionForFactionLess();
 
-        chunks
-                .forEach(chunk -> {
-                    chunk
-                            .getPlayersAtChunk()
-                            .forEach(player1 -> player1.changedLand(faction, factionLess));
-                });
+        for (FPlayer player : ContextHandler.getOnlinePlayers()) {
+            FChunk playerChunk = player.getChunk();
+            if (chunks.contains(playerChunk)) {
+                player.changedLand(faction, factionLess);
+            }
+        }
+    }
+
+    default void unClaimAll(Faction faction, FPlayer player) {
+        try {
+            this.sendExitLandToAllPlayers(faction);
+        } catch (NoFactionForFactionLessException e) {
+            e.printStackTrace();
+        }
+        this.removeUnClaimingAll(player);
+        boolean removed = this.getManager().removeAllClaimsOfFaction(faction);
+        if (removed) {
+            String successMessage = (String) this.getLangConfig().get(LangConfigItems.COMMANDS_F_UN_CLAIM_SUCCESS);
+            MessageContext messageContext = new MessageContextImpl(player, successMessage);
+            messageContext.setFaction(faction);
+            player.sms(messageContext);
+        }
     }
 
     @EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
@@ -645,7 +666,7 @@ public interface FactionsHandler extends DataHandler<Faction> {
 
         int countOfClaims = faction.getCountOfClaims();
 
-        if(countOfClaims == 0){
+        if (countOfClaims == 0) {
             String successMessage = (String) this.getLangConfig().get(LangConfigItems.COMMANDS_F_UN_CLAIM_ALL_NO_CLAIMS);
             MessageContext messageContext = new MessageContextImpl(player, successMessage);
             player.sms(messageContext);
@@ -667,19 +688,12 @@ public interface FactionsHandler extends DataHandler<Faction> {
         else {
 
             // All players from faction exit the land
-            this.sendExitLandToAllPlayers(faction);
+            Bukkit.getScheduler().runTaskAsynchronously(this.getPlugin(), () -> {
+                this.unClaimAll(faction, player);
+            });
 
-            this.removeUnClaimingAll(player);
 
-            boolean removed = this.getManager().removeAllClaimsOfFaction(faction);
-            event.setSuccess(removed);
-
-            if (removed) {
-                String successMessage = (String) this.getLangConfig().get(LangConfigItems.COMMANDS_F_UN_CLAIM_SUCCESS);
-                MessageContext messageContext = new MessageContextImpl(player, successMessage);
-                messageContext.setFaction(faction);
-                player.sms(messageContext);
-            }
+            event.setSuccess(true);
         }
     }
 
@@ -688,9 +702,7 @@ public interface FactionsHandler extends DataHandler<Faction> {
         Faction faction = event.getFaction();
         FPlayer player = event.getPlayer();
         FLocation location = event.getLocation();
-
         Block block = Objects.requireNonNull(location.getBukkitLocation()).getBlock();
-
         event.setSuccess(true);
     }
 
