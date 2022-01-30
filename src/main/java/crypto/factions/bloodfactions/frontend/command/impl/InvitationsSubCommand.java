@@ -80,7 +80,8 @@ public class InvitationsSubCommand extends FSubCommandImpl {
 
         // Invite player if first parameter is a player name.
         if (Objects.nonNull(targetPlayer)) {
-            return player.invitePlayerToFaction(targetPlayer);
+            player.invitePlayerToFaction(targetPlayer);
+            return true;
         }
 
         // List invitations.
@@ -113,7 +114,8 @@ public class InvitationsSubCommand extends FSubCommandImpl {
                 FPlayer invitedPlayer = ContextHandler.getPlayerByName(playerName);
 
                 if (Objects.nonNull(invitedPlayer)) {
-                    return player.invitePlayerToFaction(invitedPlayer);
+                    player.invitePlayerToFaction(invitedPlayer);
+                    return true;
                 } else {
                     String successMessage = (String) this.getLangConfig().get(LangConfigItems.COMMANDS_F_INVITE_PLAYER_DOES_NOT_EXIST);
                     MessageContext messageContext = new MessageContextImpl(player, successMessage);
@@ -136,7 +138,8 @@ public class InvitationsSubCommand extends FSubCommandImpl {
                 FPlayer invitedPlayer = ContextHandler.getPlayerByName(playerName);
 
                 if (Objects.nonNull(invitedPlayer) && invitedPlayer.isOnline()) {
-                    return player.invitePlayerToFaction(invitedPlayer);
+                    player.invitePlayerToFaction(invitedPlayer);
+                    return true;
                 } else {
                     String successMessage = (String) this.getLangConfig().get(LangConfigItems.COMMANDS_F_INVITE_PLAYER_DOES_NOT_EXIST);
                     MessageContext messageContext = new MessageContextImpl(player, successMessage);

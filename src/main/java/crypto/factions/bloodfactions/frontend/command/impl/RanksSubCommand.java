@@ -64,7 +64,8 @@ public class RanksSubCommand extends FSubCommandImpl {
                         // Set the rank of the player.
                         if (Objects.nonNull(targetRank)) {
                             Logger.logInfo("Setting rank of " + playerName + " to " + rankName);
-                            return targetPlayer.setRank(targetRank, player);
+                            targetPlayer.setRank(targetRank, player);
+                            return true;
                         }
 
                         // Set rank does not exist command.

@@ -24,7 +24,7 @@ import java.util.Set;
 
 public class PermissionContextHandler {
 
-    private static void runAsync(Runnable runnable){
+    private static void runAsync(Runnable runnable) {
         Bukkit.getScheduler().runTaskAsynchronously(BloodFactions.getInstance(), runnable);
     }
 
@@ -98,13 +98,14 @@ public class PermissionContextHandler {
      * @param player
      * @return
      */
-    public static boolean claim(Faction faction, FChunk chunk, FPlayer player) {
-        long start = System.currentTimeMillis();
-        ClaimEvent claimEvent = new ClaimEvent(faction, player, chunk);
-        boolean claimed = claimEvent.isSuccess();
-        long end = System.currentTimeMillis();
-        logAction(start, end, PermissionedContextAction.CLAIM);
-        return claimed;
+    public static void claim(Faction faction, FChunk chunk, FPlayer player) {
+        PermissionContextHandler.runAsync(() -> {
+            long start = System.currentTimeMillis();
+            ClaimEvent claimEvent = new ClaimEvent(faction, player, chunk);
+            boolean claimed = claimEvent.isSuccess();
+            long end = System.currentTimeMillis();
+            logAction(start, end, PermissionedContextAction.CLAIM);
+        });
     }
 
     /**
@@ -113,13 +114,14 @@ public class PermissionContextHandler {
      * @param faction
      * @param player
      */
-    public static boolean disbandFaction(Faction faction, FPlayer player) {
-        long start = System.currentTimeMillis();
-        DisbandFactionEvent event = new DisbandFactionEvent(player, faction);
-        boolean disbanded = event.isDisbanded();
-        long end = System.currentTimeMillis();
-        logAction(start, end, PermissionedContextAction.DISBAND);
-        return disbanded;
+    public static void disbandFaction(Faction faction, FPlayer player) {
+        PermissionContextHandler.runAsync(() -> {
+            long start = System.currentTimeMillis();
+            DisbandFactionEvent event = new DisbandFactionEvent(player, faction);
+            boolean disbanded = event.isDisbanded();
+            long end = System.currentTimeMillis();
+            logAction(start, end, PermissionedContextAction.DISBAND);
+        });
     }
 
     /**
@@ -130,13 +132,14 @@ public class PermissionContextHandler {
      * @param memberThatInvites
      * @return
      */
-    public static boolean invitePlayerToFaction(FPlayer invitedPlayer, Faction faction, FPlayer memberThatInvites) {
-        long start = System.currentTimeMillis();
-        InvitePlayerToFactionEvent event = new InvitePlayerToFactionEvent(faction, memberThatInvites, invitedPlayer);
-        boolean invited = event.isInvited();
-        long end = System.currentTimeMillis();
-        logAction(start, end, PermissionedContextAction.INVITE);
-        return invited;
+    public static void invitePlayerToFaction(FPlayer invitedPlayer, Faction faction, FPlayer memberThatInvites) {
+        PermissionContextHandler.runAsync(() -> {
+            long start = System.currentTimeMillis();
+            InvitePlayerToFactionEvent event = new InvitePlayerToFactionEvent(faction, memberThatInvites, invitedPlayer);
+            boolean invited = event.isInvited();
+            long end = System.currentTimeMillis();
+            logAction(start, end, PermissionedContextAction.INVITE);
+        });
     }
 
     /**
@@ -147,13 +150,14 @@ public class PermissionContextHandler {
      * @param playerThatKicks
      * @return
      */
-    public static boolean kickPlayerFromFaction(FPlayer kickedPlayer, Faction faction, FPlayer playerThatKicks) {
-        long start = System.currentTimeMillis();
-        KickPlayerFromFactionEvent event = new KickPlayerFromFactionEvent(faction, playerThatKicks, kickedPlayer);
-        boolean kicked = event.isKicked();
-        long end = System.currentTimeMillis();
-        logAction(start, end, PermissionedContextAction.KICK);
-        return kicked;
+    public static void kickPlayerFromFaction(FPlayer kickedPlayer, Faction faction, FPlayer playerThatKicks) {
+        PermissionContextHandler.runAsync(() -> {
+            long start = System.currentTimeMillis();
+            KickPlayerFromFactionEvent event = new KickPlayerFromFactionEvent(faction, playerThatKicks, kickedPlayer);
+            boolean kicked = event.isKicked();
+            long end = System.currentTimeMillis();
+            logAction(start, end, PermissionedContextAction.KICK);
+        });
     }
 
     /**
@@ -164,52 +168,55 @@ public class PermissionContextHandler {
      * @param playerChangingTheRole
      * @return
      */
-    public static boolean changeRankOfPlayer(@NotNull FPlayer player, @NotNull FactionRank newRole, @NotNull FPlayer playerChangingTheRole) {
-        long start = System.currentTimeMillis();
-        boolean changed = false;
-        if (player.hasFaction()) {
-            ChangeRankOfPlayerEvent event = new ChangeRankOfPlayerEvent(player, newRole, playerChangingTheRole);
-            changed = event.isChanged();
-        }
-        long end = System.currentTimeMillis();
-        logAction(start, end, PermissionedContextAction.CHANGE_ROLE);
-        return changed;
+    public static void changeRankOfPlayer(@NotNull FPlayer player, @NotNull FactionRank newRole, @NotNull FPlayer playerChangingTheRole) {
+        PermissionContextHandler.runAsync(() -> {
+            long start = System.currentTimeMillis();
+            if (player.hasFaction()) {
+                new ChangeRankOfPlayerEvent(player, newRole, playerChangingTheRole);
+            }
+            long end = System.currentTimeMillis();
+            logAction(start, end, PermissionedContextAction.CHANGE_ROLE);
+        });
     }
 
-    public static boolean overClaim(Faction faction, Faction overClaimedFaction, FChunk chunk, FPlayer player) {
-        long start = System.currentTimeMillis();
-        OverClaimEvent overClaimEvent = new OverClaimEvent(faction, overClaimedFaction, player, chunk);
-        boolean overClaimed = overClaimEvent.isSuccess();
-        long end = System.currentTimeMillis();
-        logAction(start, end, PermissionedContextAction.OVER_CLAIM);
-        return overClaimed;
+    public static void overClaim(@NotNull Faction faction, @NotNull Faction overClaimedFaction, @NotNull FChunk chunk, @NotNull FPlayer player) {
+        PermissionContextHandler.runAsync(() -> {
+            long start = System.currentTimeMillis();
+            OverClaimEvent overClaimEvent = new OverClaimEvent(faction, overClaimedFaction, player, chunk);
+            boolean overClaimed = overClaimEvent.isSuccess();
+            long end = System.currentTimeMillis();
+            logAction(start, end, PermissionedContextAction.OVER_CLAIM);
+        });
     }
 
-    public static boolean setCore(FPlayer player, Faction faction, FLocation location) {
-        long start = System.currentTimeMillis();
-        SetCoreEvent event = new SetCoreEvent(faction, player, location);
-        boolean success = event.isSuccess();
-        long end = System.currentTimeMillis();
-        logAction(start, end, PermissionedContextAction.SET_CORE);
-        return success;
+    public static void setCore(FPlayer player, Faction faction, FLocation location) {
+        PermissionContextHandler.runAsync(() -> {
+            long start = System.currentTimeMillis();
+            SetCoreEvent event = new SetCoreEvent(faction, player, location);
+            boolean success = event.isSuccess();
+            long end = System.currentTimeMillis();
+            logAction(start, end, PermissionedContextAction.SET_CORE);
+        });
     }
 
-    public static boolean toggleFlightMode(FPlayer player, boolean toggle) {
-        long start = System.currentTimeMillis();
-        PlayerFlightEvent event = new PlayerFlightEvent(player.getFaction(), player, toggle);
-        boolean flying = event.isFlying();
-        long end = System.currentTimeMillis();
-        logAction(start, end, PermissionedContextAction.FLY);
-        return flying;
+    public static void toggleFlightMode(FPlayer player, boolean toggle) {
+        PermissionContextHandler.runAsync(() -> {
+            long start = System.currentTimeMillis();
+            PlayerFlightEvent event = new PlayerFlightEvent(player.getFaction(), player, toggle);
+            boolean flying = event.isFlying();
+            long end = System.currentTimeMillis();
+            logAction(start, end, PermissionedContextAction.FLY);
+        });
     }
 
-    public static boolean toggleAutoFly(FPlayer player) {
-        long start = System.currentTimeMillis();
-        PlayerAutoFlyEvent event = new PlayerAutoFlyEvent(player.getFaction(), player);
-        boolean success = event.isAutoFlying();
-        long end = System.currentTimeMillis();
-        logAction(start, end, PermissionedContextAction.AUTO_FLY);
-        return success;
+    public static void toggleAutoFly(FPlayer player) {
+        PermissionContextHandler.runAsync(() -> {
+            long start = System.currentTimeMillis();
+            PlayerAutoFlyEvent event = new PlayerAutoFlyEvent(player.getFaction(), player);
+            boolean success = event.isAutoFlying();
+            long end = System.currentTimeMillis();
+            logAction(start, end, PermissionedContextAction.AUTO_FLY);
+        });
     }
 
     public static FactionRank createRank(String rankName, FPlayer player, Faction faction, Set<PermissionType> permissions) {

@@ -36,8 +36,8 @@ public interface Faction extends NextGenFactionEntity {
         }.handle(messageContext);
     }
 
-    default boolean setCore(FPlayer player, FLocation location) {
-        return PermissionContextHandler.setCore(player, this, location);
+    default void setCore(FPlayer player, FLocation location) {
+        PermissionContextHandler.setCore(player, this, location);
     }
 
     default FLocation getCore() {
@@ -117,8 +117,8 @@ public interface Faction extends NextGenFactionEntity {
      * @param player
      * @return
      */
-    default boolean claim(FChunk chunk, FPlayer player) {
-        return PermissionContextHandler.claim(this, chunk, player);
+    default void claim(FChunk chunk, FPlayer player) {
+        PermissionContextHandler.claim(this, chunk, player);
     }
 
     /**
@@ -128,8 +128,8 @@ public interface Faction extends NextGenFactionEntity {
      * @param player
      * @return
      */
-    default boolean overClaim(FChunk chunk, FPlayer player, Faction otherFaction) {
-        return PermissionContextHandler.overClaim(this, otherFaction, chunk, player);
+    default void overClaim(FChunk chunk, FPlayer player, Faction otherFaction) {
+        PermissionContextHandler.overClaim(this, otherFaction, chunk, player);
     }
 
     /**
@@ -148,8 +148,8 @@ public interface Faction extends NextGenFactionEntity {
      * @param playerKicking
      * @return
      */
-    default boolean kickPlayer(FPlayer kickedPlayer, FPlayer playerKicking) {
-        return PermissionContextHandler.kickPlayerFromFaction(kickedPlayer, this, playerKicking);
+    default void kickPlayer(FPlayer kickedPlayer, FPlayer playerKicking) {
+        PermissionContextHandler.kickPlayerFromFaction(kickedPlayer, this, playerKicking);
     }
 
     /**
@@ -159,8 +159,8 @@ public interface Faction extends NextGenFactionEntity {
      * @param playerInviting
      * @return
      */
-    default boolean invitePlayer(FPlayer invitedPlayer, FPlayer playerInviting) {
-        return PermissionContextHandler.invitePlayerToFaction(invitedPlayer, this, playerInviting);
+    default void invitePlayer(FPlayer invitedPlayer, FPlayer playerInviting) {
+        PermissionContextHandler.invitePlayerToFaction(invitedPlayer, this, playerInviting);
     }
 
     /**
@@ -169,8 +169,8 @@ public interface Faction extends NextGenFactionEntity {
      * @param playerDisbanding
      * @return
      */
-    default boolean disband(FPlayer playerDisbanding) {
-        return PermissionContextHandler.disbandFaction(this, playerDisbanding);
+    default void disband(FPlayer playerDisbanding) {
+        PermissionContextHandler.disbandFaction(this, playerDisbanding);
     }
 
     /**

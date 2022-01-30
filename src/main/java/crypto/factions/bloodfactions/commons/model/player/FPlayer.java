@@ -1,5 +1,6 @@
 package crypto.factions.bloodfactions.commons.model.player;
 
+import crypto.factions.bloodfactions.BloodFactions;
 import crypto.factions.bloodfactions.commons.contex.ContextHandler;
 import crypto.factions.bloodfactions.commons.contex.PermissionContextHandler;
 import crypto.factions.bloodfactions.commons.messages.handler.MessageContextHandler;
@@ -144,9 +145,9 @@ public interface FPlayer extends NextGenFactionEntity {
      * @param player
      * @return
      */
-    default boolean invitePlayerToFaction(@NotNull FPlayer player) {
+    default void invitePlayerToFaction(@NotNull FPlayer player) {
         Faction faction = this.getFaction();
-        return faction.invitePlayer(player, this);
+        faction.invitePlayer(player, this);
     }
 
     /**
@@ -155,9 +156,9 @@ public interface FPlayer extends NextGenFactionEntity {
      * @param player
      * @return
      */
-    default boolean kickPlayerFromFaction(@NotNull FPlayer player) {
+    default void kickPlayerFromFaction(@NotNull FPlayer player) {
         Faction faction = this.getFaction();
-        return faction.kickPlayer(player, this);
+        faction.kickPlayer(player, this);
     }
 
     /**
@@ -197,8 +198,8 @@ public interface FPlayer extends NextGenFactionEntity {
      * @param playerChangingTheRole
      * @return
      */
-    default boolean changeRole(FactionRank role, FPlayer playerChangingTheRole) {
-        return PermissionContextHandler.changeRankOfPlayer(this, role, playerChangingTheRole);
+    default void changeRole(FactionRank role, FPlayer playerChangingTheRole) {
+        PermissionContextHandler.changeRankOfPlayer(this, role, playerChangingTheRole);
     }
 
     /**
@@ -208,8 +209,8 @@ public interface FPlayer extends NextGenFactionEntity {
      * @param role
      * @return
      */
-    default boolean changeRoleOfPlayer(FPlayer otherPlayer, FactionRank role) {
-        return otherPlayer.changeRole(role, this);
+    default void changeRoleOfPlayer(FPlayer otherPlayer, FactionRank role) {
+        otherPlayer.changeRole(role, this);
     }
 
     /**
@@ -301,8 +302,10 @@ public interface FPlayer extends NextGenFactionEntity {
     default void enableBukkitFlight() {
         Player bukkitPlayer = this.getBukkitPlayer();
         if (Objects.nonNull(bukkitPlayer)) {
-            bukkitPlayer.setAllowFlight(true);
-            bukkitPlayer.setFlying(true);
+            Bukkit.getScheduler().runTask(BloodFactions.getInstance(), () -> {
+                bukkitPlayer.setAllowFlight(true);
+                bukkitPlayer.setFlying(true);
+            });
         }
     }
 
@@ -312,8 +315,10 @@ public interface FPlayer extends NextGenFactionEntity {
     default void disableBukkitFlight() {
         Player bukkitPlayer = this.getBukkitPlayer();
         if (Objects.nonNull(bukkitPlayer)) {
-            bukkitPlayer.setAllowFlight(false);
-            bukkitPlayer.setFlying(false);
+            Bukkit.getScheduler().runTask(BloodFactions.getInstance(), () -> {
+                bukkitPlayer.setAllowFlight(false);
+                bukkitPlayer.setFlying(false);
+            });
         }
     }
 
@@ -406,8 +411,8 @@ public interface FPlayer extends NextGenFactionEntity {
         ContextHandler.playerDied(this);
     }
 
-    default boolean setRank(@NotNull FactionRank targetRank, @NotNull FPlayer playerSettingTheRank) {
-        return PermissionContextHandler.changeRankOfPlayer(this, targetRank, playerSettingTheRank);
+    default void setRank(@NotNull FactionRank targetRank, @NotNull FPlayer playerSettingTheRank) {
+        PermissionContextHandler.changeRankOfPlayer(this, targetRank, playerSettingTheRank);
     }
 
     default void sendTitle(String title) {

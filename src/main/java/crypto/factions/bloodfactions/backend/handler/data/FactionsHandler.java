@@ -386,10 +386,19 @@ public interface FactionsHandler extends DataHandler<Faction> {
     @EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
     default void handleClaim(ClaimEvent event) {
 
-        Faction faction = event.getFaction();
         FPlayer player = event.getPlayer();
+        boolean hasFaction = player.hasFaction();
+        if (!hasFaction) {
+            String successMessage = (String) this.getLangConfig().get(LangConfigItems.COMMANDS_F_DISBAND_NO_FACTION);
+            MessageContext messageContext = new MessageContextImpl(player, successMessage);
+            player.sms(messageContext);
+            event.setSuccess(false);
+            return;
+        }
+
         FChunk chunk = event.getChunk();
         Faction factionAt = chunk.getFactionAt();
+        Faction faction = event.getFaction();
 
         // Already claimed this land.
         if (factionAt.equals(faction)) {
@@ -423,7 +432,8 @@ public interface FactionsHandler extends DataHandler<Faction> {
 
         // Over-Claim
         if (!factionAt.isSystemFaction()) {
-            claimed = faction.overClaim(chunk, player, factionAt);
+            faction.overClaim(chunk, player, factionAt);
+            claimed = true;
         }
         // Simple claim
         else {
@@ -520,6 +530,10 @@ public interface FactionsHandler extends DataHandler<Faction> {
 
         // Set new home.
         boolean homeSet = this.getManager().setHome(faction, core, player);
+        String successMessage = (String) this.getLangConfig().get(LangConfigItems.COMMANDS_F_HOME_SET_SUCCESS);
+        MessageContext messageContext = new MessageContextImpl(player, successMessage);
+        player.sms(messageContext);
+
         event.setSuccess(homeSet);
     }
 

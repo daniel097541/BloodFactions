@@ -41,17 +41,16 @@ public class KickSubCommand extends FSubCommandImpl {
             FPlayer kicked = ContextHandler.getPlayerByName(playerName);
 
             if(Objects.nonNull(kicked)) {
-                return faction.kickPlayer(kicked, player);
+                faction.kickPlayer(kicked, player);
             }
             else{
                 String message = (String) this.getLangConfig().get(LangConfigItems.COMMANDS_F_KICK_NO_PLAYER);
                 MessageContext messageContext = new MessageContextImpl(player, message);
                 player.sms(messageContext);
-                return false;
             }
         }
 
 
-        return false;
+        return true;
     }
 }
