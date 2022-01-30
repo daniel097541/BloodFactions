@@ -35,7 +35,8 @@ public class FactionsHandlerImpl implements FactionsHandler {
     @Inject
     public FactionsHandlerImpl(JavaPlugin plugin,
                                FactionsManager factionsManager,
-                               RanksManager ranksManager, PlayersManager playersManager, @SystemConfiguration NGFConfig systemConfig,
+                               RanksManager ranksManager, PlayersManager playersManager,
+                               @SystemConfiguration NGFConfig systemConfig,
                                @LangConfiguration NGFConfig langConfig,
                                TasksHandler tasksHandler) {
         this.manager = factionsManager;

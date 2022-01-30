@@ -1,5 +1,6 @@
 package crypto.factions.bloodfactions.commons.contex;
 
+import crypto.factions.bloodfactions.BloodFactions;
 import crypto.factions.bloodfactions.commons.events.faction.SetCoreEvent;
 import crypto.factions.bloodfactions.commons.events.faction.permissioned.*;
 import crypto.factions.bloodfactions.commons.events.land.permissioned.*;
@@ -15,12 +16,17 @@ import crypto.factions.bloodfactions.commons.model.land.FLocation;
 import crypto.factions.bloodfactions.commons.model.permission.PermissionType;
 import crypto.factions.bloodfactions.commons.model.player.FPlayer;
 import crypto.factions.bloodfactions.commons.model.role.FactionRank;
+import org.bukkit.Bukkit;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Map;
 import java.util.Set;
 
 public class PermissionContextHandler {
+
+    private static void runAsync(Runnable runnable){
+        Bukkit.getScheduler().runTaskAsynchronously(BloodFactions.getInstance(), runnable);
+    }
 
     private static void logAction(long start, long end, PermissionedContextAction action) {
         String message = "Time to perform permission action {action}: {time} ms";
@@ -38,13 +44,14 @@ public class PermissionContextHandler {
      * @param player
      * @return
      */
-    public static Map<FChunk, Boolean> multiUnClaim(Faction faction, Set<FChunk> chunks, FPlayer player) {
-        long start = System.currentTimeMillis();
-        MultiUnClaimEvent event = new MultiUnClaimEvent(faction, player, chunks);
-        Map<FChunk, Boolean> result = event.getResult();
-        long end = System.currentTimeMillis();
-        logAction(start, end, PermissionedContextAction.MULTI_UN_CLAIM);
-        return result;
+    public static void multiUnClaim(Faction faction, Set<FChunk> chunks, FPlayer player) {
+        PermissionContextHandler.runAsync(() -> {
+            long start = System.currentTimeMillis();
+            MultiUnClaimEvent event = new MultiUnClaimEvent(faction, player, chunks);
+            Map<FChunk, Boolean> result = event.getResult();
+            long end = System.currentTimeMillis();
+            logAction(start, end, PermissionedContextAction.MULTI_UN_CLAIM);
+        });
     }
 
     /**
@@ -55,13 +62,14 @@ public class PermissionContextHandler {
      * @param player
      * @return
      */
-    public static boolean unClaim(Faction faction, FChunk chunk, FPlayer player) {
-        long start = System.currentTimeMillis();
-        UnClaimEvent event = new UnClaimEvent(faction, player, chunk);
-        boolean result = event.isSuccess();
-        long end = System.currentTimeMillis();
-        logAction(start, end, PermissionedContextAction.UN_CLAIM);
-        return result;
+    public static void unClaim(Faction faction, FChunk chunk, FPlayer player) {
+        PermissionContextHandler.runAsync(() -> {
+            long start = System.currentTimeMillis();
+            UnClaimEvent event = new UnClaimEvent(faction, player, chunk);
+            boolean result = event.isSuccess();
+            long end = System.currentTimeMillis();
+            logAction(start, end, PermissionedContextAction.UN_CLAIM);
+        });
     }
 
     /**
@@ -72,13 +80,14 @@ public class PermissionContextHandler {
      * @param player
      * @return
      */
-    public static Map<FChunk, Boolean> multiClaim(Faction faction, Set<FChunk> chunks, FPlayer player) {
-        long start = System.currentTimeMillis();
-        MultiClaimEvent event = new MultiClaimEvent(faction, player, chunks);
-        Map<FChunk, Boolean> result = event.getResult();
-        long end = System.currentTimeMillis();
-        logAction(start, end, PermissionedContextAction.MULTI_CLAIM);
-        return result;
+    public static void multiClaim(Faction faction, Set<FChunk> chunks, FPlayer player, int radius) {
+        PermissionContextHandler.runAsync(() -> {
+            long start = System.currentTimeMillis();
+            MultiClaimEvent event = new MultiClaimEvent(faction, player, chunks, radius);
+            Map<FChunk, Boolean> result = event.getResult();
+            long end = System.currentTimeMillis();
+            logAction(start, end, PermissionedContextAction.MULTI_CLAIM);
+        });
     }
 
     /**

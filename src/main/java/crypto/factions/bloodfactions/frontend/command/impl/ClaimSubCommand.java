@@ -2,7 +2,6 @@ package crypto.factions.bloodfactions.frontend.command.impl;
 
 import crypto.factions.bloodfactions.commons.annotation.config.LangConfiguration;
 import crypto.factions.bloodfactions.commons.annotation.config.SystemConfiguration;
-import crypto.factions.bloodfactions.frontend.command.SubCommandType;
 import crypto.factions.bloodfactions.commons.config.NGFConfig;
 import crypto.factions.bloodfactions.commons.config.lang.LangConfigItems;
 import crypto.factions.bloodfactions.commons.config.system.SystemConfigItems;
@@ -11,6 +10,7 @@ import crypto.factions.bloodfactions.commons.messages.model.MessageContextImpl;
 import crypto.factions.bloodfactions.commons.model.faction.Faction;
 import crypto.factions.bloodfactions.commons.model.land.FChunk;
 import crypto.factions.bloodfactions.commons.model.player.FPlayer;
+import crypto.factions.bloodfactions.frontend.command.SubCommandType;
 
 import javax.inject.Inject;
 import javax.inject.Singleton;
@@ -48,29 +48,19 @@ public class ClaimSubCommand extends FSubCommandImpl {
 
             try {
                 int radius = Integer.parseInt(radiusStr);
-                int maxRadius = (int) this.sysConfig.get(SystemConfigItems.MULTI_CLAIM_MAX_RADIUS);
-
-                if (radius <= maxRadius) {
-                    Set<FChunk> chunks = player.getChunksInRadius(radius);
-                    faction.multiClaim(chunks, player);
-                }
-                else{
-                    String message = (String) this.getLangConfig().get(LangConfigItems.COMMANDS_F_CLAIM_MAX_RADIUS);
-                    message = message.replace("{radius}", "" + maxRadius);
-                    MessageContext messageContext = new MessageContextImpl(player, message);
-                    player.sms(messageContext);
-                }
-
+                Set<FChunk> chunks = player.getChunksInRadius(radius);
+                faction.multiClaim(chunks, player, radius);
             } catch (Exception ignored) {
+                return false;
             }
-
-            return true;
         }
 
         // Claim this chunk
         else {
             FChunk chunk = player.getChunk();
-            return faction.claim(chunk, player);
+            faction.claim(chunk, player);
         }
+
+        return true;
     }
 }

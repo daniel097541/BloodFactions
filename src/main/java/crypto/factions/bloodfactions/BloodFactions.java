@@ -9,10 +9,12 @@ import crypto.factions.bloodfactions.backend.handler.permissions.PermissionsHand
 import crypto.factions.bloodfactions.backend.db.DBMigrationManager;
 import crypto.factions.bloodfactions.frontend.listener.PlayerListener;
 import crypto.factions.bloodfactions.injection.NGFBinder;
+import lombok.Getter;
 import org.bukkit.plugin.java.JavaPlugin;
 
 public class BloodFactions extends JavaPlugin {
 
+    @Getter
     private static BloodFactions instance;
 
     private final NGFBinder binder = new NGFBinder(this);

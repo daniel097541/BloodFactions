@@ -348,31 +348,38 @@ public interface FactionsHandler extends DataHandler<Faction> {
         Faction faction = event.getFaction();
         FPlayer player = event.getPlayer();
         Set<FChunk> chunks = event.getChunks();
+        int radius = event.getRadius();
+        int maxRadius = (int) this.getSystemConfig().get(SystemConfigItems.MULTI_CLAIM_MAX_RADIUS);
 
-        Bukkit.getScheduler().runTaskAsynchronously(this.getPlugin(), () -> {
+        if (radius > maxRadius) {
+            String message = (String) this.getLangConfig().get(LangConfigItems.COMMANDS_F_CLAIM_MAX_RADIUS);
+            message = message.replace("{radius}", "" + maxRadius);
+            MessageContext messageContext = new MessageContextImpl(player, message);
+            player.sms(messageContext);
+            return;
+        }
 
-            long initClaim = System.currentTimeMillis();
-            boolean multiClaimed = this.getManager().multiClaimForFaction(faction, chunks, player);
-            long endClaim = System.currentTimeMillis();
-            Logger.logInfo("Time to multi-claim asynchronously: " + (endClaim - initClaim) + " ms");
+        long initClaim = System.currentTimeMillis();
+        boolean multiClaimed = this.getManager().multiClaimForFaction(faction, chunks, player);
+        long endClaim = System.currentTimeMillis();
+        Logger.logInfo("Time to multi-claim asynchronously: " + (endClaim - initClaim) + " ms");
 
-            if (multiClaimed) {
-                Logger.logInfo("Multi Claimed successfully.");
-                event.setSuccess(true);
+        if (multiClaimed) {
+            Logger.logInfo("Multi Claimed successfully.");
+            event.setSuccess(true);
 
-                // Send change land to all players in the claimed chunks.
-                Set<FPlayer> onlinePlayers = ContextHandler.getOnlinePlayers();
+            // Send change land to all players in the claimed chunks.
+            Set<FPlayer> onlinePlayers = ContextHandler.getOnlinePlayers();
 
-                Logger.logInfo("Warning " + onlinePlayers.size() + " players about multi-claim.");
+            Logger.logInfo("Warning " + onlinePlayers.size() + " players about multi-claim.");
 
-                onlinePlayers
-                        .stream()
-                        .filter(p -> chunks.contains(p.getChunk()))
-                        .map(p -> new AbstractMap.SimpleEntry<>(p, p.getChunk()))
-                        .forEach(entry -> entry.getKey().changedLand(entry.getValue().getFactionAt(), faction));
+            onlinePlayers
+                    .stream()
+                    .filter(p -> chunks.contains(p.getChunk()))
+                    .map(p -> new AbstractMap.SimpleEntry<>(p, p.getChunk()))
+                    .forEach(entry -> entry.getKey().changedLand(entry.getValue().getFactionAt(), faction));
 
-            }
-        });
+        }
         event.setSuccess(true);
     }
 
@@ -470,7 +477,38 @@ public interface FactionsHandler extends DataHandler<Faction> {
         Faction faction = event.getFaction();
         FPlayer player = event.getPlayer();
         FChunk chunk = event.getChunk();
-        Bukkit.getScheduler().runTaskAsynchronously(this.getPlugin(), () -> this.unClaim(player, chunk, faction));
+        Faction factionAt = chunk.getFactionAt();
+
+
+        boolean hasFaction = player.hasFaction();
+
+        // Player is not in a faction.
+        if (!hasFaction) {
+            String successMessage = (String) this.getLangConfig().get(LangConfigItems.COMMANDS_F_UN_CLAIM_NO_FACTION);
+            MessageContext messageContext = new MessageContextImpl(player, successMessage);
+            player.sms(messageContext);
+            event.setSuccess(false);
+            return;
+        }
+
+        // Already claimed this land.
+        if (!factionAt.equals(faction)) {
+            String successMessage = (String) this.getLangConfig().get(LangConfigItems.COMMANDS_F_UN_CLAIM_NOT_YOUR_LAND);
+            MessageContext messageContext = new MessageContextImpl(player, successMessage);
+            player.sms(messageContext);
+            event.setSuccess(false);
+            return;
+        }
+
+
+        this.unClaim(player, chunk, faction);
+
+        // Send message.
+        String successMessage = (String) this.getLangConfig().get(LangConfigItems.COMMANDS_F_UN_CLAIM_SUCCESS);
+        MessageContext messageContext = new MessageContextImpl(player, successMessage);
+        messageContext.setFaction(chunk.getFactionAt());
+        player.sms(messageContext);
+
         event.setSuccess(true);
     }
 

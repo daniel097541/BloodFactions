@@ -84,8 +84,8 @@ public interface Faction extends NextGenFactionEntity {
      * @param player
      * @return
      */
-    default Map<FChunk, Boolean> multiUnClaim(Set<FChunk> chunks, FPlayer player) {
-        return PermissionContextHandler.multiUnClaim(this, chunks, player);
+    default void multiUnClaim(Set<FChunk> chunks, FPlayer player) {
+        PermissionContextHandler.multiUnClaim(this, chunks, player);
     }
 
     /**
@@ -95,8 +95,8 @@ public interface Faction extends NextGenFactionEntity {
      * @param player
      * @return
      */
-    default boolean unClaim(FChunk chunk, FPlayer player) {
-        return PermissionContextHandler.unClaim(this, chunk, player);
+    default void unClaim(FChunk chunk, FPlayer player) {
+        PermissionContextHandler.unClaim(this, chunk, player);
     }
 
     /**
@@ -106,8 +106,8 @@ public interface Faction extends NextGenFactionEntity {
      * @param player
      * @return
      */
-    default Map<FChunk, Boolean> multiClaim(Set<FChunk> chunks, FPlayer player) {
-        return PermissionContextHandler.multiClaim(this, chunks, player);
+    default void multiClaim(Set<FChunk> chunks, FPlayer player, int radius) {
+        PermissionContextHandler.multiClaim(this, chunks, player, radius);
     }
 
     /**
