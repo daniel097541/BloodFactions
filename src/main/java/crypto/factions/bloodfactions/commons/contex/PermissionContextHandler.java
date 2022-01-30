@@ -219,28 +219,31 @@ public class PermissionContextHandler {
         });
     }
 
-    public static FactionRank createRank(String rankName, FPlayer player, Faction faction, Set<PermissionType> permissions) {
-        long start = System.currentTimeMillis();
-        CreateRankEvent event = new CreateRankEvent(faction, player, rankName, permissions);
-        long end = System.currentTimeMillis();
-        logAction(start, end, PermissionedContextAction.CREATE_ROLE);
-        return event.getRole();
+    public static void createRank(String rankName, FPlayer player, Faction faction, Set<PermissionType> permissions) {
+        PermissionContextHandler.runAsync(() -> {
+            long start = System.currentTimeMillis();
+            CreateRankEvent event = new CreateRankEvent(faction, player, rankName, permissions);
+            long end = System.currentTimeMillis();
+            logAction(start, end, PermissionedContextAction.CREATE_ROLE);
+        });
     }
 
-    public static boolean deleteRank(String rankName, FPlayer player, Faction faction) {
-        long start = System.currentTimeMillis();
-        DeleteRankEvent event = new DeleteRankEvent(faction, player, rankName);
-        long end = System.currentTimeMillis();
-        logAction(start, end, PermissionedContextAction.DELETE_ROLE);
-        return event.isSuccess();
+    public static void deleteRank(String rankName, FPlayer player, Faction faction) {
+        PermissionContextHandler.runAsync(() -> {
+            long start = System.currentTimeMillis();
+            DeleteRankEvent event = new DeleteRankEvent(faction, player, rankName);
+            long end = System.currentTimeMillis();
+            logAction(start, end, PermissionedContextAction.DELETE_ROLE);
+        });
     }
 
-    public static boolean unClaimAll(FPlayer player, Faction faction) {
-        long start = System.currentTimeMillis();
-        UnClaimAllEvent event = new UnClaimAllEvent(faction, player);
-        long end = System.currentTimeMillis();
-        logAction(start, end, PermissionedContextAction.UN_CLAIM_ALL);
-        return event.isSuccess();
+    public static void unClaimAll(FPlayer player, Faction faction) {
+        PermissionContextHandler.runAsync(() -> {
+            long start = System.currentTimeMillis();
+            UnClaimAllEvent event = new UnClaimAllEvent(faction, player);
+            long end = System.currentTimeMillis();
+            logAction(start, end, PermissionedContextAction.UN_CLAIM_ALL);
+        });
     }
 
     public static boolean breakBlock(FPlayer player, Faction faction, FLocation location) {

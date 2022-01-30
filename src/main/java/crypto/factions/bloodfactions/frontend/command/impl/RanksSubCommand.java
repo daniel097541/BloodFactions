@@ -109,8 +109,8 @@ public class RanksSubCommand extends FSubCommandImpl {
                         }
                     }
 
-                    FactionRank rank = faction.createRank(roleName, player, permissions);
-                    return Objects.nonNull(rank);
+                    faction.createRank(roleName, player, permissions);
+                    return true;
                 }
 
                 // Send creation format.
@@ -132,7 +132,8 @@ public class RanksSubCommand extends FSubCommandImpl {
                 // Delete role with name.
                 if (args.length == 3) {
                     String roleName = args[2];
-                    return faction.deleteRank(roleName, player);
+                    faction.deleteRank(roleName, player);
+                    return true;
                 }
 
                 // Send role deletion formats.

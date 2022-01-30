@@ -235,12 +235,12 @@ public interface Faction extends NextGenFactionEntity {
         return ContextHandler.getPlayer(this.getOwnerId());
     }
 
-    default FactionRank createRank(String roleName, FPlayer player, Set<PermissionType> permissions) {
-        return PermissionContextHandler.createRank(roleName, player, this, permissions);
+    default void createRank(String roleName, FPlayer player, Set<PermissionType> permissions) {
+        PermissionContextHandler.createRank(roleName, player, this, permissions);
     }
 
-    default boolean deleteRank(String roleName, FPlayer player) {
-        return PermissionContextHandler.deleteRank(roleName, player, this);
+    default void deleteRank(String roleName, FPlayer player) {
+        PermissionContextHandler.deleteRank(roleName, player, this);
     }
 
     default @Nullable FactionRank getRankByName(@NotNull String rankName) {
@@ -251,8 +251,8 @@ public interface Faction extends NextGenFactionEntity {
                 .orElse(null);
     }
 
-    default boolean unClaimAll(@NotNull FPlayer player, @NotNull Faction faction) {
-        return PermissionContextHandler.unClaimAll(player, faction);
+    default void unClaimAll(@NotNull FPlayer player, @NotNull Faction faction) {
+        PermissionContextHandler.unClaimAll(player, faction);
     }
 
     default boolean allowsFlightNearPlayersOfOtherFaction(Faction otherFaction) {

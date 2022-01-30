@@ -34,6 +34,7 @@ public class UnClaimAllSubCommand extends FSubCommandImpl {
 
         // Un-Claim all
         Faction faction = player.getFaction();
-        return faction.unClaimAll(player, faction);
+        faction.unClaimAll(player, faction);
+        return true;
     }
 }
