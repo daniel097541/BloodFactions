@@ -16,6 +16,7 @@ import crypto.factions.bloodfactions.commons.model.land.FLocation;
 import crypto.factions.bloodfactions.commons.model.permission.PermissionType;
 import crypto.factions.bloodfactions.commons.model.player.FPlayer;
 import crypto.factions.bloodfactions.commons.model.role.FactionRank;
+import crypto.factions.bloodfactions.commons.utils.ThreadUtils;
 import org.bukkit.Bukkit;
 import org.jetbrains.annotations.NotNull;
 
@@ -45,7 +46,7 @@ public class PermissionContextHandler {
      * @return
      */
     public static void multiUnClaim(Faction faction, Set<FChunk> chunks, FPlayer player) {
-        PermissionContextHandler.runAsync(() -> {
+        ThreadUtils.runAsync(() -> {
             long start = System.currentTimeMillis();
             MultiUnClaimEvent event = new MultiUnClaimEvent(faction, player, chunks);
             Map<FChunk, Boolean> result = event.getResult();
@@ -63,7 +64,7 @@ public class PermissionContextHandler {
      * @return
      */
     public static void unClaim(Faction faction, FChunk chunk, FPlayer player) {
-        PermissionContextHandler.runAsync(() -> {
+        ThreadUtils.runAsync(() -> {
             long start = System.currentTimeMillis();
             UnClaimEvent event = new UnClaimEvent(faction, player, chunk);
             boolean result = event.isSuccess();
@@ -81,7 +82,7 @@ public class PermissionContextHandler {
      * @return
      */
     public static void multiClaim(Faction faction, Set<FChunk> chunks, FPlayer player, int radius) {
-        PermissionContextHandler.runAsync(() -> {
+        ThreadUtils.runAsync(() -> {
             long start = System.currentTimeMillis();
             MultiClaimEvent event = new MultiClaimEvent(faction, player, chunks, radius);
             Map<FChunk, Boolean> result = event.getResult();
@@ -99,7 +100,7 @@ public class PermissionContextHandler {
      * @return
      */
     public static void claim(Faction faction, FChunk chunk, FPlayer player) {
-        PermissionContextHandler.runAsync(() -> {
+        ThreadUtils.runAsync(() -> {
             long start = System.currentTimeMillis();
             ClaimEvent claimEvent = new ClaimEvent(faction, player, chunk);
             boolean claimed = claimEvent.isSuccess();
@@ -115,7 +116,7 @@ public class PermissionContextHandler {
      * @param player
      */
     public static void disbandFaction(Faction faction, FPlayer player) {
-        PermissionContextHandler.runAsync(() -> {
+        ThreadUtils.runAsync(() -> {
             long start = System.currentTimeMillis();
             DisbandFactionEvent event = new DisbandFactionEvent(player, faction);
             boolean disbanded = event.isDisbanded();
@@ -133,7 +134,7 @@ public class PermissionContextHandler {
      * @return
      */
     public static void invitePlayerToFaction(FPlayer invitedPlayer, Faction faction, FPlayer memberThatInvites) {
-        PermissionContextHandler.runAsync(() -> {
+        ThreadUtils.runAsync(() -> {
             long start = System.currentTimeMillis();
             InvitePlayerToFactionEvent event = new InvitePlayerToFactionEvent(faction, memberThatInvites, invitedPlayer);
             boolean invited = event.isInvited();
@@ -151,7 +152,7 @@ public class PermissionContextHandler {
      * @return
      */
     public static void kickPlayerFromFaction(FPlayer kickedPlayer, Faction faction, FPlayer playerThatKicks) {
-        PermissionContextHandler.runAsync(() -> {
+        ThreadUtils.runAsync(() -> {
             long start = System.currentTimeMillis();
             KickPlayerFromFactionEvent event = new KickPlayerFromFactionEvent(faction, playerThatKicks, kickedPlayer);
             boolean kicked = event.isKicked();
@@ -169,7 +170,7 @@ public class PermissionContextHandler {
      * @return
      */
     public static void changeRankOfPlayer(@NotNull FPlayer player, @NotNull FactionRank newRole, @NotNull FPlayer playerChangingTheRole) {
-        PermissionContextHandler.runAsync(() -> {
+        ThreadUtils.runAsync(() -> {
             long start = System.currentTimeMillis();
             if (player.hasFaction()) {
                 new ChangeRankOfPlayerEvent(player, newRole, playerChangingTheRole);
@@ -180,7 +181,7 @@ public class PermissionContextHandler {
     }
 
     public static void overClaim(@NotNull Faction faction, @NotNull Faction overClaimedFaction, @NotNull FChunk chunk, @NotNull FPlayer player) {
-        PermissionContextHandler.runAsync(() -> {
+        ThreadUtils.runAsync(() -> {
             long start = System.currentTimeMillis();
             OverClaimEvent overClaimEvent = new OverClaimEvent(faction, overClaimedFaction, player, chunk);
             boolean overClaimed = overClaimEvent.isSuccess();
@@ -190,7 +191,7 @@ public class PermissionContextHandler {
     }
 
     public static void setCore(FPlayer player, Faction faction, FLocation location) {
-        PermissionContextHandler.runAsync(() -> {
+        ThreadUtils.runAsync(() -> {
             long start = System.currentTimeMillis();
             SetCoreEvent event = new SetCoreEvent(faction, player, location);
             boolean success = event.isSuccess();
@@ -200,7 +201,7 @@ public class PermissionContextHandler {
     }
 
     public static void toggleFlightMode(FPlayer player, boolean toggle) {
-        PermissionContextHandler.runAsync(() -> {
+        ThreadUtils.runAsync(() -> {
             long start = System.currentTimeMillis();
             PlayerFlightEvent event = new PlayerFlightEvent(player.getFaction(), player, toggle);
             boolean flying = event.isFlying();
@@ -210,7 +211,7 @@ public class PermissionContextHandler {
     }
 
     public static void toggleAutoFly(FPlayer player) {
-        PermissionContextHandler.runAsync(() -> {
+        ThreadUtils.runAsync(() -> {
             long start = System.currentTimeMillis();
             PlayerAutoFlyEvent event = new PlayerAutoFlyEvent(player.getFaction(), player);
             boolean success = event.isAutoFlying();
@@ -220,7 +221,7 @@ public class PermissionContextHandler {
     }
 
     public static void createRank(String rankName, FPlayer player, Faction faction, Set<PermissionType> permissions) {
-        PermissionContextHandler.runAsync(() -> {
+        ThreadUtils.runAsync(() -> {
             long start = System.currentTimeMillis();
             CreateRankEvent event = new CreateRankEvent(faction, player, rankName, permissions);
             long end = System.currentTimeMillis();
@@ -229,7 +230,7 @@ public class PermissionContextHandler {
     }
 
     public static void deleteRank(String rankName, FPlayer player, Faction faction) {
-        PermissionContextHandler.runAsync(() -> {
+        ThreadUtils.runAsync(() -> {
             long start = System.currentTimeMillis();
             DeleteRankEvent event = new DeleteRankEvent(faction, player, rankName);
             long end = System.currentTimeMillis();
@@ -238,7 +239,7 @@ public class PermissionContextHandler {
     }
 
     public static void unClaimAll(FPlayer player, Faction faction) {
-        PermissionContextHandler.runAsync(() -> {
+        ThreadUtils.runAsync(() -> {
             long start = System.currentTimeMillis();
             UnClaimAllEvent event = new UnClaimAllEvent(faction, player);
             long end = System.currentTimeMillis();

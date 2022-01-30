@@ -21,6 +21,7 @@ import crypto.factions.bloodfactions.commons.model.land.FLocation;
 import crypto.factions.bloodfactions.commons.model.permission.Action;
 import crypto.factions.bloodfactions.commons.model.player.FPlayer;
 import crypto.factions.bloodfactions.commons.model.role.FactionRank;
+import crypto.factions.bloodfactions.commons.utils.ThreadUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
@@ -373,10 +374,12 @@ public class ContextHandler {
      * @param faction
      */
     public static void showFactionToPlayer(FPlayer player, Faction faction) {
-        long start = System.currentTimeMillis();
-        new ShowFactionEvent(faction, player);
-        long end = System.currentTimeMillis();
-        logAction(start, end, ContextAction.SHOW_FACTION);
+        ThreadUtils.runAsync(() -> {
+            long start = System.currentTimeMillis();
+            new ShowFactionEvent(faction, player);
+            long end = System.currentTimeMillis();
+            logAction(start, end, ContextAction.SHOW_FACTION);
+        });
     }
 
     /**
@@ -387,10 +390,12 @@ public class ContextHandler {
      * @param to
      */
     public static void changedLand(FPlayer player, Faction from, Faction to) {
-        long start = System.currentTimeMillis();
-        new PlayerChangedLandEvent(player, from, to);
-        long end = System.currentTimeMillis();
-        logAction(start, end, ContextAction.CHANGED_LAND);
+        ThreadUtils.runAsync(() -> {
+            long start = System.currentTimeMillis();
+            new PlayerChangedLandEvent(player, from, to);
+            long end = System.currentTimeMillis();
+            logAction(start, end, ContextAction.CHANGED_LAND);
+        });
     }
 
     /**
@@ -414,10 +419,12 @@ public class ContextHandler {
      * @param player
      */
     public static void playerLoggedIn(FPlayer player) {
-        long start = System.currentTimeMillis();
-        new FPlayerLoginEvent(player);
-        long end = System.currentTimeMillis();
-        logAction(start, end, ContextAction.LOGGED_IN);
+        ThreadUtils.runAsync(() -> {
+            long start = System.currentTimeMillis();
+            new FPlayerLoginEvent(player);
+            long end = System.currentTimeMillis();
+            logAction(start, end, ContextAction.LOGGED_IN);
+        });
     }
 
     /**
@@ -426,10 +433,12 @@ public class ContextHandler {
      * @param player
      */
     public static void playerLoggedOut(FPlayer player) {
-        long start = System.currentTimeMillis();
-        new FPlayerLogOutEvent(player);
-        long end = System.currentTimeMillis();
-        logAction(start, end, ContextAction.LOGGED_OUT);
+        ThreadUtils.runAsync(() -> {
+            long start = System.currentTimeMillis();
+            new FPlayerLogOutEvent(player);
+            long end = System.currentTimeMillis();
+            logAction(start, end, ContextAction.LOGGED_OUT);
+        });
     }
 
     /**
@@ -447,31 +456,39 @@ public class ContextHandler {
     }
 
     public static void listRoles(Faction faction, FPlayer player) {
-        long start = System.currentTimeMillis();
-        new ListRolesEvent(faction, player);
-        long end = System.currentTimeMillis();
-        logAction(start, end, ContextAction.LIST_ROLES);
+        ThreadUtils.runAsync(() -> {
+            long start = System.currentTimeMillis();
+            new ListRolesEvent(faction, player);
+            long end = System.currentTimeMillis();
+            logAction(start, end, ContextAction.LIST_ROLES);
+        });
     }
 
     public static void playerDied(FPlayer player) {
-        long start = System.currentTimeMillis();
-        new FPlayerDiedEvent(player);
-        long end = System.currentTimeMillis();
-        logAction(start, end, ContextAction.PLAYER_DIED);
+        ThreadUtils.runAsync(() -> {
+            long start = System.currentTimeMillis();
+            new FPlayerDiedEvent(player);
+            long end = System.currentTimeMillis();
+            logAction(start, end, ContextAction.PLAYER_DIED);
+        });
     }
 
     public static void listInvitationsToFaction(FPlayer player, Faction faction) {
-        long start = System.currentTimeMillis();
-        new ListInvitationsToFactionEvent(faction, player);
-        long end = System.currentTimeMillis();
-        logAction(start, end, ContextAction.LIST_INVITATIONS_TO_FACTION);
+        ThreadUtils.runAsync(() -> {
+            long start = System.currentTimeMillis();
+            new ListInvitationsToFactionEvent(faction, player);
+            long end = System.currentTimeMillis();
+            logAction(start, end, ContextAction.LIST_INVITATIONS_TO_FACTION);
+        });
     }
 
     public static void listInvitationsToOtherFactions(FPlayer player) {
-        long start = System.currentTimeMillis();
-        new ListInvitationsToOtherFactionsEvent(player);
-        long end = System.currentTimeMillis();
-        logAction(start, end, ContextAction.LIST_INVITATIONS_TO_OTHER_FACTIONS);
+        ThreadUtils.runAsync(() -> {
+            long start = System.currentTimeMillis();
+            new ListInvitationsToOtherFactionsEvent(player);
+            long end = System.currentTimeMillis();
+            logAction(start, end, ContextAction.LIST_INVITATIONS_TO_OTHER_FACTIONS);
+        });
     }
 
     public static boolean acceptFactionInvitation(FPlayer player, Faction faction) {
@@ -499,17 +516,21 @@ public class ContextHandler {
     }
 
     public static void proximityCheck(FPlayer fPlayer) {
-        long start = System.currentTimeMillis();
-        new PlayerProximityCheckEvent(fPlayer);
-        long end = System.currentTimeMillis();
-        logAction(start, end, ContextAction.PROXIMITY_CHECK);
+        ThreadUtils.runAsync(() -> {
+            long start = System.currentTimeMillis();
+            new PlayerProximityCheckEvent(fPlayer);
+            long end = System.currentTimeMillis();
+            logAction(start, end, ContextAction.PROXIMITY_CHECK);
+        });
     }
 
     public static void playerIsNearOther(FPlayer player, FPlayer other, int radius) {
-        long start = System.currentTimeMillis();
-        new PlayerIsNearOtherEvent(player, other, radius);
-        long end = System.currentTimeMillis();
-        logAction(start, end, ContextAction.PLAYER_NEAR_OTHER);
+        ThreadUtils.runAsync(() -> {
+            long start = System.currentTimeMillis();
+            new PlayerIsNearOtherEvent(player, other, radius);
+            long end = System.currentTimeMillis();
+            logAction(start, end, ContextAction.PLAYER_NEAR_OTHER);
+        });
     }
 
     public static boolean isPlayerFlying(FPlayer player) {
